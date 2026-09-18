@@ -1,0 +1,72 @@
+/* Tokens mirror design-spec.jsonc. If you change a value here, change it there too. */
+:root {
+  /* Color */
+  --bg-void: #05070D;
+  --bg-night: #0A0F1A;
+  --bg-panel: #121826;
+  --bg-panel-2: #1A2230;
+
+  --ink-paper: #EDE6D3;
+  --ink-muted: #9BA3B4;
+  --ink-faint: #5A6275;
+  --ink-ghost: #2E3340;
+
+  --signal-amber: #FFA630;
+  --signal-amber-hot: #FFD27A;
+  --signal-amber-dim: #7A4F18;
+
+  --data-green: #4ADE80;
+  --data-red: #F87171;
+  --data-neutral: #9BA3B4;
+
+  --voxel-glow: #5BC8FF;
+  --voxel-glow-soft: #2A6B8A;
+
+  --lamp-warm: #FFB661;
+  --rain-streak: #3A4555;
+
+  /* Type scale */
+  --step-1: 0.75rem;
+  --step-0: 0.875rem;
+  --step-1-up: 1rem;
+  --step-2: 1.25rem;
+  --step-3: 1.5rem;
+  --step-4: 2rem;
+  --step-5: 3rem;
+  --step-6: 4.5rem;
+  --step-7: 6.5rem;
+
+  /* Motion */
+  --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-camera: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-data: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --dur-instant: 80ms;
+  --dur-tick: 180ms;
+  --dur-ui: 600ms;
+  --dur-reveal: 900ms;
+  --dur-camera: 2200ms;
+  --dur-scene: 3000ms;
+
+  /* Fonts */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Geist', -apple-system, sans-serif;
+  --font-mono: 'Departure Mono', 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Mobile (1.24): step down every type-scale rung by one — step-3 → step-2,
+   step-2 → step-1-up, etc. Tighter body line-height. Existing components
+   keep their `var(--step-N)` references — the values shift under them. */
+@media (max-width: 768px) {
+  :root {
+    --step-1: 0.7rem;
+    --step-0: 0.8rem;
+    --step-1-up: 0.875rem;
+    --step-2: 1rem;
+    --step-3: 1.25rem;
+    --step-4: 1.5rem;
+    --step-5: 2rem;
+    --step-6: 3rem;
+    --step-7: 4.5rem;
+  }
+}

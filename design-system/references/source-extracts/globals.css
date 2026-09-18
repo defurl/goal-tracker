@@ -1,0 +1,98 @@
+@import '@fontsource/fraunces/400-italic.css';
+@import '@fontsource/fraunces/500.css';
+@import '@fontsource/fraunces/600.css';
+@import '@fontsource/geist-sans/400.css';
+@import '@fontsource/geist-sans/500.css';
+@import './tokens.css';
+
+/* Departure Mono — self-hosted. Drop the woff2 into public/fonts/. */
+@font-face {
+  font-family: 'Departure Mono';
+  src: url('/fonts/departure-mono.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-void);
+  color: var(--ink-paper);
+  font-family: var(--font-body);
+  font-size: var(--step-1-up);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Mobile (1.24): tighter body line-height. */
+@media (max-width: 768px) {
+  html, body, #root {
+    line-height: 1.5;
+  }
+}
+
+body {
+  overflow: hidden;
+}
+
+a {
+  color: var(--signal-amber);
+  text-decoration: none;
+  transition: color var(--dur-ui) var(--ease-ui);
+}
+a:hover { color: var(--signal-amber-hot); }
+
+:focus-visible {
+  outline: 2px solid var(--signal-amber);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--signal-amber-dim);
+  color: var(--ink-paper);
+}
+
+/* Film-grain overlay — atmosphere only, never a "design flourish".
+   Drifts gently at ~24fps-coded speed (6s loop, stepped) when motion is allowed.
+   Reduced-motion freezes the position and fades the layer entirely. */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  z-index: 1000;
+  animation: grain-drift 6s steps(6, end) infinite;
+}
+
+.grain[data-reduced-motion='true']::after {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes grain-drift {
+  0%   { background-position: 0 0; }
+  20%  { background-position: -8px 4px; }
+  40%  { background-position: 5px -7px; }
+  60%  { background-position: -3px -3px; }
+  80%  { background-position: 6px 5px; }
+  100% { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

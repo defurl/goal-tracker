@@ -1,0 +1,234 @@
+// design-spec.jsonc
+// The aesthetic contract for the project. The frontend-design plugin in Claude Code
+// reads this and executes against it. Comments are intentional — keep them.
+{
+  "$schema": "https://example.com/design-spec.schema.json",
+
+  // ── AESTHETIC DIRECTION ─────────────────────────────────────────────────────
+  // One sentence. If a design decision can't be defended against this sentence,
+  // it doesn't belong in the project.
+  "aesthetic_thesis": "Late-night quant terminal meets a Ghibli-quiet voxel city — atmospheric, characterful, technically reverent.",
+
+  "mood_anchors": [
+    "3am, the city is asleep, you're not",
+    "the hum of a server room next door",
+    "rain on a single windowpane",
+    "lo-fi at 30% volume, ambient enough to forget",
+    "the desk lamp is warm, the monitors are cold",
+    "Minecraft, but rendered by someone who cares about light"
+  ],
+
+  // ── COLOR ───────────────────────────────────────────────────────────────────
+  // Dominant deep navy + black, with terminal amber as the soul of the palette,
+  // CRT green for live-data signals, and a single cool cyan for the voxel city
+  // glow. NO purple-on-white. NO indigo gradients. NO neon overload.
+  "color": {
+    "css_variables": {
+      "--bg-void":          "#05070D",   // deepest background, near-black
+      "--bg-night":         "#0A0F1A",   // primary background, dim navy
+      "--bg-panel":         "#121826",   // raised surfaces, panels, monitor frames
+      "--bg-panel-2":       "#1A2230",   // hovered/active surfaces
+
+      "--ink-paper":        "#EDE6D3",   // primary text, warm off-white (paper-toned, NOT cool white)
+      "--ink-muted":        "#9BA3B4",   // secondary text
+      "--ink-faint":        "#5A6275",   // tertiary text, captions
+      "--ink-ghost":        "#2E3340",   // borders, dividers
+
+      "--signal-amber":     "#FFA630",   // primary accent — terminal amber, the soul color
+      "--signal-amber-hot": "#FFD27A",   // amber highlight / hover
+      "--signal-amber-dim": "#7A4F18",   // amber faded / disabled
+
+      "--data-green":       "#4ADE80",   // live data positive, CRT-coded
+      "--data-red":         "#F87171",   // live data negative, muted not screaming
+      "--data-neutral":     "#9BA3B4",   // flat / neutral changes
+
+      "--voxel-glow":       "#5BC8FF",   // the cyan that makes the city look alive
+      "--voxel-glow-soft":  "#2A6B8A",   // ambient sky bounce
+
+      "--lamp-warm":        "#FFB661",   // the desk lamp, the only truly warm light source
+      "--rain-streak":      "#3A4555"    // the rain on the window
+    },
+
+    "rules": [
+      "Background is always dark — there is no light mode and we are not building one",
+      "Amber is the only color that ever appears at >40% area; everything else is accent or signal",
+      "Green and red are reserved for live data — never for UI affordances like success/error states",
+      "The desk scene leans warm (amber + lamp); the city leans cool (cyan + green); the NN leans neutral (paper + faint)",
+      "Never use pure white (#FFFFFF). Paper-tone only.",
+      "Never use a gradient that includes purple, indigo, or pink"
+    ]
+  },
+
+  // ── TYPOGRAPHY ──────────────────────────────────────────────────────────────
+  // No Inter. No Roboto. No system-ui. The type choices are part of the signal.
+  "typography": {
+    "fonts": {
+      "display": {
+        "family": "Fraunces",
+        "source": "Google Fonts",
+        "weights": [400, 500, 600],
+        "axes": { "SOFT": 50, "WONK": 1 },
+        "usage": "Scene titles, section headers, the rare large statement. Use italic at display sizes for the editorial feel."
+      },
+      "body": {
+        "family": "Geist",
+        "source": "Vercel / Google Fonts",
+        "weights": [400, 500],
+        "usage": "All body copy, UI text, button labels."
+      },
+      "mono": {
+        "family": "Departure Mono",
+        "source": "https://departuremono.com (free)",
+        "weights": [400],
+        "fallback": "JetBrains Mono",
+        "usage": "Terminal text, ticker text, data labels, timestamps, any numeric data. The voxel-coded mono — non-negotiable for the terminal scene."
+      }
+    },
+
+    "scale": {
+      "step-1": "0.75rem",
+      "step-0": "0.875rem",
+      "step-1-up": "1rem",
+      "step-2": "1.25rem",
+      "step-3": "1.5rem",
+      "step-4": "2rem",
+      "step-5": "3rem",
+      "step-6": "4.5rem",
+      "step-7": "6.5rem"
+    },
+
+    "rules": [
+      "Headings use Fraunces italic at step-5 or step-6. They appear sparingly and feel like quiet announcements.",
+      "Body text is Geist at step-0 or step-1-up. Line height 1.6 for prose, 1.4 for UI.",
+      "All numeric data is mono. All terminal/log content is mono.",
+      "Tabular numbers ON for any monetary or measured value (`font-variant-numeric: tabular-nums`).",
+      "Letter-spacing is 0 by default. Wide tracking only on small caps labels (e.g., section eyebrows)."
+    ]
+  },
+
+  // ── MOTION ──────────────────────────────────────────────────────────────────
+  // Motion in this project is slow, atmospheric, and rare. We are not building
+  // a sales page. We are building a place. Camera moves are cinematic and few.
+  "motion": {
+    "principles": [
+      "Slow over fast. Default ease-out duration is 600–900ms for most UI motion.",
+      "Camera moves are 1.5–3s with eased cinematic curves (think interior reveal, not transition).",
+      "Ambient motion (breathing, swaying, drifting) is always present in 3D scenes — never static.",
+      "Sharp/sub-second motion is reserved for live data events (a price tick, a deploy).",
+      "Respect prefers-reduced-motion absolutely: replace camera moves with crossfades, kill all ambient drift, freeze breathing."
+    ],
+
+    "easings": {
+      "ui-default":     "cubic-bezier(0.22, 1, 0.36, 1)",
+      "camera-glide":   "cubic-bezier(0.65, 0, 0.35, 1)",
+      "data-tick":      "cubic-bezier(0.4, 0, 0.2, 1)",
+      "ambient-breath": "ease-in-out (sine wave, 4–8s period)"
+    },
+
+    "durations_ms": {
+      "instant": 80,
+      "tick":    180,
+      "ui":      600,
+      "reveal":  900,
+      "camera":  2200,
+      "scene":   3000
+    }
+  },
+
+  // ── SPATIAL COMPOSITION ─────────────────────────────────────────────────────
+  // The DOM UI overlays the 3D scene minimally. Most "composition" happens in
+  // 3D space, not in CSS grid.
+  "composition": {
+    "dom_overlay_rules": [
+      "Overlay UI lives in the screen corners — never centered, never full-bleed",
+      "Use generous negative space; the 3D scene is the content",
+      "When a project detail opens, it slides in from the right at ~480px width, never modal-center",
+      "No card grids. No 'feature box' layouts. If you find yourself reaching for a grid, stop and rethink."
+    ],
+    "corner_allocation": {
+      "bottom_left":  "navigation affordances — 'back to desk', scene breadcrumb. The feed-status badge ('· replay · YYYY-MM-DD') also lives here, stacked above the back-to-desk affordance, and fades to 0 when a panel is focused so it never competes for attention.",
+      "bottom_right": "global controls — audio toggle, /text link, fidelity toggle",
+      "top_left":     "scene title / eyebrow label (when shown at all)",
+      "top_right":    "transient panels — project detail slides in here at ~480px"
+    },
+    "3d_scene_rules": [
+      "The night desk: shallow depth of field, lamp as key light, monitors as secondary fills, window as cool rim light",
+      "The voxel city: orthographic-ish camera with subtle perspective, mid-fog at far distances, low-angle to make buildings feel tall",
+      "The NN walkthrough: long parallel halls, raking light, occasional shafts from above — architectural, not arcade"
+    ]
+  },
+
+  // ── BACKGROUNDS & TEXTURE ───────────────────────────────────────────────────
+  "backgrounds": {
+    "rules": [
+      "Subtle film grain overlay (~3% opacity) on the entire viewport — fights the digital flatness",
+      "Rain texture on the window pane in the desk scene; never globally",
+      "Bloom on warm lamp light, cooler bloom on monitor glow — they should not match",
+      "Volumetric haze in the city scene to give buildings atmosphere",
+      "Never use noise as a 'design flourish' — only as atmospheric depth"
+    ]
+  },
+
+  // ── SCENE-SPECIFIC SPECS ────────────────────────────────────────────────────
+  "scenes": {
+    "night_desk": {
+      "camera": "first-person at desk height, slight tilt down, FOV 50°",
+      "lighting": "warm desk lamp (key), cool monitor glow (fill), city ambient (rim)",
+      "audio": "lo-fi at 0.3 gain, distant city hum, occasional rain intensify, mech keyboard if user types"
+    },
+    "voxel_city": {
+      "camera": "free fly, constrained orbit around city core, slow drift baseline",
+      "lighting": "indigo night sky, cyan voxel glow, individual amber/green/red building lights",
+      "audio": "ambient pad keyed to index direction, VIX-driven bass, trade-event ticks (mixed low)"
+    },
+    "nn_walkthrough": {
+      "camera": "first-person walk, head-bob disabled, FOV 60°",
+      "lighting": "directional cool from above + soft fill, individual neuron point lights warm",
+      "audio": "long sustained tones, sparse, reverent — no rhythm section"
+    }
+  },
+
+  // ── PERFORMANCE BUDGET ──────────────────────────────────────────────────────
+  "performance": {
+    "fps_target_desktop": 60,
+    "fps_target_mobile": 45,
+    "initial_js_kb_max": 200,
+    "lcp_seconds_max": 2.5,
+    "lighthouse_perf_min": 85,
+    "rules": [
+      "Lazy-load each scene; do not preload Layer 3 from Layer 1",
+      "Use instanced meshes for the voxel city (one draw call per building type)",
+      "Reuse geometries and materials; clone with new transforms",
+      "Texture atlases over individual textures; KTX2/Basis compression where possible",
+      "Cap pixel ratio at 2 even on retina; offer a 'high fidelity' opt-in toggle"
+    ]
+  },
+
+  // ── ACCESSIBILITY ───────────────────────────────────────────────────────────
+  "a11y": {
+    "rules": [
+      "All critical paths reachable by keyboard with visible focus states (amber outline, 2px)",
+      "All content also available in a non-3D fallback route (`/text`) for screen readers and no-WebGL clients",
+      "Audio is OFF by default; toggle is the most prominent UI element on first paint",
+      "prefers-reduced-motion strips camera moves, ambient drift, and bloom pulses",
+      "Color contrast: paper text on bg-night ≥ 7:1; amber on bg-night ≥ 4.5:1 (verify)"
+    ]
+  },
+
+  // ── ANTI-PATTERNS (HARD NO) ─────────────────────────────────────────────────
+  "anti_patterns": [
+    "Inter, Roboto, Arial, or system-ui as a primary typeface",
+    "Purple-to-pink gradients, indigo-to-cyan gradients, any 'modern SaaS' gradient",
+    "Glass-morphism panels (backdrop-blur on translucent white)",
+    "Skeuomorphic 'realistic glow' that tries to look like a hardware screen",
+    "Auto-playing audio on first paint (audio is opt-in, period)",
+    "Mouse-trailing particles, custom cursors that aren't justified by the metaphor",
+    "Scroll-jacking that disables native scroll speed",
+    "Hero text that scales with scroll (parallax type)",
+    "'Hi, I'm [name]' as a primary headline",
+    "Skill bars, percentage proficiencies, technology logo grids",
+    "Light mode toggle",
+    "Cookie banners (no tracking → no banner)",
+    "Loading screens with rotating tips (just show a quiet progress)"
+  ]
+}

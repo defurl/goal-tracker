@@ -1,0 +1,36 @@
+/* Departure Mono hover label floating above a desk object (Checkpoint B 1.11).
+   Lowercase, wide-tracked, faint panel backing so it reads on the dark scene. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--signal-amber);
+  background: rgba(10, 15, 26, 0.78);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.focusableButton {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.focusableButton:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--signal-amber);
+  outline-offset: 4px;
+  border-radius: 4px;
+  background: rgba(10, 15, 26, 0.4);
+}
+

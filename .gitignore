@@ -1,0 +1,44 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# environment — never commit real keys
+.env
+.env*.local
+!.env.example
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+.supabase/
+
+# test output (transient — scene captures under captures/ ARE tracked,
+# per design-system/10-tech-stack.md: they are the visual review record)
+coverage/
+playwright-report/
+test-results/
+
+# tooling / editor
+.vercel
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# os
+.DS_Store
+Thumbs.db
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
