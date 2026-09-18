@@ -16,7 +16,8 @@
     "lint:colors": "node scripts/lint-colors.ts",
     "bundle:check": "node scripts/bundle-check.ts",
     "prepare": "husky",
-    "capture:states": "node scripts/capture-states.ts"
+    "capture:states": "node scripts/capture-states.ts",
+    "lighting:test": "node scripts/lighting-test.ts"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.1.0",
