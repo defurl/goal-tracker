@@ -7,14 +7,16 @@
 ## Start of next session
 
 **State:** Phase 0 complete. Phase 1 track A has the room, all seven desk
-objects, the window, and all four atmosphere layers — bloom, dust motes, film
-grain, window rain. **The lighting acceptance test reads TRUE on all five
-criteria with post-processing both on and off.** Track B untouched.
+objects, the window, all four atmosphere layers, and **monitor 1 wired end to
+end** — hover label, click, camera glide, back. The lighting acceptance test
+reads TRUE on all five criteria with post-processing both on and off. Track B
+untouched.
 
-**Next step:** step 5 of `design-system/12-habit-tracker-adaptation.md` §7 —
-port `InteractiveObject` and wire hover labels and ONE focus pose end to end
-before building the rest. The bonsai, wall tracker and monitor textures stay
-behind the gate.
+**Next step:** wrap the remaining objects in `InteractiveObject` now that the
+shape is proven, and build the DOM detail panel the focus poses are composed
+around (a right-hand slide-in at ~480 px, never a centred modal —
+08-interaction-grammar.md §5). The bonsai, wall tracker and monitor textures
+stay behind the gate.
 
 Port objects from `design-system/references/source-extracts/objects/`; do not
 reinvent the geometry — but read what you port. The phone extract carries the
@@ -40,14 +42,50 @@ pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .nex
 4. **The window is outside the rest-pose frustum by about 2 degrees.**
    04-room-spec.md §4 says the opening is placed "so it peeks past the
    monitors' right edge"; at `REST_POSE` with FOV 50 it does not appear at all.
-   The window is reachable through its focus pose, and the right third of the
-   frame is consequently dark rather than cool. Owner decision: widen the FOV,
-   move the rest pose, or accept it.
+   Owner decision: widen the FOV, move the rest pose, or accept it.
 5. The window frame shows two bright bars along the top and bottom of the
    opening. They survive every glass tint, so they are the frame geometry
-   catching light, not the pane. Cosmetic, and invisible at rest.
+   catching light, not the pane. Cosmetic, invisible at rest.
+6. **The ported focus poses do not satisfy their own composition rule.**
+   `cameraPoses.ts` states that every focus pose puts its object LEFT of centre
+   because the detail panel takes ~480 px on the right. Rendered, `monitor1`
+   fills the frame centre — any panel would occlude it. The notebook, phone and
+   headphones poses also target the portfolio's placements, not ours. All need
+   re-framing against a render, ideally once the panel exists to frame against.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-18 — the interaction grammar, and monitor 1 end to end
+
+`InteractiveObject` ported and one object wired, which is what the build order
+asks for before the other six get the same treatment. Verified in the browser
+rather than by inspection — all four paths:
+
+| path | result |
+|---|---|
+| pointer hover | label "daily challenge" appears above the monitor |
+| keyboard focus | same label; `aria-label` reads "daily challenge" |
+| Enter / click | camera glides to the focus pose, label suppressed |
+| back button / Escape | camera returns, hidden focus target comes back |
+
+Two deliberate departures from the extract:
+
+- **Labels are suppressed on an open PANEL, not on any focus.** The extract
+  used `focus !== null`; §1 of the grammar says `panelIsOpen`. A glide-only
+  object such as the window has no panel and should not blank every other
+  label for the duration of its glide.
+- **The back control ships now, with the first wired object**, not later with
+  the panels. Without it a focus glide is one-way. It lives in the route shell,
+  not the scene, so it works the instant the camera moves and cannot pull
+  three.js into the shell chunk.
+
+**Found while verifying:** the ported focus poses do not satisfy the
+composition rule written directly above them — the focused monitor fills the
+frame centre rather than sitting left of it, where a ~480 px right-hand panel
+would occlude it. Not fixed here: the right time to re-frame them is against a
+real panel. Carried as debt item 6.
 
 ---
 
