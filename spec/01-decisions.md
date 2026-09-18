@@ -18,9 +18,10 @@
 ## Decisions
 
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
-both documents left. D-14 to D-19 settle the questions the spec pass raised.
+both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
+that was wrong in the source proposal.
 
-All nineteen are **LOCKED**. There are no open questions.
+All twenty are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -390,6 +391,52 @@ dialects and two sets of error semantics to map — real cost, before any eviden
 the fallback is needed. The curated fallback array already covers the
 user-facing failure case, which is the one that matters. The interface means
 adding Gemini later is an afternoon, not a refactor.
+
+---
+
+### D-20 · Monitor 1 emissive range is 1.1 → 1.4, not 0.6 → 1.4 — **LOCKED**
+
+**Correction**, found 2026-09-18 while verifying the spec against
+`../design-system/06-materials.md` directly rather than through doc 12's
+citation of it.
+
+`12-habit-tracker-adaptation.md` §3.1 originally proposed mapping challenge
+completion onto emissive intensity `0.6 → 1.4`, and that number propagated into
+five documents. It is wrong in two ways.
+
+**The floor is too low.** The primary monitor's shipped baseline is
+`SIGNAL_AMBER_DIM @ 1.2`, luminance ~0.12 (`06-materials.md`, and
+`05-lighting-rig.md` §5 names that figure as one of three the bloom pass must
+catch). Bloom thresholds at `luminanceThreshold 0.1`. Scaling down to 0.6 puts
+luminance near 0.06 — **below the threshold, so the screen stops blooming
+entirely.** Since an uncompleted challenge is the normal state for most of any
+given day, the room would spend most of its time with a flat, unglowing primary
+monitor, dimmer than the secondary at 1.0. That inverts the warm/cool hierarchy
+`05-lighting-rig.md` §3 is built on, and it is a visible regression from the
+portfolio look rather than a BBE design choice.
+
+**The ceiling collides with the hover lift.** `08-interaction-grammar.md` §2
+lifts emissive to `base * 1.2` on hover. At a completed 1.4 that is 1.68, past
+the 1.4 ceiling in `06-materials.md` rule 3, where bloom smears.
+
+**Decision.**
+
+| | value |
+|---|---|
+| Challenge incomplete | **1.1** — above the bloom threshold with margin, just under the portfolio baseline |
+| Challenge complete | **1.4** — the band ceiling |
+| Hover | `Math.min(base * 1.2, 1.4)` |
+
+If lighting acceptance criterion 1 fails at 1.4 — the lamp pool must remain the
+brightest area in frame — **lower the ceiling, never the floor.** The floor is
+load-bearing for bloom; the ceiling is only the size of the reward.
+
+**A note on the size of that reward.** 1.1 → 1.4 is a smaller delta than 0.6 →
+1.4, and that is consistent with the 5 % rule in `04-room-spec.md` §6: state
+shifts the environment by a barely-perceptible amount, noticed after twenty
+minutes rather than instantly. The monitor is the ambient signal. The legible
+reward for completing a challenge is the points, the wall-grid cell and the
+bonsai — not the screen.
 
 ---
 

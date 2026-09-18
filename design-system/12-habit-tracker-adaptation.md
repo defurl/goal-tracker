@@ -30,7 +30,7 @@ What changes is **what sits on the desk and what the state means.**
 
 | portfolio object | position | habit tracker role | change required |
 |---|---|---|---|
-| Monitor 1 "primary" | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card — title, 2-minute prompt, source article. Emissive amber intensity tied to challenge completion (0.6 → 1.4). | keep geometry; canvas texture driven from store |
+| Monitor 1 "primary" | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card — title, 2-minute prompt, source article. Emissive amber intensity tied to challenge completion (1.1 → 1.4; see §3.1). | keep geometry; canvas texture driven from store |
 | Monitor 2 "terminal" | `[0.5, 0.27, -0.4]` | **Goal Dashboard** — goals list with progress and target dates. Cool analytical register suits reviewing progress. | keep geometry; cool emissive stays |
 | Lamp | `[-0.95, …]` | unchanged — key light, the room's anchor | none |
 | Plant | `[-0.8, 0, 0.1]` | **retired; replaced by bonsai task tree.** Same position, new geometry. Capped at 0.35 m — never occludes monitor 1. | plant mesh removed; tree mesh at same coords |
@@ -56,7 +56,9 @@ processed.
 
 - Canvas texture driven from the store (not `<Html>`): challenge title in
   **Fraunces italic**, 2-minute prompt in **Departure Mono**, faint source URL at bottom.
-- **Completion → emissive intensity.** Challenge done maps from 0.6 → 1.4.
+- **Completion → emissive intensity.** Challenge done maps from **1.1 → 1.4**.
+  (Corrected 2026-09-18 from the 0.6 → 1.4 originally proposed here — 0.6 falls
+  below the bloom threshold. See `../spec/01-decisions.md` D-20.)
   When you complete today's challenge, the monitor literally warms the room more.
   That is the reward loop, and it costs nothing extra.
 - The DOM panel (on click) shows the full extract, AI-generated micro-action,
@@ -188,7 +190,7 @@ for every ambient state signal in the new app.
 |---|---|---|
 | time of day | window sky plane | table keyed on morning / day / dusk / night |
 | weather (optional) | window rain density | drop count 0 → 18 |
-| today's completion % | monitor 1 emissive intensity | 0.6 → 1.4 |
+| today's completion % | monitor 1 emissive intensity | 1.1 → 1.4 |
 | streak length | tree leaf count (instanced) | additive only |
 | today's cell | wall tracker instance colour | `SIGNAL_AMBER` |
 

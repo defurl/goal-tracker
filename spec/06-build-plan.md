@@ -195,7 +195,7 @@ the room is most likely to break.
 
 | # | Task | Feature |
 |---|---|---|
-| 3.1 | Monitor 1 canvas texture + emissive 0.6→1.4. **Verify criterion 1 at 1.4**; cap at 1.2 if the lamp pool loses primacy | F1 |
+| 3.1 | Monitor 1 canvas texture + emissive 1.1→1.4 (D-20), hover lift clamped to 1.4. **Verify criterion 1 at 1.4**; lower the ceiling if the lamp pool loses primacy | F1 |
 | 3.2 | Phone import panel + screen emissive during extraction | F1 |
 | 3.3 | Monitor 2 canvas texture — goals + SVG timeline | F4 |
 | 3.4 | Notebook journal panel + AI Insight block | F3 |

@@ -162,7 +162,7 @@ lerps; nothing pops.** Under `prefersReducedMotion`, every lerp snaps (`k = 1`).
 
 | Store value | Surface | Mapping | Lerp |
 |---|---|---|---|
-| `challenge.complete` | Monitor 1 emissive intensity | `false → 0.6`, `true → 1.4` | `k = 0.05` |
+| `challenge.complete` | Monitor 1 emissive intensity | `false → 1.1`, `true → 1.4` (D-20) | `k = 0.05` |
 | `challenge.actionText` | Monitor 1 canvas texture | redraw on change | n/a — discrete |
 | `importing` | Phone screen emissive colour | `VOXEL_GLOW_SOFT → SIGNAL_AMBER_DIM` | `k = 0.08` |
 | `points.leafCount` | Bonsai `InstancedMesh` count | one leaf per unit | 900 ms reveal per leaf |

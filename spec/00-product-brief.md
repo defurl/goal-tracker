@@ -96,7 +96,7 @@ brief stands alone.
 
 | Object | Position | BBE role |
 |---|---|---|
-| Monitor 1 "primary" (amber) | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card. Emissive 0.6 → 1.4 on completion. |
+| Monitor 1 "primary" (amber) | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card. Emissive 1.1 → 1.4 on completion. |
 | Monitor 2 "terminal" (cyan) | `[0.5, 0.27, -0.4]` | **Goal Dashboard.** Goals with progress and target dates. |
 | Phone | `[0.7, 0, -0.1]` | **Article Import.** URL → AI extraction → challenge. |
 | Notebook | `[-0.4, 0, 0.05]` | **Smart Journal.** Mood, tags, opt-in AI reflection. |

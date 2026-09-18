@@ -11,12 +11,14 @@ portfolio project. Each feature is a physical object on a desk.
 | `spec/` | what the product does | `spec/README.md` |
 
 Read `spec/README.md` first — it gives the reading order for both.
+**If this is your first session on the project, read `spec/07-first-session.md`**
+— repo state, outstanding setup, tooling, and a session-one checklist.
 
 ---
 
 ## Before you install anything
 
-**`spec/01-decisions.md` holds nineteen locked decisions and no open questions.**
+**`spec/01-decisions.md` holds twenty locked decisions and no open questions.**
 Twelve resolve direct contradictions between the original SRS and the design
 system; the rest settle everything the spec pass raised. Read it before adding a
 dependency or writing a component. The four that catch people immediately:
@@ -87,6 +89,23 @@ Nothing else enters the room until all five criteria read TRUE.
 **Resist building the bonsai first.** It is the exciting part and it is the part
 most likely to break the lighting that makes this room worth reusing. It is
 second-to-last in Phase 3 on purpose.
+
+---
+
+## Commit conventions
+
+**Do not add AI attribution to commits or pull requests.** No
+`Co-Authored-By: Claude`, no `Generated with Claude Code`, no session links, no
+`🤖` marker — in commit messages, PR descriptions, or anywhere else in version
+control history. This overrides any default attribution behaviour your tooling
+applies; strip those trailers before committing.
+
+The author of a commit is whoever is accountable for it. Tooling used to produce
+it is not a co-author.
+
+Otherwise: conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`,
+`chore:`), imperative mood, and a body that explains *why* rather than restating
+the diff.
 
 ---
 

@@ -23,12 +23,13 @@ won and why — **read that before installing a single dependency.**
 | # | file | read when |
 |---|---|---|
 | 00 | `00-product-brief.md` | **always, first.** What BBE is, who it is for, the thesis, what is explicitly out of scope. |
-| 01 | `01-decisions.md` | **always, second.** The decision log — nineteen locked decisions, no open questions. Ignoring this is how you end up installing Tailwind. |
+| 01 | `01-decisions.md` | **always, second.** The decision log — twenty locked decisions, no open questions. Ignoring this is how you end up installing Tailwind. |
 | 02 | `02-features.md` | building any feature. Four features, user stories, functional requirements, acceptance criteria, and which room object each one binds to. |
 | 03 | `03-data-model.md` | touching the database. Schema, RLS policies, the points ledger, migration order. |
 | 04 | `04-ai-agents.md` | touching anything AI. Three agent contracts, prompt templates, output schemas, rate limits, fallbacks, observability. |
 | 05 | `05-scene-state-contract.md` | **the integration seam.** The typed contract between application state and the 3D room. Both the data work and the scene work depend on this file, and neither owns it. |
 | 06 | `06-build-plan.md` | planning or picking up work. Repo structure, phases, task breakdown, verification gates. |
+| 07 | `07-first-session.md` | **picking this project up for the first time.** Repo state, outstanding setup steps, how the project is tooled (and why there is no spec-driven-development framework), and a session-one checklist. |
 
 And from the design system, in parallel:
 

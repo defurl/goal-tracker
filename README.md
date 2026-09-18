@@ -75,4 +75,8 @@ cp .env.example .env.local   # then fill it in
 
 ## License
 
-Not yet chosen.
+[MIT](LICENSE) — code and documentation alike, including `design-system/`.
+
+The room's geometry, lighting rig, palette and interaction grammar are
+documented here in full and are reusable under the same terms. If you build
+something from them, an attribution link is welcome but not required.

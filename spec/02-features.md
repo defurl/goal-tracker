@@ -77,10 +77,20 @@ not a drei `<Html>` element. An HTML element pretending to be a screen breaks
 the moment the camera tilts. Title in Fraunces italic, prompt body in Departure
 Mono, faint source URL at the bottom.
 
-Completion maps to emissive intensity `0.6 → 1.4`, lerped, staying inside the
-0.4–1.4 band from `../design-system/06-materials.md`. **Verify lighting
-acceptance criterion 1 at 1.4** — the lamp pool must still be the brightest area
-in frame. If it is not, cap at 1.2 (`12-habit-tracker-adaptation.md` §4).
+Completion maps to emissive intensity **`1.1 → 1.4`**, lerped. The floor is 1.1,
+not the 0.6 doc 12 originally proposed: monitor 1's portfolio baseline is
+`SIGNAL_AMBER_DIM @ 1.2` (luminance ~0.12) and the bloom pass thresholds at 0.10,
+so anything below ~1.0 stops blooming altogether and the screen goes flat for the
+whole of an ordinary uncompleted day. See `01-decisions.md` D-20.
+
+**The hover lift must be clamped.** `../design-system/08-interaction-grammar.md`
+§2 lifts emissive by `base * 1.2` on hover; at a completed 1.4 that reaches 1.68,
+past the 1.4 band ceiling in `06-materials.md` where bloom smears. Use
+`Math.min(base * 1.2, 1.4)`.
+
+**Verify lighting acceptance criterion 1 at 1.4** — the lamp pool must still be
+the brightest area in frame. If it is not, lower the ceiling rather than the
+floor (`12-habit-tracker-adaptation.md` §4).
 
 The Phone brightens its screen emissive while extraction runs (~1.3 s), lerping
 from `VOXEL_GLOW_SOFT` toward `SIGNAL_AMBER_DIM`, then monitor 1's texture
