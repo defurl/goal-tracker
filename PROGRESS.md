@@ -28,6 +28,8 @@ do not exist at this point in the order.
 Track B (data foundation) is untouched: it needs a Supabase project, and
 `06-build-plan.md` §4 forbids one agent holding both tracks.
 
+Phase 0 is now fully discharged — all five star artefacts exist.
+
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
 
@@ -49,6 +51,41 @@ off-palette hex into `styles/` and fails if `lint:colors` passes.
 ---
 
 ## Session log
+
+### 2026-09-18 — the two missing Phase 0 artefacts, and an atomic-commit rule
+
+`CLAUDE.md` now requires small atomic commits with proportionate messages. The
+Phase 1 track A commit bundled six independent pieces behind a message long
+enough to be a session report — immutable, unrevertable in parts, and nobody
+re-reads it. Findings belong here, where they can be corrected.
+
+**All five star artefacts from `06-build-plan.md` §1 now exist.** The two that
+were missing:
+
+- **`lib/growth.ts`** — `leafCountForPoints`, the single derivation of leaves
+  from points (spec/05 §4). Verified monotonic across 0..12000. The cap doubles
+  as the bonsai's `InstancedMesh` count, which is what makes the curve
+  asymptotic rather than unbounded. Thresholds stay **PROPOSED**.
+- **`scripts/capture-states.ts`** — five states captured into `captures/local/`.
+  Playwright defaults to `chrome-headless-shell`, which has no reliable WebGL
+  and returns black frames; the script forces `channel: 'chromium'` with ANGLE
+  on SwiftShader so it also works on a CI box with no GPU.
+
+The capture script fails on any 4xx/5xx or page error, with the URL attached —
+a bare "failed to load resource" is unactionable. One allowed exception, and it
+is temporary: the Departure Mono 404. **Delete that entry when the font lands.**
+
+**A gotcha worth not rediscovering:** `pnpm build` and `next dev` share the
+`.next` directory, so building while the dev server is live leaves it serving
+500s (`Cannot find module './600.js'`). It cost a wrong diagnosis — the capture
+script's canvas-size timeout looked like an R3F measurement bug and was a broken
+server. Stop the dev server before building, or clear the build directory.
+
+**Not run in CI yet.** `capture:states` needs a server on :3000. Wiring it needs
+a CI step that builds, starts, waits, captures and uploads — worth doing, not
+done.
+
+---
 
 ### 2026-09-18 — Phase 1 track A: the empty room, and the gate it does not pass
 
@@ -103,7 +140,7 @@ the point the build order runs it. Either the test is re-scoped for the empty
 room, or the gate moves to after the object pass. **Not resolving this in code:**
 raising it, per CLAUDE.md.
 
-**Also owed from Phase 0, and missed.** `06-build-plan.md` §1 marks five
+**Also owed from Phase 0, and missed — since shipped, see the entry above.** `06-build-plan.md` §1 marks five
 artefacts ★ and says ship all five in Phase 0. `lint-colors.ts`,
 `bundle-check.ts` and `scene/lighting.ts` exist. **`scripts/capture-states.ts`
 and `lib/growth.ts` do not.** The Phase 0 task list (0.1–0.8) does not mention
