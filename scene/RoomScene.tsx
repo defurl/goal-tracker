@@ -31,6 +31,7 @@ import {
 } from './lighting';
 import { BG_NIGHT, GLOW_COOL, GLOW_COOL_SOFT, LAMP_WARM } from '../lib/style/colors';
 import { CameraRig } from './CameraRig';
+import { Effects } from './Effects';
 import { RoomShell } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
@@ -155,6 +156,7 @@ export function RoomScene() {
       <DustMotes />
 
       <CameraRig />
+      <Effects />
     </>
   );
 }
