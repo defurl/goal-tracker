@@ -40,6 +40,7 @@ import { FOOT_DROP, Monitor } from './objects/Monitor';
 import { Mug } from './objects/Mug';
 import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
+import { Headphones } from './objects/Headphones';
 
 export function RoomScene() {
   // Spot lights aim at an Object3D, so the targets must be stable across
@@ -146,6 +147,7 @@ export function RoomScene() {
       <Mug position={[-0.62, 0, 0.06]} />
       <Notebook position={[0.78, 0, 0.02]} />
       <Phone position={[0.45, 0, 0.2]} />
+      <Headphones position={[-0.42, 0, 0.14]} />
 
       <CameraRig />
     </>
