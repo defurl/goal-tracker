@@ -35,6 +35,7 @@ import { RoomShell } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
+import { KEYBOARD_DROP, Keyboard } from './objects/Keyboard';
 import { FOOT_DROP, Monitor } from './objects/Monitor';
 
 export function RoomScene() {
@@ -136,6 +137,9 @@ export function RoomScene() {
         variant="terminal"
         hoverId="monitor2"
       />
+      {/* The keyboard is what the monitor fill lights aim at, so it sits
+          between them and forward of the screens. */}
+      <Keyboard position={[0.1, KEYBOARD_DROP, 0.1]} />
 
       <CameraRig />
     </>
