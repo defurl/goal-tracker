@@ -42,6 +42,7 @@ import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
 import { Headphones } from './objects/Headphones';
 import { Window } from './objects/Window';
+import { DustMotes } from './objects/DustMotes';
 
 export function RoomScene() {
   // Spot lights aim at an Object3D, so the targets must be stable across
@@ -151,6 +152,7 @@ export function RoomScene() {
       <Headphones position={[-0.42, 0, 0.14]} />
       {/* Right wall, in the opening RoomShell is built around (04-room-spec §6). */}
       <Window position={[1.98, 1.0, -0.3]} rotation={[0, -Math.PI / 2, 0]} />
+      <DustMotes />
 
       <CameraRig />
     </>
