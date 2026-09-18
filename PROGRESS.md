@@ -42,6 +42,31 @@ off-palette hex into `styles/` and fails if `lint:colors` passes.
 
 ## Session log
 
+### 2026-09-18 — lint:colors now holds the three mirrors together
+
+`design-spec.jsonc` is the palette contract and nothing read it. `lint:colors`
+was regex-based and the build never parses the file, so a stray comma in the
+third mirror passed every check silently — the only reason the last edit was
+caught is that it was validated by hand.
+
+`lint:colors` now does three things instead of one:
+
+1. hex literals outside the palette (as before)
+2. **`design-spec.jsonc` parses** — comments stripped with a state machine
+   rather than a regex, because the file contains URLs and a naive `//` strip
+   corrupts the thing it is validating
+3. **the three mirrors agree** — same token set, same values. This is
+   `01-color-palette.md`'s "change one, change all three", which until now was
+   a sentence with nothing behind it. It catches a missing token, not just a
+   changed one.
+
+All three failure modes are asserted in CI rather than assumed: the
+`colour-lint-self-test` job breaks each one on purpose and fails if the lint
+passes. Verified locally too — a malformed JSONC reports its line and column, and
+a one-character drift in `tokens.css` names which mirror disagrees.
+
+---
+
 ### 2026-09-18 — thesis, mood anchors, data-red closed
 
 All three items carried as "outstanding" in the previous entry were already
@@ -79,10 +104,8 @@ has something to re-check.
 twenty-one, no open questions. That was the second doc inconsistency logged in
 the Phase 0 entry; both are now cleared.
 
-**Known gap, not fixed:** nothing validates that `design-spec.jsonc` is
-parseable. `lint:colors` is regex-based and the build never reads the file, so a
-syntax error in the third mirror would pass every check silently. Worth folding
-a parse into `lint:colors` or `lint:contract`.
+**Known gap — fixed in the next entry:** nothing validated that
+`design-spec.jsonc` was parseable.
 
 ---
 

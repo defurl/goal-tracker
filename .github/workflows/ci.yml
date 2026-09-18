@@ -44,7 +44,8 @@ jobs:
         run: pnpm bundle:check
 
   # The colour lint is the one piece of the visual contract that is mechanical
-  # rather than remembered. If it ever stops failing, it stops being worth having.
+  # rather than remembered. If it ever stops failing, it stops being worth having,
+  # so each of its three failure modes is asserted rather than assumed.
   colour-lint-self-test:
     runs-on: ubuntu-latest
     steps:
@@ -69,6 +70,29 @@ jobs:
             echo "::error::lint:colors passed on an off-palette hex literal. The colour lint is broken."
             exit 1
           fi
-          echo "lint:colors correctly rejected #BADA55"
+          rm styles/__lint_fixture.css
+          echo "ok — off-palette hex rejected"
+
+      - name: A malformed design-spec.jsonc must fail the build
+        run: |
+          cp design-spec.jsonc /tmp/design-spec.bak
+          sed -i 's|"--bg-void":\( *\)"#05070D",|"--bg-void":\1"#05070D",,|' design-spec.jsonc
+          if pnpm lint:colors; then
+            echo "::error::lint:colors passed on an unparseable design-spec.jsonc."
+            exit 1
+          fi
+          cp /tmp/design-spec.bak design-spec.jsonc
+          echo "ok — malformed JSONC rejected"
+
+      - name: A mirror that drifts must fail the build
+        run: |
+          cp styles/tokens.css /tmp/tokens.bak
+          sed -i 's|--signal: #F2A0B5;|--signal: #F2A0B6;|' styles/tokens.css
+          if pnpm lint:colors; then
+            echo "::error::lint:colors passed while the three palette mirrors disagreed."
+            exit 1
+          fi
+          cp /tmp/tokens.bak styles/tokens.css
+          echo "ok — mirror drift rejected"
         env:
           FORCE_COLOR: '0'
