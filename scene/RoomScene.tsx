@@ -137,9 +137,10 @@ export function RoomScene() {
       />
       {/* x and z track MONITOR_FILL_POSITIONS so the cool fill appears to come
           off the screens. y puts the stand feet on the desk. */}
-      {/* The one object wired end to end so far: hover label, click, camera
-          glide, back. The rest get the same wrapper once this shape is proven
-          (12-habit-tracker-adaptation.md §7 step 5). */}
+      {/* Every panel-opening object carries the same wrapper. The headphones
+          are a TOGGLE, not a panel (08-interaction-grammar.md §4), and the
+          focus mode they toggle does not exist yet, so they stay unwrapped
+          rather than getting a wrapper that leads nowhere. */}
       <InteractiveObject
         id="monitor1"
         label="daily challenge"
@@ -152,17 +153,38 @@ export function RoomScene() {
           hoverId="monitor1"
         />
       </InteractiveObject>
-      <Monitor
-        position={[MONITOR_FILL_POSITIONS[1][0], 0, MONITOR_FILL_POSITIONS[1][2]]}
-        variant="terminal"
-        hoverId="monitor2"
-      />
+      <InteractiveObject
+        id="monitor2"
+        label="goals"
+        labelPosition={[MONITOR_FILL_POSITIONS[1][0], 0.64, MONITOR_FILL_POSITIONS[1][2]]}
+        onActivate={() => focusObject('monitor2', 'goals')}
+      >
+        <Monitor
+          position={[MONITOR_FILL_POSITIONS[1][0], 0, MONITOR_FILL_POSITIONS[1][2]]}
+          variant="terminal"
+          hoverId="monitor2"
+        />
+      </InteractiveObject>
       {/* The keyboard is what the monitor fill lights aim at, so it sits
           between them and forward of the screens. */}
       <Keyboard position={[0.1, KEYBOARD_DROP, 0.1]} />
       <Mug position={[-0.62, 0, 0.06]} />
-      <Notebook position={[0.78, 0, 0.02]} />
-      <Phone position={[0.45, 0, 0.2]} />
+      <InteractiveObject
+        id="notebook"
+        label="journal"
+        labelPosition={[0.66, 0.18, 0.15]}
+        onActivate={() => focusObject('notebook', 'journal')}
+      >
+        <Notebook position={[0.66, 0, 0.15]} />
+      </InteractiveObject>
+      <InteractiveObject
+        id="phone"
+        label="article import"
+        labelPosition={[0.45, 0.18, 0.2]}
+        onActivate={() => focusObject('phone', 'import')}
+      >
+        <Phone position={[0.45, 0, 0.2]} />
+      </InteractiveObject>
       <Headphones position={[-0.42, 0, 0.14]} />
       {/* Right wall, in the opening RoomShell is built around (04-room-spec §6). */}
       <Window position={[1.98, 1.0, -0.3]} rotation={[0, -Math.PI / 2, 0]} />
