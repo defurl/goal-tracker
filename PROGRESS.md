@@ -1,24 +1,59 @@
 # Progress
 
-> **This is the session-to-session state handoff.** `spec/07-first-session.md` §2
-> names it as the one genuine gap that no document currently covers: without it,
-> session three re-derives what session two decided.
->
-> Chosen mechanism: **this file**, over GitHub issues per build-plan task. It
-> works offline, it is reviewed in the same diff as the code it describes, and it
-> costs one edit per session. If the project later grows past what a single file
-> can carry, move to issues — but move, do not run both.
->
-> **Update it at the end of every session**, before the last commit. An entry
-> records what changed, what is now true, and what the next session should pick
-> up. It is not a changelog: `git log` is the changelog. This is the state.
+> **Resume here.** This file is the session-to-session handoff
+> (`spec/07-first-session.md` §2). Read this block, then the newest session entry
+> below; the rest is history. Update it at the end of every session.
+
+## Start of next session
+
+**State:** Phase 0 complete bar one item. Phase 1 track A has the empty room
+built — shell, Ando detailing, desk, the five-light rig, camera rig, both
+perf/motion hooks. Track B untouched.
+
+**Approved next step** (owner, 2026-09-18): build the Phase 1 desk objects —
+lamp, monitors, keyboard, mug, notebook, phone, headphones — then run the
+five-item lighting acceptance test. `06-build-plan.md` carries the dated
+amendment moving the gate there; the gate's authority is unchanged, so the
+bonsai, wall tracker and monitor textures stay behind it.
+
+Build in the order `design-system/12-habit-tracker-adaptation.md` §7 gives, and
+screenshot after each step with `pnpm capture:states`. The extracted originals
+for every object are in `design-system/references/source-extracts/objects/` —
+port them, do not reinvent the geometry.
+
+**Commands**
+```
+pnpm dev                 # then pnpm capture:states in another terminal
+pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build
+pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .next
+```
+
+**Carried debt, none blocking**
+1. `public/fonts/DepartureMono-Regular.woff2` is not vendored — the only
+   incomplete part of Phase 0 task 0.4. Free, not on npm, so nothing installs
+   it. `capture:states` has a temporary allowance for its 404; delete that when
+   the file lands.
+2. `capture:states` is not in CI — it needs a build/start/wait/capture/upload
+   step.
+3. Track B needs a Supabase project created before it can start.
+
+**Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## Why this file and not GitHub issues
+
+Chosen over one issue per build-plan task: it works offline, it is reviewed in
+the same diff as the code it describes, and it costs one edit per session. If
+the project outgrows a single file, move to issues — but move, do not run both.
+`git log` is the changelog; this is the state.
 
 ---
 
 ## Where the project is
 
-**Phase 1 track A — the empty room is built; the lighting gate is NOT signed
-off.** Shell, Ando detailing, desk, the five-light rig, the camera rig and the
+**Phase 1 track A — the empty room is built; the lighting gate is not signed
+off yet.** Shell, Ando detailing, desk, the five-light rig, the camera rig and the
 two perf/motion hooks are in. Two of the five acceptance criteria measurably
 pass, one is marginal and two cannot be evaluated yet — see the entry below.
 **Per the build plan, no object enters the room until all five read TRUE**, so
@@ -28,7 +63,11 @@ do not exist at this point in the order.
 Track B (data foundation) is untouched: it needs a Supabase project, and
 `06-build-plan.md` §4 forbids one agent holding both tracks.
 
-Phase 0 is now fully discharged — all five star artefacts exist.
+**Phase 0, verified task by task against `06-build-plan.md`:** 0.1–0.3 and
+0.5–0.8 complete, the gate passes both halves, and all five star artefacts
+exist. **0.4 is the one incomplete item** — the `@fontsource` faces are wired
+but self-hosted Departure Mono is not vendored. Nothing is blocked on it: the
+`@font-face` and fallback chain are in place, so only the mono face is wrong.
 
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
