@@ -6,17 +6,22 @@
 
 ## Start of next session
 
-**State:** Phase 0 complete. Phase 1 track A has the room, all seven desk
-objects, the window, all four atmosphere layers, and **monitor 1 wired end to
-end** — hover label, click, camera glide, back. The lighting acceptance test
-reads TRUE on all five criteria with post-processing both on and off. Track B
-untouched.
+**State:** Phase 0 complete. **Phase 1 track A is complete through A2.5** —
+room, seven desk objects, window, four atmosphere layers, `InteractiveObject`,
+per-object focus poses, and the DOM overlay shell with its 480 px right-hand
+panel. Four objects are wired end to end. Track B untouched.
 
-**Next step:** wrap the remaining objects in `InteractiveObject` now that the
-shape is proven, and build the DOM detail panel the focus poses are composed
-around (a right-hand slide-in at ~480 px, never a centred modal —
-08-interaction-grammar.md §5). The bonsai, wall tracker and monitor textures
-stay behind the gate.
+**A2 gate, all items TRUE**
+- lighting acceptance test passes with post-processing on and off
+- every interactive object is tab-reachable and activates with Enter/Space
+- labels suppress while a panel is open
+- monitor 2 no longer floats above the desk (`04-room-spec.md` §1)
+
+**Next step:** A2.6 is done (`capture:states`), so track A's remaining work is
+Phase 3 mechanics, which sit behind the gate. The useful next moves are
+**wiring `capture:states` and `lighting:test` into CI** (debt 1) and
+**starting track B**, which needs a Supabase project (debt 2). Do not let one
+agent hold both tracks (`06-build-plan.md` §4).
 
 Port objects from `design-system/references/source-extracts/objects/`; do not
 reinvent the geometry — but read what you port. The phone extract carries the
@@ -44,16 +49,47 @@ pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .nex
    monitors' right edge"; at `REST_POSE` with FOV 50 it does not appear at all.
    Owner decision: widen the FOV, move the rest pose, or accept it.
 5. The window frame shows two bright bars along the top and bottom of the
-   opening. They survive every glass tint, so they are the frame geometry
-   catching light, not the pane. Cosmetic, invisible at rest.
-6. **The ported focus poses do not satisfy their own composition rule.**
-   `cameraPoses.ts` states that every focus pose puts its object LEFT of centre
-   because the detail panel takes ~480 px on the right. Rendered, `monitor1`
-   fills the frame centre — any panel would occlude it. The notebook, phone and
-   headphones poses also target the portfolio's placements, not ours. All need
-   re-framing against a render, ideally once the panel exists to frame against.
+   opening — frame geometry catching light, not the pane. Invisible at rest.
+6. **The notebook reads as a silhouette when focused.** Its cover is `BG_PANEL`
+   on a dark desk, which is inside the matte band 06-materials.md §1 allows, so
+   this is a design call rather than a bug. Moving it into the monitor fill
+   helped and was not enough. Owner decision: a lighter cover token, or accept
+   that the panel carries the content.
+7. The headphones and the window are not wrapped. The headphones are a toggle
+   and the focus mode they flip does not exist; the window is glide-only and
+   out of frame at rest. Both need their mechanic before a wrapper means
+   anything.
+8. The focus poses are checked at 16:10. The panel is a fixed 480 px, so it
+   takes a larger share of a narrow window — the composition should be
+   re-checked at around 1024 px wide.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-19 — the overlay shell, and track A through A2.5
+
+The detail panel landed, and with it the thing the focus poses are composed
+around, so the re-framing flagged last session became possible and was done.
+
+- **The composition rule was being violated by the ported poses.** With a real
+  480 px panel open, monitor 1 filled the frame centre and the panel covered
+  half of it. Every pose is now derived from its object's actual position and
+  checked against an open panel. The trick is that the camera looks to the
+  RIGHT of its object; targeting the object is what centred them.
+- **Monitor 2's float is fixed**, as the A2 gate asks. The portfolio bug was a
+  hardcoded offset from a formula that disagreed with the code. The offset is
+  now derived inside the component from the instance's own height, so there is
+  no number for a caller to get wrong. The group tilt had the same effect from
+  another cause — it rotated the foot and lifted its edge — so only the panel
+  tilts now.
+- **The notebook is legible-ish and no better.** It sits outside both light
+  pools; moving it into the monitor fill helped and was not enough. Its cover
+  token is within the material band the spec allows, so this is a design call,
+  not a defect. Carried as debt 6.
+
+A commit was split after the fact: the object wiring had been staged together
+with the pose re-framing under a message that only described the latter.
 
 ---
 
