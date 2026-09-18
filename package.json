@@ -15,7 +15,8 @@
     "lint": "eslint . --max-warnings=0",
     "lint:colors": "node scripts/lint-colors.ts",
     "bundle:check": "node scripts/bundle-check.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "capture:states": "node scripts/capture-states.ts"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.1.0",
@@ -43,6 +44,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
+    "playwright": "^1.63.0",
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.8.1"
   }
