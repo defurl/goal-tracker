@@ -35,6 +35,7 @@ import { RoomShell } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
+import { FOOT_DROP, Monitor } from './objects/Monitor';
 
 export function RoomScene() {
   // Spot lights aim at an Object3D, so the targets must be stable across
@@ -122,6 +123,18 @@ export function RoomScene() {
       <Lamp
         position={[LAMP_POSITION[0], 0, LAMP_POSITION[2]]}
         bulbPosition={[LAMP_POSITION[0], LAMP_POSITION[1], LAMP_POSITION[2]]}
+      />
+      {/* x and z track MONITOR_FILL_POSITIONS so the cool fill appears to come
+          off the screens. y puts the stand feet on the desk. */}
+      <Monitor
+        position={[MONITOR_FILL_POSITIONS[0][0], FOOT_DROP, MONITOR_FILL_POSITIONS[0][2]]}
+        variant="primary"
+        hoverId="monitor1"
+      />
+      <Monitor
+        position={[MONITOR_FILL_POSITIONS[1][0], FOOT_DROP, MONITOR_FILL_POSITIONS[1][2]]}
+        variant="terminal"
+        hoverId="monitor2"
       />
 
       <CameraRig />
