@@ -34,6 +34,7 @@ import { CameraRig } from './CameraRig';
 import { RoomShell } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
+import { Lamp } from './objects/Lamp';
 
 export function RoomScene() {
   // Spot lights aim at an Object3D, so the targets must be stable across
@@ -116,6 +117,12 @@ export function RoomScene() {
       <RoomShell />
       <AndoWallDetails />
       <DeskSurface />
+      {/* The bulb mesh has to sit exactly where the point light is, so both
+          read LAMP_POSITION. The base sits on the desk top, y = 0. */}
+      <Lamp
+        position={[LAMP_POSITION[0], 0, LAMP_POSITION[2]]}
+        bulbPosition={[LAMP_POSITION[0], LAMP_POSITION[1], LAMP_POSITION[2]]}
+      />
 
       <CameraRig />
     </>
