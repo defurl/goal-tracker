@@ -12,15 +12,18 @@
 every design decision is judged against, and explicitly forbids reusing the
 portfolio's quant-terminal sentence. Here is BBE's:
 
-> **"The same 3 a.m. desk — but every object on it is evidence that you acted
+> **"The habit tracking desk: every object on it is evidence that you acted
 > on something you saved."**
 
-Status: **LOCKED** — ratified by the owner 2026-09-18 (`01-decisions.md` D-14).
+Status: **LOCKED** — ratified by the owner 2026-09-18, amended the same day to
+drop the time-of-day clause (`01-decisions.md` D-14).
 Judge every design proposal against this sentence; if one cannot be defended
 against it, it does not belong in the project.
 
-Why this sentence: BBE's product insight is *"knowledge stored is not knowledge
-applied."* The room's mechanic is *evidence of consistency accumulating in the
+Why this sentence: it names the desk and nothing else, because "3 a.m." imported
+the portfolio's mood along with its room. The room is still nocturnal (D-03) —
+that is a lighting fact, not the product's register. BBE's product insight is
+*"knowledge stored is not knowledge applied."* The room's mechanic is *evidence of consistency accumulating in the
 furniture.* Those are the same idea seen from two directions, which is the
 reason this room is the right shell for this product rather than an arbitrary
 skin on a habit tracker.

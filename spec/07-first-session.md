@@ -136,7 +136,7 @@ hold both tracks in a phase — see `06-build-plan.md` §4.
 
 For an agent team, the failure mode is not missing structure. It is an agent
 that reads `CLAUDE.md`, feels informed, and installs Tailwind anyway because it
-skimmed. Nineteen locked decisions in a 20 KB file is more than any single
+skimmed. Twenty-one locked decisions in a 20 KB file is more than any single
 session reliably internalises.
 
 So the question that matters is: **which decisions fail the build, and which

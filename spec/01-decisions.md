@@ -21,8 +21,7 @@ D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette.
 
-All twenty-one are **LOCKED**. One consequence of D-21 is still open: the
-thesis sentence in D-14 is being revised and its replacement is not yet written.
+All twenty-one are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -337,14 +336,19 @@ every design decision is judged against. BBE's, now ratified:
 `00-product-brief.md` §1 is updated to LOCKED. Judge design proposals against
 this sentence; if one cannot be defended against it, it does not belong.
 
-**Amendment, 2026-09-18 — under revision, replacement not yet written.** The
-owner has decided the thesis should drop the time-of-day clause and name the
-desk directly, on the grounds that "3 a.m." imports the portfolio's mood along
-with its room. The room itself stays nocturnal (D-03 is unaffected), so this is
-a change of framing, not of lighting. **Until a replacement sentence is
-ratified, D-14's sentence above remains the operative one** — a project with no
-thesis has no yardstick, which is worse than one with a slightly stale
-yardstick. Do not start Phase 1 design review against a blank.
+**Amendment, 2026-09-18 — the time clause is dropped. The operative thesis is:**
+
+> **"The habit tracking desk: every object on it is evidence that you acted on
+> something you saved."**
+
+"3 a.m." imported the portfolio's mood along with its room, and the mood is the
+part BBE is not inheriting (D-21). The room itself stays nocturnal — D-03 is
+unaffected, because that is a lighting fact rather than the product's register.
+The judgeable half of the sentence is unchanged, which is the half that does the
+work: a proposal either puts evidence of action on the desk or it does not.
+
+The sentence above supersedes the original. `00-product-brief.md` §1 and
+`design-spec.jsonc` carry it.
 
 ---
 
@@ -452,9 +456,8 @@ bonsai — not the screen.
 
 ## Open questions
 
-**One open.** The thesis sentence — see D-14's amendment note. Every other
-question raised during the spec pass has been decided; D-01 to D-21 are the
-complete set.
+**None currently open.** Every question raised during the spec pass has been
+decided; D-01 to D-21 are the complete set.
 
 Three things remain marked **PROPOSED** in other documents. They are reasoned
 defaults, not open questions — build against them, and flag them in your PR so
@@ -523,10 +526,15 @@ from the exported constants in the TypeScript mirror — deliberately not from
 every hex in the file, so that a value named in a comment cannot become an
 allowed colour by accident.
 
-**Still open under this decision:** whether `--data-red` should be deepened. It
-now sits close enough to the rose signal that live-data-negative and the accent
-may read as the same family. Green and red remain reserved for live data and are
-never UI affordances, so the collision is narrow — but it is real.
+**`--data-red` is unchanged, and the near-collision with the rose is moot.**
+It was raised because a muted red next to a rose accent would read as the same
+family. In practice BBE renders `--data-red` nowhere: every reference to it in
+this repository is either a token declaration or a rule forbidding its use to
+judge the user. D-08 deleted the negative points, D-09 resets streaks silently,
+and nothing else in the four features produces negative live data. Deepening a
+colour that never reaches a pixel would be motion without movement. **If a
+feature ever does need it, re-check it against `--signal` at that point** — the
+token stays in the palette so the check has something to check.
 
 ---
 

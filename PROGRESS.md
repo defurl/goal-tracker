@@ -17,9 +17,8 @@
 
 ## Where the project is
 
-**Phase 0 — Foundation: complete.** The gate is green. Phase 1 may start, with
-one caveat: the thesis sentence is under revision (D-14), and design review has
-no yardstick until it is settled.
+**Phase 0 — Foundation: complete.** The gate is green and there are no open
+decisions. Phase 1 may start.
 
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
@@ -42,6 +41,50 @@ off-palette hex into `styles/` and fails if `lint:colors` passes.
 ---
 
 ## Session log
+
+### 2026-09-18 — thesis, mood anchors, data-red closed
+
+All three items carried as "outstanding" in the previous entry were already
+answered by the owner; they were held open by asking for confirmation that had
+been given. Closed now.
+
+**Thesis — amended, D-14.** The time clause is dropped. Operative sentence:
+
+> "The habit tracking desk: every object on it is evidence that you acted on
+> something you saved."
+
+"3 a.m." imported the portfolio's mood along with its room, and the mood is the
+part BBE does not inherit (D-21). The room is still nocturnal — D-03 is a
+lighting fact, not a statement about the product's register. The judgeable half
+of the sentence is unchanged, which is the half that does the work. Applied to
+`spec/00-product-brief.md` §1, D-14's amendment note, and `design-spec.jsonc`.
+
+**Mood anchors — removed, not replaced.** Five of the portfolio's six survived
+the earlier pass. All six were written for a late-night quant terminal in a
+voxel city. The block is gone and `design-spec.jsonc` carries a comment saying
+why, and that anchors go back only if the owner writes them. The thesis is now
+the single register statement, which is what `00-aesthetic-thesis.md` asks for
+anyway.
+
+**`--data-red` — closed as moot, value unchanged.** Raised because a muted red
+sits close to the rose accent. In practice BBE renders it nowhere: every
+reference in the repo is a token declaration or a rule forbidding its use to
+judge the user. D-08 deleted the negative points, D-09 resets streaks silently,
+and no feature produces negative live data. Deepening a colour that never
+reaches a pixel is motion without movement. The token stays so a future feature
+has something to re-check.
+
+**Also reconciled** the decision counts that had drifted across `CLAUDE.md`,
+`spec/README.md`, `spec/07-first-session.md` and `01-decisions.md` — all now say
+twenty-one, no open questions. That was the second doc inconsistency logged in
+the Phase 0 entry; both are now cleared.
+
+**Known gap, not fixed:** nothing validates that `design-spec.jsonc` is
+parseable. `lint:colors` is regex-based and the build never reads the file, so a
+syntax error in the third mirror would pass every check silently. Worth folding
+a parse into `lint:colors` or `lint:contract`.
+
+---
 
 ### 2026-09-18 — palette adaptation (D-21)
 
@@ -80,16 +123,7 @@ and the register lock already said.
 **Gate re-run after the change** — `lint`, `lint:colors` (17 palette values),
 `typecheck`, `build`, `bundle:check` (shell 87.9 KB gz, free of three.js): green.
 
-**Outstanding — blocks nothing yet, blocks Phase 1 design review**
-
-1. **The thesis sentence.** D-14 is marked under revision: the owner wants the
-   time clause dropped. No replacement sentence is ratified, so D-14's original
-   remains operative. `spec/00-product-brief.md` §1 still carries it.
-2. **Mood anchors in `design-spec.jsonc`** still hold five of the portfolio's
-   six. They are wrong for BBE and need the owner's words, not invented ones.
-3. **`--data-red` may need deepening** — it now sits close to the rose signal.
-   Narrow problem, since green and red are reserved for live data and never
-   appear as UI affordances, but real.
+**Outstanding at the time — all three closed in the entry above.**
 
 ---
 

@@ -18,7 +18,7 @@ Read `spec/README.md` first — it gives the reading order for both.
 
 ## Before you install anything
 
-**`spec/01-decisions.md` holds twenty-one locked decisions and one open question.**
+**`spec/01-decisions.md` holds twenty-one locked decisions and no open questions.**
 Twelve resolve direct contradictions between the original SRS and the design
 system; the rest settle everything the spec pass raised. Read it before adding a
 dependency or writing a component. The four that catch people immediately:
