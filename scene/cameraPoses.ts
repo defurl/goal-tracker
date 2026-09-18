@@ -26,13 +26,20 @@ export const REST_POSE_MOBILE: CameraPose = {
  * LEFT of centre**, because the DOM detail panel slides in from the right at
  * ~480 px and would otherwise occlude it. If a panel ever comes from a different
  * edge, mirror the bias.
+ *
+ * The poses ported from the portfolio did NOT satisfy that rule here — the
+ * objects sit at different places on a wider desk, and monitor 1 filled the
+ * frame centre with the panel over half of it. Each pose below is derived from
+ * its object's actual position and then checked against a real open panel, at
+ * 16:10. The camera looks to the RIGHT of its object, which is what puts the
+ * object left of centre; targeting the object itself centres it.
  */
 export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
-  monitor1: { position: [-0.5, 0.42, 0.25], target: [-0.32, 0.34, -0.4] },
-  monitor2: { position: [0.28, 0.4, 0.25], target: [0.5, 0.32, -0.4] },
-  notebook: { position: [-0.55, 0.5, 0.45], target: [-0.4, 0.0, 0.05] },
+  monitor1: { position: [-0.65, 0.51, 0.75], target: [0.04, 0.31, -0.3] },
+  monitor2: { position: [0.15, 0.51, 0.75], target: [0.84, 0.31, -0.3] },
+  notebook: { position: [0.66, 0.43, 0.65], target: [0.89, 0.01, 0.15] },
   headphones: { position: [0.6, 0.42, 0.6], target: [0.85, 0.04, 0.15] },
-  phone: { position: [0.5, 0.42, 0.45], target: [0.7, 0.05, -0.1] },
+  phone: { position: [0.45, 0.33, 0.58], target: [0.63, 0.0, 0.2] },
   window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.3] },
   door: { position: [-0.4, 0.7, 1.2], target: [-1.4, -0.74, 0.3] },
 
