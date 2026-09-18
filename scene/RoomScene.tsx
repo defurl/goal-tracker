@@ -39,7 +39,7 @@ import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
 import { KEYBOARD_DROP, Keyboard } from './objects/Keyboard';
-import { FOOT_DROP, Monitor } from './objects/Monitor';
+import { Monitor } from './objects/Monitor';
 import { Mug } from './objects/Mug';
 import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
@@ -147,13 +147,13 @@ export function RoomScene() {
         onActivate={() => focusObject('monitor1', 'challenge')}
       >
         <Monitor
-          position={[MONITOR_FILL_POSITIONS[0][0], FOOT_DROP, MONITOR_FILL_POSITIONS[0][2]]}
+          position={[MONITOR_FILL_POSITIONS[0][0], 0, MONITOR_FILL_POSITIONS[0][2]]}
           variant="primary"
           hoverId="monitor1"
         />
       </InteractiveObject>
       <Monitor
-        position={[MONITOR_FILL_POSITIONS[1][0], FOOT_DROP, MONITOR_FILL_POSITIONS[1][2]]}
+        position={[MONITOR_FILL_POSITIONS[1][0], 0, MONITOR_FILL_POSITIONS[1][2]]}
         variant="terminal"
         hoverId="monitor2"
       />
