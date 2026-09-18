@@ -28,10 +28,12 @@
 // opening. Measured, INK_MUTED transmits the planes with no pixel above a
 // 600/765 channel sum; INK_PAPER glares and INK_FAINT goes too dark to read.
 
-import { useRef } from 'react';
-import { type MeshStandardMaterial } from 'three';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { type Group, type MeshStandardMaterial } from 'three';
 
-import { BG_PANEL, BG_VOID, GLOW_COOL_SOFT, INK_MUTED } from '../../lib/style/colors';
+import { BG_PANEL, BG_VOID, GLOW_COOL_SOFT, INK_MUTED, RAIN_STREAK } from '../../lib/style/colors';
+import { useSceneStore } from '../../lib/stores/scene';
 
 interface WindowProps {
   position: [number, number, number];
@@ -45,6 +47,70 @@ const FRAME_DEPTH = 0.06;
 
 const SKY_INTENSITY = 0.35;
 const CITY_INTENSITY = 0.55;
+
+const DROP_COUNT = 18;
+const DROP_Z = 0.012;
+
+/**
+ * Rain on the glass. 18 streaks falling 0.25-0.7 m/s and resetting at the
+ * bottom frame (04-room-spec.md §5).
+ *
+ * Under prefers-reduced-motion it is REMOVED, not slowed — ambient motion is
+ * not allowed to persist in a stilled form (03-motion.md principle 5). The
+ * component returns null, so there is nothing left to animate.
+ *
+ * Every per-drop random lives in the memo. Rolling opacity during render would
+ * reseed all 18 drops on any re-render, which flickers the whole sheet.
+ */
+function WindowRain() {
+  const reduced = useSceneStore((s) => s.prefersReducedMotion);
+  const groupRef = useRef<Group>(null);
+
+  const drops = useMemo(
+    () =>
+      Array.from({ length: DROP_COUNT }, () => ({
+        x: (Math.random() - 0.5) * (W - FRAME_T * 2.2),
+        y: (Math.random() - 0.5) * (H - FRAME_T * 2.2),
+        speed: 0.25 + Math.random() * 0.45,
+        length: 0.015 + Math.random() * 0.025,
+        opacity: 0.3 + Math.random() * 0.3,
+      })),
+    [],
+  );
+
+  useFrame((_, dt) => {
+    const group = groupRef.current;
+    if (!group) return;
+    // Read the live value: the media query can flip mid-session.
+    if (useSceneStore.getState().prefersReducedMotion) return;
+
+    const bottom = -H / 2 + FRAME_T;
+    const top = H / 2 - FRAME_T;
+    group.children.forEach((child, i) => {
+      const drop = drops[i];
+      if (!drop) return;
+      child.position.y -= drop.speed * dt;
+      if (child.position.y < bottom) {
+        child.position.y = top;
+        child.position.x = (Math.random() - 0.5) * (W - FRAME_T * 2.2);
+        drop.speed = 0.25 + Math.random() * 0.45;
+      }
+    });
+  });
+
+  if (reduced) return null;
+
+  return (
+    <group ref={groupRef}>
+      {drops.map((drop, i) => (
+        <mesh key={i} position={[drop.x, drop.y, DROP_Z]}>
+          <planeGeometry args={[0.0018, drop.length]} />
+          <meshBasicMaterial color={RAIN_STREAK} transparent opacity={drop.opacity} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
 
 export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
   const skyRef = useRef<MeshStandardMaterial>(null);
@@ -88,6 +154,8 @@ export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
           thickness={0.05}
         />
       </mesh>
+
+      <WindowRain />
 
       {/* Sky beyond */}
       <mesh position={[0, 0.25, -0.3]}>
