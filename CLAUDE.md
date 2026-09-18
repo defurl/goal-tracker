@@ -113,6 +113,21 @@ Otherwise: conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`,
 `chore:`), imperative mood, and a body that explains *why* rather than restating
 the diff.
 
+**Keep commits small and atomic — one mini-feature each, never a whole phase.**
+A commit should be the smallest change that stands on its own and leaves the
+gate green. `scene/lighting.ts` is a commit. `lib/growth.ts` is a commit. "Phase
+1 track A" is not: it is six.
+
+Keep the message proportionate to the change. State what changed and why, and
+stop — a commit body is not a design document, a measurement log or a session
+report. Findings, numbers and open questions belong in `PROGRESS.md`, where they
+can be updated; a commit message is immutable and nobody re-reads a long one.
+If the body needs sections, the commit is too big.
+
+Signs a commit is too big: the message needs more than a short paragraph or two;
+it lists more than one reason; it says "and"; it changes files that would still
+make sense apart. Split it.
+
 ---
 
 ## When something is ambiguous
