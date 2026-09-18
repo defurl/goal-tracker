@@ -39,13 +39,46 @@ function loadManifest(): Manifest {
   return JSON.parse(readFileSync(appManifest, 'utf8')) as Manifest;
 }
 
+/** Manifest paths use forward slashes; a directory walk on Windows does not. */
+function toPosix(path: string): string {
+  return path.split('\\').join('/');
+}
+
 function gzKb(file: string): number {
   const full = join(NEXT_DIR, file);
   if (!existsSync(full)) return 0;
   return gzipSync(readFileSync(full)).length / 1024;
 }
 
-/** Every emitted client chunk on disk, relative to .next. */
+/**
+ * Every .js path named anywhere in either build manifest: the app router's, and
+ * the pages router's, which still carries the framework, polyfill and _error
+ * chunks. Anything emitted but NOT named here arrived through next/dynamic.
+ *
+ * Paths are normalised to forward slashes. The manifests use them; a directory
+ * walk on Windows does not, and comparing the two raw makes every chunk look
+ * unreferenced — which inflates the scene budget instead of deflating it, but
+ * is just as wrong.
+ */
+function eagerlyReferencedChunks(): Set<string> {
+  const out = new Set<string>();
+  const collect = (value: unknown): void => {
+    if (typeof value === 'string') {
+      if (value.endsWith('.js')) out.add(toPosix(value));
+    } else if (Array.isArray(value)) {
+      value.forEach(collect);
+    } else if (value && typeof value === 'object') {
+      Object.values(value).forEach(collect);
+    }
+  };
+  for (const name of ['app-build-manifest.json', 'build-manifest.json']) {
+    const file = join(NEXT_DIR, name);
+    if (existsSync(file)) collect(JSON.parse(readFileSync(file, 'utf8')));
+  }
+  return out;
+}
+
+/** Every emitted client chunk on disk, relative to .next, forward-slashed. */
 function allBuiltChunks(): string[] {
   const root = join(NEXT_DIR, 'static', 'chunks');
   if (!existsSync(root)) return [];
@@ -55,7 +88,7 @@ function allBuiltChunks(): string[] {
     for (const entry of readdirSync(dir)) {
       const full = join(dir, entry);
       if (statSync(full).isDirectory()) walk(full);
-      else if (entry.endsWith('.js')) out.push(relative(NEXT_DIR, full));
+      else if (entry.endsWith('.js')) out.push(toPosix(relative(NEXT_DIR, full)));
     }
   };
   walk(root);
@@ -123,7 +156,14 @@ function main(): void {
   // and a dynamically imported chunk never appears under manifest.pages. Reading
   // the manifest here found nothing and reported the budget green while the
   // chunk existed on disk — a budget that matches no files always passes.
-  const sceneChunks = allBuiltChunks().filter(containsThree);
+  //
+  // The lazy payload is everything emitted that no route references: what a
+  // visitor downloads on top of the shell in order to see the room. Selecting
+  // chunks that CONTAIN three.js instead — the previous rule — quietly left out
+  // every scene dependency that is not three itself. Post-processing was 14 KB
+  // of exactly that: real scene weight, outside the budget meant to cap it.
+  const referenced = eagerlyReferencedChunks();
+  const sceneChunks = allBuiltChunks().filter((c) => !referenced.has(c));
   const sceneKb = sceneChunks.reduce((sum, c) => sum + gzKb(c), 0);
 
   if (sceneChunks.length === 0) {
