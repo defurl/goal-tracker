@@ -42,3 +42,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# The raw Departure Mono download. Only the .woff2 and the OFL licence are
+# vendored (see public/fonts/README.md); the .otf and .woff are unused, and
+# anything under public/ is served, so the extracted folder does not ship.
+public/fonts/DepartureMono-*/

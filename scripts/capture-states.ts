@@ -48,21 +48,6 @@ const STATES: SceneState[] = [
 /** Long enough for the 2200 ms camera glide plus a few settled frames. */
 const SETTLE_MS = 3000;
 
-/**
- * Requests that are allowed to 404. One entry, and it is temporary: Departure
- * Mono is free but not on npm, so nothing installs it and the @font-face 404s
- * until someone drops the .woff2 into public/fonts/ (see its README). The font
- * stack falls back, so the capture is still valid.
- *
- * **Delete this entry when the font lands.** Every other 4xx/5xx fails the
- * capture, which is the point.
- */
-const EXPECTED_MISSES = [/DepartureMono-Regular\.woff2$/];
-
-function isExpectedMiss(url: string): boolean {
-  return EXPECTED_MISSES.some((pattern) => pattern.test(url));
-}
-
 async function capture(browser: Browser, state: SceneState): Promise<void> {
   const context = await browser.newContext({
     viewport: state.viewport,
@@ -75,10 +60,11 @@ async function capture(browser: Browser, state: SceneState): Promise<void> {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
 
-  // A bare "failed to load resource" console line does not say WHICH resource,
-  // which makes a capture failure unactionable. Record the URL instead.
+  // Any 4xx/5xx fails the capture. A bare "failed to load resource" console
+  // line does not say WHICH resource, which makes that unactionable, so record
+  // the URL instead.
   page.on('response', (r) => {
-    if (r.status() >= 400 && !isExpectedMiss(r.url())) {
+    if (r.status() >= 400) {
       errors.push(`${r.status()} ${r.url()}`);
     }
   });
