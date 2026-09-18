@@ -11,6 +11,7 @@
 
 import dynamic from 'next/dynamic';
 
+import { DetailPanel } from './DetailPanel';
 import { SceneNav } from './SceneNav';
 
 const RoomCanvas = dynamic(() => import('../../scene/RoomCanvas'), { ssr: false });
@@ -20,6 +21,7 @@ export default function RoomPage() {
     <main>
       <RoomCanvas />
       <SceneNav />
+      <DetailPanel />
     </main>
   );
 }

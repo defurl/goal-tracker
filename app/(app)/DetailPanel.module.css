@@ -1,0 +1,70 @@
+/* Right-hand slide-in, ~480 px. design-system/08-interaction-grammar.md §5. */
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-2);
+
+  width: 480px;
+  max-width: calc(100vw - var(--step-4));
+  height: 100vh;
+  padding: var(--step-4) var(--step-3);
+
+  background: color-mix(in srgb, var(--bg-night) 92%, transparent);
+  border-left: 1px solid var(--ink-ghost);
+
+  animation: slide-in var(--dur-ui) var(--ease-ui);
+}
+
+/* Motion is removed, not reduced (03-motion.md principle 5). globals.css
+   collapses durations globally; this also drops the offset so the panel does
+   not flash in from the edge at 0.001 ms. */
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  color: var(--ink-paper);
+}
+
+.title:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
+}
+
+.close {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--ink-ghost);
+  padding-bottom: 0.15rem;
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.close:hover,
+.close:focus-visible {
+  color: var(--signal);
+  border-color: var(--signal-dim);
+}
