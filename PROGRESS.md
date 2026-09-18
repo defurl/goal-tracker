@@ -29,13 +29,9 @@ pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .nex
 ```
 
 **Carried debt, none blocking**
-1. `public/fonts/DepartureMono-Regular.woff2` is not vendored — the only
-   incomplete part of Phase 0 task 0.4. Free, not on npm, so nothing installs
-   it. `capture:states` has a temporary allowance for its 404; delete that when
-   the file lands.
-2. `capture:states` is not in CI — it needs a build/start/wait/capture/upload
+1. `capture:states` is not in CI — it needs a build/start/wait/capture/upload
    step.
-3. Track B needs a Supabase project created before it can start.
+2. Track B needs a Supabase project created before it can start.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
 
@@ -63,11 +59,11 @@ do not exist at this point in the order.
 Track B (data foundation) is untouched: it needs a Supabase project, and
 `06-build-plan.md` §4 forbids one agent holding both tracks.
 
-**Phase 0, verified task by task against `06-build-plan.md`:** 0.1–0.3 and
-0.5–0.8 complete, the gate passes both halves, and all five star artefacts
-exist. **0.4 is the one incomplete item** — the `@fontsource` faces are wired
-but self-hosted Departure Mono is not vendored. Nothing is blocked on it: the
-`@font-face` and fallback chain are in place, so only the mono face is wrong.
+**Phase 0 is complete**, verified task by task against `06-build-plan.md`:
+0.1–0.8 all done, the gate passes both halves, and all five star artefacts
+exist. 0.4 closed last, on 2026-09-18, when Departure Mono was vendored into
+`public/fonts/` — the `@fontsource` faces were already wired, so the only thing
+outstanding had been the self-hosted mono face.
 
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
@@ -111,8 +107,8 @@ were missing:
   on SwiftShader so it also works on a CI box with no GPU.
 
 The capture script fails on any 4xx/5xx or page error, with the URL attached —
-a bare "failed to load resource" is unactionable. One allowed exception, and it
-is temporary: the Departure Mono 404. **Delete that entry when the font lands.**
+a bare "failed to load resource" is unactionable. There are no exceptions: the
+one that existed, for the Departure Mono 404, went away with the font.
 
 **A gotcha worth not rediscovering:** `pnpm build` and `next dev` share the
 `.next` directory, so building while the dev server is live leaves it serving
@@ -318,7 +314,7 @@ and the register lock already said.
 | 0.1 Next.js 14 App Router, TypeScript 5.6, pnpm, `.nvmrc` | `package.json`, `tsconfig.json`, `next.config.mjs` |
 | 0.2 all three palette mirrors | `styles/tokens.css`, `lib/style/colors.ts`, `design-spec.jsonc` |
 | 0.3 `lint:colors` + CI wiring | `scripts/lint-colors.ts`, `.github/workflows/ci.yml` |
-| 0.4 fonts | `app/layout.tsx` (Fraunces, Geist) — Departure Mono outstanding, see below |
+| 0.4 fonts | `app/layout.tsx` (Fraunces, Geist), `public/fonts/` (Departure Mono, vendored) |
 | 0.5 `globals.css` | `styles/globals.css` |
 | 0.6 empty zustand stores | `lib/stores/{app,interaction,scene}.ts` |
 | 0.7 ESLint 9 flat config, Husky, commitlint | `eslint.config.mjs`, `.husky/`, `commitlint.config.mjs` |
@@ -326,16 +322,11 @@ and the register lock already said.
 
 **Outstanding — carry into the next session**
 
-1. **`public/fonts/DepartureMono-Regular.woff2` is not in the repo.** It is free
-   but not on npm, so nothing installs it. The `@font-face` and the fallback
-   chain are already wired, so the build is green without it — but the mono face
-   is wrong until someone downloads it. See `public/fonts/README.md`. This is
-   the only incomplete part of task 0.4.
-2. **`lint:contract`** — `spec/07-first-session.md` §3 recommends extending the
+1. **`lint:contract`** — `spec/07-first-session.md` §3 recommends extending the
    colour lint to cover D-01 (no Tailwind/shadcn), D-02 (no Inter), D-03 (no
    light mode) and D-05 (no hardcoded ms). Roughly sixty lines, and it converts
    four documented rules into build failures. Open as a follow-up, as §3 asks.
-3. **`.claude/commands/lighting-test` and `/dod`** — `spec/07-first-session.md`
+2. **`.claude/commands/lighting-test` and `/dod`** — `spec/07-first-session.md`
    §2 asks for the two repeatable rituals to be invocable by name rather than
    skimmed. Cheap; not yet written.
 
