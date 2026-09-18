@@ -30,7 +30,7 @@ What changes is **what sits on the desk and what the state means.**
 
 | portfolio object | position | habit tracker role | change required |
 |---|---|---|---|
-| Monitor 1 "primary" | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card — title, 2-minute prompt, source article. Emissive amber intensity tied to challenge completion (1.1 → 1.4; see §3.1). | keep geometry; canvas texture driven from store |
+| Monitor 1 "primary" | `[-0.3, 0.306, -0.4]` | **Daily Challenge.** Today's action card — title, 2-minute prompt, source article. Emissive intensity tied to challenge completion (1.1 → 1.4; see §3.1). | keep geometry; canvas texture driven from store |
 | Monitor 2 "terminal" | `[0.5, 0.27, -0.4]` | **Goal Dashboard** — goals list with progress and target dates. Cool analytical register suits reviewing progress. | keep geometry; cool emissive stays |
 | Lamp | `[-0.95, …]` | unchanged — key light, the room's anchor | none |
 | Plant | `[-0.8, 0, 0.1]` | **retired; replaced by bonsai task tree.** Same position, new geometry. Capped at 0.35 m — never occludes monitor 1. | plant mesh removed; tree mesh at same coords |
@@ -50,7 +50,7 @@ What changes is **what sits on the desk and what the state means.**
 
 ### 3.1 The Daily Challenge on Monitor 1 / Goal Dashboard on Monitor 2
 
-**Monitor 1 (amber, warm)** is the first thing you look at. In BBE that is the
+**Monitor 1 (warm)** is the first thing you look at. In BBE that is the
 Daily Challenge — today's action card, generated from an article the AI agent
 processed.
 
@@ -104,7 +104,7 @@ Build notes:
   which makes the derivation legitimate.
 - **The watering event is the one place a sharp sub-second motion is allowed**
   (`--dur-tick`, 180 ms). Per `03-motion.md`, fast motion is reserved for
-  live-data events; a completion is exactly that. A brief `--voxel-glow` droplet
+  live-data events; a completion is exactly that. A brief `--glow-cool` droplet
   falling into the pot, then 900 ms of growth. Nothing else.
 - **Never shrink, wilt, brown or drop leaves.** See `11-anti-patterns.md`.
   Absence of growth is already the signal. Decay is punishment.
@@ -126,8 +126,8 @@ Proposal:
 - A **7 × N grid of small emissive quads** (a week per row), each ~4 cm,
   inset 2–3 mm proud of the wall exactly like the joint lines are.
 - **Three states, all in existing tokens:** unfilled = `INK_GHOST`, non-emissive
-  (reads as another tie-rod detail); filled = `SIGNAL_AMBER_DIM` emissive at
-  ~0.5; today = `SIGNAL_AMBER` emissive at ~0.9, the only cell bright enough for
+  (reads as another tie-rod detail); filled = `SIGNAL_DIM` emissive at
+  ~0.5; today = `SIGNAL` emissive at ~0.9, the only cell bright enough for
   bloom to catch.
 - Use an `InstancedMesh` with per-instance colour. A year is 365 quads — one
   draw call, negligible cost.
@@ -146,8 +146,8 @@ a physical entry point in the room. The phone is that portal.
 - **Narrative fit:** you see something interesting on your phone; you put it on
   the desk (click it); it becomes a challenge. The object and the action agree.
 - **In-world feedback:** phone screen emissive brightens while
-  `content_extraction_agent` runs (~1.3 s), lerping from `VOXEL_GLOW_SOFT`
-  toward `SIGNAL_AMBER_DIM`. When done, monitor 1's canvas texture updates.
+  `content_extraction_agent` runs (~1.3 s), lerping from `GLOW_COOL_SOFT`
+  toward `SIGNAL_DIM`. When done, monitor 1's canvas texture updates.
 - **DOM panel:** URL input, status line ("extracting…" / "ready"), extracted
   challenge preview. Submits on Enter. Panel closes on completion — it is
   transient, not a settings screen.
@@ -192,7 +192,7 @@ for every ambient state signal in the new app.
 | weather (optional) | window rain density | drop count 0 → 18 |
 | today's completion % | monitor 1 emissive intensity | 1.1 → 1.4 |
 | streak length | tree leaf count (instanced) | additive only |
-| today's cell | wall tracker instance colour | `SIGNAL_AMBER` |
+| today's cell | wall tracker instance colour | `SIGNAL` |
 
 Everything lerps. Nothing pops. The numbers live in the DOM.
 

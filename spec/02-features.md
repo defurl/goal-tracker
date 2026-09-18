@@ -16,7 +16,7 @@ surface is not done.
 The anchor feature. Converts external content into a concrete, immediately
 executable action.
 
-**Room binding:** Monitor 1 (amber, `[-0.3, 0.306, -0.4]`) displays today's
+**Room binding:** Monitor 1 (warm, `[-0.3, 0.306, -0.4]`) displays today's
 challenge. The Phone (`[0.7, 0, -0.1]`) is the import portal.
 
 ### User stories
@@ -79,7 +79,7 @@ Mono, faint source URL at the bottom.
 
 Completion maps to emissive intensity **`1.1 → 1.4`**, lerped. The floor is 1.1,
 not the 0.6 doc 12 originally proposed: monitor 1's portfolio baseline is
-`SIGNAL_AMBER_DIM @ 1.2` (luminance ~0.12) and the bloom pass thresholds at 0.10,
+`SIGNAL_DIM @ 1.2` (luminance ~0.12) and the bloom pass thresholds at 0.10,
 so anything below ~1.0 stops blooming altogether and the screen goes flat for the
 whole of an ordinary uncompleted day. See `01-decisions.md` D-20.
 
@@ -93,7 +93,7 @@ the brightest area in frame. If it is not, lower the ceiling rather than the
 floor (`12-habit-tracker-adaptation.md` §4).
 
 The Phone brightens its screen emissive while extraction runs (~1.3 s), lerping
-from `VOXEL_GLOW_SOFT` toward `SIGNAL_AMBER_DIM`, then monitor 1's texture
+from `GLOW_COOL_SOFT` toward `SIGNAL_DIM`, then monitor 1's texture
 updates. Its panel is transient: URL field, status line, extracted preview,
 closes on completion.
 
@@ -166,8 +166,8 @@ unbounded (a bonsai with 4,000 leaves is a shrub). Growth uses `--dur-reveal`
 **The wall grid.** A 7 × N grid of ~4 cm emissive quads, one per day, inset 2–3 mm
 proud of the wall exactly as the Ando joint lines are, centred on a panel centre
 (**not** on a joint line, which would straddle the groove). Three states, all
-existing tokens: unfilled `INK_GHOST` non-emissive; filled `SIGNAL_AMBER_DIM`
-emissive ~0.5; today `SIGNAL_AMBER` emissive ~0.9. **Only the current day is
+existing tokens: unfilled `INK_GHOST` non-emissive; filled `SIGNAL_DIM`
+emissive ~0.5; today `SIGNAL` emissive ~0.9. **Only the current day is
 bright enough for bloom to catch** — a full row of bright cells breaks the rig.
 At rest pose this must read as *texture, not data*; the legible version is the
 DOM panel on click.
@@ -216,9 +216,9 @@ Low-friction daily journaling with mood tagging and opt-in AI reflection.
 **FR-3.5 colour mapping.** The SRS specified green / yellow / orange. Those are
 not available for this purpose — `../design-system/01-color-palette.md` reserves
 `--data-green` and `--data-red` for live data and forbids using them as UI
-state. **PROPOSED** replacement, on the amber scale that the wall grid already
-uses: positive = `SIGNAL_AMBER` at higher emissive, neutral = `SIGNAL_AMBER_DIM`,
-negative = `INK_GHOST` with a faint `VOXEL_GLOW_SOFT` tint. Reads as warmth
+state. **PROPOSED** replacement, on the signal scale that the wall grid already
+uses: positive = `SIGNAL` at higher emissive, neutral = `SIGNAL_DIM`,
+negative = `INK_GHOST` with a faint `GLOW_COOL_SOFT` tint. Reads as warmth
 present or warmth absent — consistent with the room's own language, and it
 avoids colour-coding a person's feelings as good or bad.
 

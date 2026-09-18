@@ -1,4 +1,11 @@
-/* Tokens mirror design-spec.jsonc. If you change a value here, change it there too. */
+/* Tokens mirror design-spec.jsonc and lib/style/colors.ts. Change one, change all
+   three. BBE's palette, not the portfolio's — design-system/tokens/ is the
+   extracted archive, not a fourth mirror. See spec/01-decisions.md D-21.
+
+   Accent tokens are named by ROLE, not hue: --signal is whatever the accent is.
+   --signal-dim and --glow-cool-soft drive emissive surfaces against a bloom
+   threshold of 0.1 — see the luminance note in lib/style/colors.ts before
+   changing either. */
 :root {
   /* Color */
   --bg-void: #05070D;
@@ -6,21 +13,21 @@
   --bg-panel: #121826;
   --bg-panel-2: #1A2230;
 
-  --ink-paper: #EDE6D3;
+  --ink-paper: #F0F2F5;
   --ink-muted: #9BA3B4;
   --ink-faint: #5A6275;
   --ink-ghost: #2E3340;
 
-  --signal-amber: #FFA630;
-  --signal-amber-hot: #FFD27A;
-  --signal-amber-dim: #7A4F18;
+  --signal: #F2A0B5;
+  --signal-hot: #F8C3D0;
+  --signal-dim: #8E4A5C;
 
   --data-green: #4ADE80;
   --data-red: #F87171;
   --data-neutral: #9BA3B4;
 
-  --voxel-glow: #5BC8FF;
-  --voxel-glow-soft: #2A6B8A;
+  --glow-cool: #7FC4D8;
+  --glow-cool-soft: #3F6B77;
 
   --lamp-warm: #FFB661;
   --rain-streak: #3A4555;

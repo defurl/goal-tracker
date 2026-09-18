@@ -164,9 +164,9 @@ lerps; nothing pops.** Under `prefersReducedMotion`, every lerp snaps (`k = 1`).
 |---|---|---|---|
 | `challenge.complete` | Monitor 1 emissive intensity | `false → 1.1`, `true → 1.4` (D-20) | `k = 0.05` |
 | `challenge.actionText` | Monitor 1 canvas texture | redraw on change | n/a — discrete |
-| `importing` | Phone screen emissive colour | `VOXEL_GLOW_SOFT → SIGNAL_AMBER_DIM` | `k = 0.08` |
+| `importing` | Phone screen emissive colour | `GLOW_COOL_SOFT → SIGNAL_DIM` | `k = 0.08` |
 | `points.leafCount` | Bonsai `InstancedMesh` count | one leaf per unit | 900 ms reveal per leaf |
-| `dayGrid[]` | Wall grid instance colours | `0 → INK_GHOST` (non-emissive) · `1 → SIGNAL_AMBER_DIM` @ 0.5 · `2 → SIGNAL_AMBER` @ 0.9 | `k = 0.05` |
+| `dayGrid[]` | Wall grid instance colours | `0 → INK_GHOST` (non-emissive) · `1 → SIGNAL_DIM` @ 0.5 · `2 → SIGNAL` @ 0.9 | `k = 0.05` |
 | `goals[].progress` | Monitor 2 canvas texture | redraw on change | n/a — discrete |
 | `journal.todayLogged` | Notebook emissive | `false → 0.0`, `true → 0.15` (barely lit) | `k = 0.05` |
 | `localHour` | Window sky plane `{color, intensity}` | lookup table, §5 | `k = 0.05` |
@@ -222,8 +222,8 @@ from `../design-system/04-room-spec.md` §6, rewired from market state to time.
 ```ts
 const SKY_STATES: Record<Band, { color: string; intensity: number }> = {
   night:   { color: BG_NIGHT,        intensity: 0.8 },   // 22–05
-  dawn:    { color: VOXEL_GLOW_SOFT, intensity: 1.1 },   // 05–08
-  day:     { color: VOXEL_GLOW_SOFT, intensity: 1.4 },   // 08–17
+  dawn:    { color: GLOW_COOL_SOFT, intensity: 1.1 },   // 05–08
+  day:     { color: GLOW_COOL_SOFT, intensity: 1.4 },   // 08–17
   dusk:    { color: LAMP_WARM,       intensity: 1.0 },   // 17–20
   evening: { color: BG_NIGHT,        intensity: 0.9 },   // 20–22
 };
@@ -234,7 +234,7 @@ Even `day` keeps the interior dark — the window brightens, the room does not.
 The rim light may rise slightly with it; if it does, re-run the lighting
 acceptance test at both extremes.
 
-The city plane below keeps its portfolio behaviour: base `VOXEL_GLOW_SOFT`,
+The city plane below keeps its portfolio behaviour: base `GLOW_COOL_SOFT`,
 lerped **only 5 %** toward a target. Do not repurpose it for BBE state — it is
 doing atmospheric work and a second signal there would compete with the window.
 

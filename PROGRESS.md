@@ -17,7 +17,9 @@
 
 ## Where the project is
 
-**Phase 0 — Foundation: complete.** The gate is green. Phase 1 may start.
+**Phase 0 — Foundation: complete.** The gate is green. Phase 1 may start, with
+one caveat: the thesis sentence is under revision (D-14), and design review has
+no yardstick until it is settled.
 
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
@@ -40,6 +42,57 @@ off-palette hex into `styles/` and fails if `lint:colors` passes.
 ---
 
 ## Session log
+
+### 2026-09-18 — palette adaptation (D-21)
+
+**Decided by the owner.** Adapt the inherited 3D scene, not the inherited mood.
+The room stays nocturnal (option 1 of `12-habit-tracker-adaptation.md` §6, so
+D-03 is untouched and the lighting rig and its acceptance test carry over
+unchanged). The register stays simplicity — no reward moment, which is what D-05
+and the register lock already said.
+
+**Done**
+
+- Six palette values and five token names changed. `--signal*` replaces
+  `--signal-amber*`, `--glow-cool*` replaces `--voxel-glow*`. Accent tokens are
+  now named by role, so the next hue change is a value edit, not a repo sweep.
+- Swept the three live mirrors, `styles/globals.css`, four spec documents and
+  `design-system/12-*`. Left `design-system/` docs 00–11 and `tokens/` as the
+  frozen extraction, with a superseding pointer at the top of `01-color-palette.md`
+  and a one-line note on the label CSS in `02-typography.md` (that block is meant
+  to be copied verbatim and would otherwise paste a dead variable).
+- `CLAUDE.md` non-negotiable 3 now points at the live mirrors rather than
+  `design-system/tokens/`, and carries the luminance rule.
+
+**Two things the lint caught, both worth knowing**
+
+1. **The first rose fell below the bloom threshold.** `--signal-dim` drives
+   monitor 1's emissive and the bloom pass thresholds at 0.1. The first
+   candidate measured 0.074 at emissive 1.1 — the monitor would have sat flat
+   for most of every day. That is D-20's failure in a new hue. Shipped value
+   measures 0.126. The rule is now written into D-21 and into the header of
+   `lib/style/colors.ts`.
+2. **`lint:colors` was allowlisting its own documentation.** `loadPalette` read
+   every hex in `colors.ts`, so a rejected candidate mentioned in a *comment*
+   silently became an allowed colour. It now matches only
+   `export const NAME = '#RRGGBB'`. Verified: the rejected value is rejected.
+
+**Gate re-run after the change** — `lint`, `lint:colors` (17 palette values),
+`typecheck`, `build`, `bundle:check` (shell 87.9 KB gz, free of three.js): green.
+
+**Outstanding — blocks nothing yet, blocks Phase 1 design review**
+
+1. **The thesis sentence.** D-14 is marked under revision: the owner wants the
+   time clause dropped. No replacement sentence is ratified, so D-14's original
+   remains operative. `spec/00-product-brief.md` §1 still carries it.
+2. **Mood anchors in `design-spec.jsonc`** still hold five of the portfolio's
+   six. They are wrong for BBE and need the owner's words, not invented ones.
+3. **`--data-red` may need deepening** — it now sits close to the rose signal.
+   Narrow problem, since green and red are reserved for live data and never
+   appear as UI affordances, but real.
+
+---
+
 
 ### 2026-09-18 — Phase 0
 

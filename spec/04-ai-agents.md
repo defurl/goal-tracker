@@ -210,7 +210,7 @@ described, it would persist indefinitely.
 "AI Insight" block drops its usual structure. No "strength you showed" heading,
 no framing that reads as achievement, no gamification of any kind attached to
 that entry. Summary, then the grounding action, then the resource block. Quiet
-typography, no amber highlight, nothing that draws a celebratory eye.
+typography, no accent highlight, nothing that draws a celebratory eye.
 
 **It does not escalate.** No notification to anyone, no email, no flag to an
 operator. BBE has no one on call and pretending otherwise would be worse than

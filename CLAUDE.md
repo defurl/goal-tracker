@@ -18,7 +18,7 @@ Read `spec/README.md` first — it gives the reading order for both.
 
 ## Before you install anything
 
-**`spec/01-decisions.md` holds twenty locked decisions and no open questions.**
+**`spec/01-decisions.md` holds twenty-one locked decisions and one open question.**
 Twelve resolve direct contradictions between the original SRS and the design
 system; the rest settle everything the spec pass raised. Read it before adding a
 dependency or writing a component. The four that catch people immediately:
@@ -26,6 +26,8 @@ dependency or writing a component. The four that catch people immediately:
 - **No Tailwind, no shadcn/ui.** CSS Modules + `tokens.css`. (D-01)
 - **No Inter.** Fraunces / Geist / Departure Mono. (D-02)
 - **No light mode, no theme toggle.** The room is permanently nocturnal. (D-03)
+- **The accent is a dusty rose, not amber, and the tokens are named by role.**
+  `--signal`, not `--signal-amber`. The lamp stays warm. (D-21)
 - **No bento grid, no card grids.** Objects are the navigation. (D-04)
 
 ---
@@ -37,8 +39,12 @@ From `design-system/` — full versions in that folder:
 1. `y = 0` is the desk-top surface; the floor is at `y = −0.74`.
 2. Five light roles / six light instances only. The desk lamp is the sole
    shadow-caster. Do not add a light.
-3. No hex literals outside the token palette (`design-system/tokens/`). The
-   colour lint ships in Phase 0, before any scene code.
+3. No hex literals outside the token palette. The three live mirrors are
+   `styles/tokens.css`, `lib/style/colors.ts` and `design-spec.jsonc`;
+   `design-system/tokens/` is the archived extraction, not a mirror (D-21).
+   The colour lint ships in Phase 0, before any scene code — it already has.
+   A token that drives an emissive surface must be luminance-checked against
+   the 0.1 bloom threshold before it changes (D-20, D-21).
 4. Motion is slow (600–2200 ms); ambient motion is always on and **fully
    removed** — not reduced — under `prefers-reduced-motion`.
 5. Objects are the navigation. No menus. One shared interaction wrapper.

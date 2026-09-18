@@ -80,6 +80,9 @@ The single most reused type treatment. Copy it verbatim:
 }
 ```
 
-Lowercase, amber, mono, wide-tracked, on a translucent night-tinted plate with
+**In BBE the token is `--signal`, not `--signal-amber`, and it is a dusty rose
+(`../spec/01-decisions.md` D-21). Copy the block, then swap that one line.**
+
+Lowercase, accent-coloured, mono, wide-tracked, on a translucent night-tinted plate with
 a ghost border. No rounded corners. No blur. It reads as a terminal annotation
 floating in a physical space, which is exactly the register the room wants.

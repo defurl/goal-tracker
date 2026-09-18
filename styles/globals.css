@@ -104,7 +104,7 @@ time,
 }
 
 a {
-  color: var(--signal-amber);
+  color: var(--signal);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
 }
@@ -112,7 +112,7 @@ a {
 /* 01-color-palette.md, contrast targets: 2px solid amber, offset 2px, always
    visible. Never remove this without a replacement that is equally loud. */
 :focus-visible {
-  outline: 2px solid var(--signal-amber);
+  outline: 2px solid var(--signal);
   outline-offset: 2px;
 }
 

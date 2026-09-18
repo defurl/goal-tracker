@@ -19,9 +19,10 @@
 
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
-that was wrong in the source proposal.
+that was wrong in the source proposal. D-21 replaces the inherited palette.
 
-All twenty are **LOCKED**. There are no open questions.
+All twenty-one are **LOCKED**. One consequence of D-21 is still open: the
+thesis sentence in D-14 is being revised and its replacement is not yet written.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -336,6 +337,15 @@ every design decision is judged against. BBE's, now ratified:
 `00-product-brief.md` §1 is updated to LOCKED. Judge design proposals against
 this sentence; if one cannot be defended against it, it does not belong.
 
+**Amendment, 2026-09-18 — under revision, replacement not yet written.** The
+owner has decided the thesis should drop the time-of-day clause and name the
+desk directly, on the grounds that "3 a.m." imports the portfolio's mood along
+with its room. The room itself stays nocturnal (D-03 is unaffected), so this is
+a change of framing, not of lighting. **Until a replacement sentence is
+ratified, D-14's sentence above remains the operative one** — a project with no
+thesis has no yardstick, which is worse than one with a slightly stale
+yardstick. Do not start Phase 1 design review against a blank.
+
 ---
 
 ### D-15 · "Roll Again" is capped at 3 per day — **LOCKED** (owner-approved 2026-09-18)
@@ -405,7 +415,7 @@ completion onto emissive intensity `0.6 → 1.4`, and that number propagated int
 five documents. It is wrong in two ways.
 
 **The floor is too low.** The primary monitor's shipped baseline is
-`SIGNAL_AMBER_DIM @ 1.2`, luminance ~0.12 (`06-materials.md`, and
+`SIGNAL_DIM @ 1.2`, luminance ~0.12 (`06-materials.md`, and
 `05-lighting-rig.md` §5 names that figure as one of three the bloom pass must
 catch). Bloom thresholds at `luminanceThreshold 0.1`. Scaling down to 0.6 puts
 luminance near 0.06 — **below the threshold, so the screen stops blooming
@@ -442,8 +452,9 @@ bonsai — not the screen.
 
 ## Open questions
 
-**None currently open.** Every question raised during the spec pass has been
-decided; D-01 to D-19 are the complete set.
+**One open.** The thesis sentence — see D-14's amendment note. Every other
+question raised during the spec pass has been decided; D-01 to D-21 are the
+complete set.
 
 Three things remain marked **PROPOSED** in other documents. They are reasoned
 defaults, not open questions — build against them, and flag them in your PR so
@@ -452,13 +463,72 @@ they get a real decision once there is something concrete to look at:
 | item | where | why it is not locked yet |
 |---|---|---|
 | Bonsai leaf thresholds (20 / 45 / 70 / 100, then every 100) | `05-scene-state-contract.md` §4 | needs a real points history to tune against. The function signature is what matters; the curve is adjustable in one place. |
-| Journal mood colour mapping on the amber scale | `02-features.md` FR-3.5 | replaces the SRS's green/yellow/orange, which the palette reserves for live data. Wants a look at the calendar view before locking. |
+| Journal mood colour mapping on the signal scale | `02-features.md` FR-3.5 | replaces the SRS's green/yellow/orange, which the palette reserves for live data. Wants a look at the calendar view before locking. |
 | Phase task sizing in the build plan | `06-build-plan.md` | sequencing is locked; estimates are not, and should not be treated as commitments. |
 
 To raise a new question: add it here with a recommendation, get a decision, then
 promote it to a numbered D-entry. Do not leave a question un-numbered and
 un-owned — that is how it gets silently resolved in code by whoever hits it first.
 
+
+### D-21 · Palette: a dusty-rose signal, role-named tokens — **LOCKED** (owner-approved 2026-09-18)
+
+**Context.** Not an SRS conflict. The palette in `../design-system/01-color-palette.md`
+was extracted from a portfolio whose subject was a late-night quant terminal in a
+voxel city. BBE inherits that room's *geometry, materials and lighting* on
+purpose (D-06, D-11), but its mood came along uninvited. The owner's direction:
+adapt the scene, not the mood — a brighter, more natural register, and no
+reliance on gradients or synthetic-looking colour.
+
+**Decision.** Six values change and five tokens are renamed. Everything else in
+the palette is untouched.
+
+| token | was | now | why |
+|---|---|---|---|
+| `--ink-paper` | warm paper tone | near-white | the owner's "white"; stops short of pure white, which smears under bloom |
+| `--signal` | terminal amber | dusty rose | the new soul colour |
+| `--signal-hot` | amber highlight | rose highlight | follows `--signal` |
+| `--signal-dim` | faded amber | muted rose | raised deliberately — see the bloom note below |
+| `--glow-cool` | saturated cyan | desaturated cyan | "natural, not synthetic"; it is on screen constantly as the monitor fill |
+| `--glow-cool-soft` | — | luminance-matched | matched to within 1% of the old value so monitor 2 keeps blooming |
+
+**Renames.** `--signal-amber*` → `--signal*`, `--voxel-glow*` → `--glow-cool*`,
+and the same in the TypeScript mirror. Accent tokens are now named by **role,
+not hue**, so the next hue change costs a value edit rather than a repo sweep.
+"voxel" was portfolio vocabulary that meant nothing here.
+
+**The lamp stays warm, and this is part of the decision.** `--lamp-warm` is
+unchanged. The lamp is a physical bulb, not brand colour; it is the sole
+shadow-caster, and it is what makes lighting acceptance criteria 1, 3 and 4 true.
+A rose key light would tint the concrete and collapse the warm-left / cool-right
+gradient that `05-lighting-rig.md` §3 is built on. The *signal* changed; the
+*light* did not.
+
+**Emissive tokens must be luminance-checked, not eyeballed.** `--signal-dim` and
+`--glow-cool-soft` drive emissive surfaces and the bloom pass thresholds at
+`luminanceThreshold 0.1`. The first rose proposed for `--signal-dim` measured
+0.074 at emissive 1.1 — **below the threshold**, which would have left monitor 1
+flat and unglowing for most of every day. That is D-20's failure, rediscovered
+six months later in a different hue. The shipped value measures 0.126 at 1.1.
+
+> **Rule, carried from D-20:** before changing any token that drives an emissive
+> surface, compute its relative luminance against the 0.1 threshold. If the
+> lighting acceptance test then fails criterion 1, lower the ceiling, never the
+> floor.
+
+**Consequence.** `design-system/tokens/` is now an **archive of the extraction**,
+not a fourth mirror. The three live mirrors are `styles/tokens.css`,
+`lib/style/colors.ts` and `design-spec.jsonc`. `lint:colors` reads the palette
+from the exported constants in the TypeScript mirror — deliberately not from
+every hex in the file, so that a value named in a comment cannot become an
+allowed colour by accident.
+
+**Still open under this decision:** whether `--data-red` should be deepened. It
+now sits close enough to the rose signal that live-data-negative and the accent
+may read as the same family. Green and red remain reserved for live data and are
+never UI affordances, so the collision is narrow — but it is real.
+
+---
 
 ## Amending this file
 

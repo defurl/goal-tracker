@@ -22,9 +22,11 @@
   ],
 
   // ── COLOR ───────────────────────────────────────────────────────────────────
-  // Dominant deep navy + black, with terminal amber as the soul of the palette,
-  // CRT green for live-data signals, and a single cool cyan for the voxel city
-  // glow. NO purple-on-white. NO indigo gradients. NO neon overload.
+  // Dominant deep navy + black, with a dusty rose as the soul of the palette,
+  // CRT green for live-data signals, and a desaturated cyan for the cool side of
+  // the frame. The desk lamp stays warm — it is a physical bulb, not an accent.
+  // Accent tokens are named by ROLE, not hue (D-21). NO purple-on-white. NO
+  // indigo gradients. NO neon overload. Natural colour over synthetic.
   "color": {
     "css_variables": {
       "--bg-void":          "#05070D",   // deepest background, near-black
@@ -32,21 +34,21 @@
       "--bg-panel":         "#121826",   // raised surfaces, panels, monitor frames
       "--bg-panel-2":       "#1A2230",   // hovered/active surfaces
 
-      "--ink-paper":        "#EDE6D3",   // primary text, warm off-white (paper-toned, NOT cool white)
+      "--ink-paper":        "#F0F2F5",   // primary text, near-white — stops short of pure white, which smears under bloom
       "--ink-muted":        "#9BA3B4",   // secondary text
       "--ink-faint":        "#5A6275",   // tertiary text, captions
       "--ink-ghost":        "#2E3340",   // borders, dividers
 
-      "--signal-amber":     "#FFA630",   // primary accent — terminal amber, the soul color
-      "--signal-amber-hot": "#FFD27A",   // amber highlight / hover
-      "--signal-amber-dim": "#7A4F18",   // amber faded / disabled
+      "--signal":           "#F2A0B5",   // primary accent — dusty rose, the soul color
+      "--signal-hot":       "#F8C3D0",   // accent highlight / hover
+      "--signal-dim":       "#8E4A5C",   // accent faded / disabled; monitor 1 emissive tint
 
       "--data-green":       "#4ADE80",   // live data positive, CRT-coded
       "--data-red":         "#F87171",   // live data negative, muted not screaming
       "--data-neutral":     "#9BA3B4",   // flat / neutral changes
 
-      "--voxel-glow":       "#5BC8FF",   // the cyan that makes the city look alive
-      "--voxel-glow-soft":  "#2A6B8A",   // ambient sky bounce
+      "--glow-cool":        "#7FC4D8",   // the cool side of the frame; monitor fill lights
+      "--glow-cool-soft":   "#3F6B77",   // ambient sky bounce; window rim; monitor 2 emissive
 
       "--lamp-warm":        "#FFB661",   // the desk lamp, the only truly warm light source
       "--rain-streak":      "#3A4555"    // the rain on the window
@@ -54,11 +56,12 @@
 
     "rules": [
       "Background is always dark — there is no light mode and we are not building one",
-      "Amber is the only color that ever appears at >40% area; everything else is accent or signal",
+      "The signal colour is the only one that ever appears at >40% area; everything else is accent or signal",
       "Green and red are reserved for live data — never for UI affordances like success/error states",
-      "The desk scene leans warm (amber + lamp); the city leans cool (cyan + green); the NN leans neutral (paper + faint)",
-      "Never use pure white. Paper-tone only.",
-      "Never use a gradient that includes purple, indigo, or pink"
+      "Warm/cool zoning is spatial: the lamp at camera-left leans warm, the window at camera-right leans cool",
+      "Never use pure white. --ink-paper is near-white and stops short of it: pure white smears under the bloom pass.",
+      "Never use a gradient that includes purple or indigo. The rose accent is a flat fill, never a gradient.",
+      "--signal-dim and --glow-cool-soft drive emissive surfaces against a bloom threshold of 0.1 — compute relative luminance before changing either (D-20, D-21)"
     ]
   },
 

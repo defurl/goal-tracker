@@ -60,9 +60,16 @@ const HEX = /#[0-9a-fA-F]{3,8}\b/g;
 
 function loadPalette(): Set<string> {
   const source = readFileSync(join(ROOT, 'lib/style/colors.ts'), 'utf8');
-  const found = source.match(/#[0-9a-fA-F]{6}\b/g);
-  if (!found || found.length === 0) {
-    throw new Error('lint:colors: no palette values found in lib/style/colors.ts');
+
+  // Only `export const NAME = '#RRGGBB'` counts. Matching every hex in the file
+  // would let a value mentioned in a COMMENT -- a rejected candidate, a worked
+  // example -- quietly become an allowed colour, which is the opposite of what
+  // this lint is for.
+  const found = [...source.matchAll(/^export const \w+ = '(#[0-9a-fA-F]{6})';$/gm)].map(
+    (m) => m[1] as string,
+  );
+  if (found.length === 0) {
+    throw new Error('lint:colors: no exported palette constants found in lib/style/colors.ts');
   }
   return new Set(found.map((h) => h.toUpperCase()));
 }

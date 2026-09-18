@@ -1,5 +1,14 @@
 # 01 — Colour Palette
 
+> **Superseded for BBE by `../spec/01-decisions.md` D-21 (2026-09-18).**
+> This document and `tokens/` record the palette as extracted from the
+> portfolio. BBE's live palette is `styles/tokens.css`, `lib/style/colors.ts`
+> and `design-spec.jsonc` at the repository root: the accent is a dusty rose
+> rather than terminal amber, `--ink-paper` is near-white, the cyan is
+> desaturated, and the accent tokens are named by role (`--signal`, not
+> `--signal-amber`). The rules below still hold — only the values and the
+> token names moved. `--lamp-warm` is unchanged.
+>
 > Canonical values live in `tokens/colors.ts` (TypeScript), `tokens/tokens.css`
 > (CSS custom properties) and `tokens/design-spec.jsonc` (the contract).
 > **Three mirrors of one palette — change one, change all three.**
