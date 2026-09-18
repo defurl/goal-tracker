@@ -6,27 +6,26 @@
 
 ## Start of next session
 
-**State:** Phase 0 complete. Phase 1 track A has the empty room and all seven
-desk objects — shell, Ando detailing, desk, the five-light rig, camera rig,
-both perf/motion hooks, then lamp, two monitors, keyboard, mug, notebook,
-phone, headphones. **The lighting acceptance test reads TRUE on all five
-criteria** and is now measured rather than eyeballed (`pnpm lighting:test`).
-Track B untouched.
+**State:** Phase 0 complete. Phase 1 track A has the room, all seven desk
+objects, the window, and all four atmosphere layers — bloom, dust motes, film
+grain, window rain. **The lighting acceptance test reads TRUE on all five
+criteria with post-processing both on and off.** Track B untouched.
 
-**Next step:** Phase 1 continues at step 4 of
-`design-system/12-habit-tracker-adaptation.md` §7 — bloom, dust motes, film
-grain, window rain — then re-run the acceptance test with effects on and off.
-The bonsai, wall tracker and monitor textures stay behind the gate.
+**Next step:** step 5 of `design-system/12-habit-tracker-adaptation.md` §7 —
+port `InteractiveObject` and wire hover labels and ONE focus pose end to end
+before building the rest. The bonsai, wall tracker and monitor textures stay
+behind the gate.
 
 Port objects from `design-system/references/source-extracts/objects/`; do not
 reinvent the geometry — but read what you port. The phone extract carries the
-portfolio's contact card (a flip to reveal a mailto). This product's phone is
-Article Import, so that behaviour was left out.
+portfolio's contact card (a flip to reveal a mailto) and the window extract is
+driven by a market store; neither belongs here.
 
 **Commands**
 ```
 pnpm dev                 # then pnpm capture:states in another terminal
-pnpm lighting:test       # reads the committed capture; run capture:states first
+pnpm lighting:test                                          # effects on
+pnpm lighting:test local room-rest-desktop-reduced-motion   # effects off
 pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build
 pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .next
 ```
@@ -36,10 +35,51 @@ pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .nex
    build/start/wait/capture step.
 2. Track B needs a Supabase project created before it can start.
 3. The mobile capture is framed tight: the camera pose is not adjusted for
-   portrait, so the desk crops. Not urgent — `/text` is the mobile fast path
-   (D-07) — but the room should still frame on a phone.
+   portrait, so the desk crops. `/text` is the mobile fast path (D-07), but the
+   room should still frame on a phone.
+4. **The window is outside the rest-pose frustum by about 2 degrees.**
+   04-room-spec.md §4 says the opening is placed "so it peeks past the
+   monitors' right edge"; at `REST_POSE` with FOV 50 it does not appear at all.
+   The window is reachable through its focus pose, and the right third of the
+   frame is consequently dark rather than cool. Owner decision: widen the FOV,
+   move the rest pose, or accept it.
+5. The window frame shows two bright bars along the top and bottom of the
+   opening. They survive every glass tint, so they are the frame geometry
+   catching light, not the pane. Cosmetic, and invisible at rest.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-18 — the window and the atmosphere layers
+
+Four atmosphere layers in, and the gate re-run with post-processing on and off
+(bloom is disabled under reduced motion, so the reduced-motion capture IS the
+effects-off case — `lighting:test` now takes a state name so checking it costs
+nothing). All five criteria TRUE both ways.
+
+Three findings, in order of how much they cost to find:
+
+- **The glass tint was extinguishing the window.** 04-room-spec.md §6 specifies
+  `BG_NIGHT` glass. `MeshPhysicalMaterial` multiplies transmitted light by
+  `color`, and BG_NIGHT is about 4% brightness, so the planes behind it
+  disappeared and the opening rendered black. Measured on an Intel GPU and on
+  SwiftShader to rule out the capture pipeline: 907 lit pixels with the spec's
+  tint, 164,956 with a near-white one. Shipped `INK_MUTED` — near-white glares
+  at grazing angles, `INK_FAINT` goes too dark to read. The window's darkness
+  should come from the dim planes behind it, not from tinting the pane.
+- **The scene budget was measuring the wrong thing.** It selected chunks that
+  CONTAIN three.js, so every scene dependency that is not three itself sat
+  outside the budget meant to cap it. Post-processing landed in a 14 KB chunk
+  and went uncounted. The payload is now "everything emitted that no route
+  references" — 229.6 KB against the 320 KB budget, not the 209.5 KB previously
+  reported. This is the third false green from this script; all three were the
+  same shape, a filter that matched fewer files than it claimed.
+- **The window never enters the rest frame.** It is placed exactly where the
+  room spec says, and the shell is built around that opening, but at REST_POSE
+  with FOV 50 it falls about 2 degrees outside the frustum. The spec's stated
+  intent — that it "peeks past the monitors' right edge" — is not met. Left
+  alone rather than retuning the camera: see the carried-debt list.
 
 ---
 
