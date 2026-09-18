@@ -1,0 +1,27 @@
+/* Bottom-left corner furniture. Generous margin, no chrome, nothing centred. */
+
+.nav {
+  position: fixed;
+  left: var(--step-3);
+  bottom: var(--step-3);
+  z-index: 20;
+}
+
+.back {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+  background: color-mix(in srgb, var(--bg-night) 78%, transparent);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--signal);
+  border-color: var(--signal-dim);
+}
