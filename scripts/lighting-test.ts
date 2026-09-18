@@ -15,6 +15,10 @@
  * an origin with, and a data URL does not taint the canvas.
  *
  * Exits non-zero if any criterion fails, so CI can gate on it.
+ *
+ * Usage:
+ *   pnpm lighting:test                                    effects on
+ *   pnpm lighting:test local room-rest-desktop-reduced-motion   effects off
  */
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -22,7 +26,13 @@ import { join } from 'node:path';
 import { chromium } from 'playwright';
 
 const LABEL = process.argv[2] ?? 'local';
-const IMAGE = join(process.cwd(), 'captures', LABEL, 'room-rest-desktop.png');
+/**
+ * Which capture to measure. 05-lighting-rig.md §5 requires the test to pass
+ * with post-processing both on and off; bloom is disabled under reduced
+ * motion, so `room-rest-desktop-reduced-motion` IS the effects-off case.
+ */
+const STATE = process.argv[3] ?? 'room-rest-desktop';
+const IMAGE = join(process.cwd(), 'captures', LABEL, `${STATE}.png`);
 
 /** A rectangle in the 1600x1000 desktop capture, as fractions of the frame. */
 interface Box {
