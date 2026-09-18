@@ -6,34 +6,70 @@
 
 ## Start of next session
 
-**State:** Phase 0 complete bar one item. Phase 1 track A has the empty room
-built — shell, Ando detailing, desk, the five-light rig, camera rig, both
-perf/motion hooks. Track B untouched.
+**State:** Phase 0 complete. Phase 1 track A has the empty room and all seven
+desk objects — shell, Ando detailing, desk, the five-light rig, camera rig,
+both perf/motion hooks, then lamp, two monitors, keyboard, mug, notebook,
+phone, headphones. **The lighting acceptance test reads TRUE on all five
+criteria** and is now measured rather than eyeballed (`pnpm lighting:test`).
+Track B untouched.
 
-**Approved next step** (owner, 2026-09-18): build the Phase 1 desk objects —
-lamp, monitors, keyboard, mug, notebook, phone, headphones — then run the
-five-item lighting acceptance test. `06-build-plan.md` carries the dated
-amendment moving the gate there; the gate's authority is unchanged, so the
-bonsai, wall tracker and monitor textures stay behind it.
+**Next step:** Phase 1 continues at step 4 of
+`design-system/12-habit-tracker-adaptation.md` §7 — bloom, dust motes, film
+grain, window rain — then re-run the acceptance test with effects on and off.
+The bonsai, wall tracker and monitor textures stay behind the gate.
 
-Build in the order `design-system/12-habit-tracker-adaptation.md` §7 gives, and
-screenshot after each step with `pnpm capture:states`. The extracted originals
-for every object are in `design-system/references/source-extracts/objects/` —
-port them, do not reinvent the geometry.
+Port objects from `design-system/references/source-extracts/objects/`; do not
+reinvent the geometry — but read what you port. The phone extract carries the
+portfolio's contact card (a flip to reveal a mailto). This product's phone is
+Article Import, so that behaviour was left out.
 
 **Commands**
 ```
 pnpm dev                 # then pnpm capture:states in another terminal
+pnpm lighting:test       # reads the committed capture; run capture:states first
 pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build
 pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .next
 ```
 
 **Carried debt, none blocking**
-1. `capture:states` is not in CI — it needs a build/start/wait/capture/upload
-   step.
+1. `capture:states` and `lighting:test` are not in CI — they need a
+   build/start/wait/capture step.
 2. Track B needs a Supabase project created before it can start.
+3. The mobile capture is framed tight: the camera pose is not adjusted for
+   portrait, so the desk crops. Not urgent — `/text` is the mobile fast path
+   (D-07) — but the room should still frame on a phone.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-18 — the desk objects, and the gate
+
+Phase 0 closed: Departure Mono was vendored, which was its last open item, and
+`capture:states` lost the 404 allowance that existed only because the font was
+missing. Every request in a capture now has to succeed.
+
+All seven desk objects ported and mounted, one commit each. Three notes worth
+keeping:
+
+- **Criterion 4 passes now, at 15.4 %.** It read 3.3 % against the empty room
+  and the earlier session concluded the cause was that there was no keyboard
+  mesh for the lamp's falloff to land on. Adding the keyboard confirmed it.
+  Nothing about the rig was tuned to make this number move.
+- **Criterion 1 failed on a measurement bug, not on the scene.** The brightest
+  pixel in frame is a specular highlight on a brass drawer handle — a line, not
+  an area. `lighting:test` now compares region MEANS, and names the two screens
+  explicitly, because they are the only things that could plausibly out-shine
+  the lamp pool. Pool 0.254 against monitors 0.087 / 0.058.
+- **The two drawer handles read orange on the left and green on the right.**
+  Same brass, same material; one is lit by the lamp and one by the monitor
+  fill. That is the colour-temperature zoning in §3 of the lighting rig doc
+  working, not a stray colour.
+
+`pnpm lighting:test` is new. The five criteria were written to be eyeballed,
+which makes "the right edge reads cooler" a matter of opinion and a regression
+easy to miss; it now measures them off the committed capture and exits
+non-zero.
 
 ---
 
