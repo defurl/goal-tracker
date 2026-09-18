@@ -1,0 +1,123 @@
+// The room: lights + objects + rig. No DOM in this file.
+//
+// Five light roles, six instances (the fill is a matched pair). That is the
+// whole rig and it is balanced against the acceptance test in
+// design-system/05-lighting-rig.md §4. **Do not add a light.**
+
+import { useMemo } from 'react';
+import { Object3D } from 'three';
+import {
+  AMBIENT_INTENSITY,
+  DOOR_SPILL_DECAY,
+  DOOR_SPILL_DISTANCE,
+  DOOR_SPILL_INTENSITY,
+  DOOR_SPILL_POSITION,
+  LAMP_DECAY,
+  LAMP_DISTANCE,
+  LAMP_INTENSITY,
+  LAMP_POSITION,
+  LAMP_SHADOW_BIAS,
+  LAMP_SHADOW_MAP,
+  MONITOR_FILL_ANGLE,
+  MONITOR_FILL_DECAY,
+  MONITOR_FILL_DISTANCE,
+  MONITOR_FILL_INTENSITY,
+  MONITOR_FILL_PENUMBRA,
+  MONITOR_FILL_POSITIONS,
+  MONITOR_FILL_TARGETS,
+  WINDOW_RIM_INTENSITY,
+  WINDOW_RIM_POSITION,
+  WINDOW_RIM_TARGET,
+} from './lighting';
+import { BG_NIGHT, GLOW_COOL, GLOW_COOL_SOFT, LAMP_WARM } from '../lib/style/colors';
+import { CameraRig } from './CameraRig';
+import { RoomShell } from './objects/RoomShell';
+import { AndoWallDetails } from './objects/AndoWallDetails';
+import { DeskSurface } from './objects/DeskSurface';
+
+export function RoomScene() {
+  // Spot lights aim at an Object3D, so the targets must be stable across
+  // renders and mounted into the graph with <primitive>.
+  const fillTargets = useMemo(
+    () =>
+      MONITOR_FILL_TARGETS.map((target) => {
+        const object = new Object3D();
+        // Indices rather than a spread: these constants are `as const`, and TS
+        // will not spread a readonly tuple into Vector3.set's fixed parameters.
+        object.position.set(target[0], target[1], target[2]);
+        return object;
+      }),
+    [],
+  );
+
+  const rimTarget = useMemo(() => {
+    const object = new Object3D();
+    object.position.set(WINDOW_RIM_TARGET[0], WINDOW_RIM_TARGET[1], WINDOW_RIM_TARGET[2]);
+    return object;
+  }, []);
+
+  return (
+    <>
+      {/* AMBIENT — barely there. Keeps the darkest surfaces off pure black
+          (criterion 5) and, being tinted with the background rather than white,
+          keeps the shadows navy rather than grey. */}
+      <ambientLight color={BG_NIGHT} intensity={AMBIENT_INTENSITY} />
+
+      {/* KEY — the desk lamp. The sole shadow-caster in the scene. */}
+      <pointLight
+        position={LAMP_POSITION}
+        color={LAMP_WARM}
+        intensity={LAMP_INTENSITY}
+        distance={LAMP_DISTANCE}
+        decay={LAMP_DECAY}
+        castShadow
+        shadow-mapSize-width={LAMP_SHADOW_MAP}
+        shadow-mapSize-height={LAMP_SHADOW_MAP}
+        shadow-bias={LAMP_SHADOW_BIAS}
+      />
+
+      {/* FILL x2 — monitor glow, aimed at the keyboard zone rather than
+          radiating from the screens. Screen glow is directional, not radial. */}
+      {MONITOR_FILL_POSITIONS.map((position, i) => (
+        <group key={`fill-${i}`}>
+          <primitive object={fillTargets[i] as Object3D} />
+          <spotLight
+            position={position}
+            target={fillTargets[i]}
+            color={GLOW_COOL}
+            intensity={MONITOR_FILL_INTENSITY}
+            distance={MONITOR_FILL_DISTANCE}
+            decay={MONITOR_FILL_DECAY}
+            angle={MONITOR_FILL_ANGLE}
+            penumbra={MONITOR_FILL_PENUMBRA}
+          />
+        </group>
+      ))}
+
+      {/* RIM — the window. Cool separation edge on right-hand faces. */}
+      <primitive object={rimTarget} />
+      <directionalLight
+        position={WINDOW_RIM_POSITION}
+        target={rimTarget}
+        color={GLOW_COOL_SOFT}
+        intensity={WINDOW_RIM_INTENSITY}
+      />
+
+      {/* DOOR SPILL — off-frame warm. There is no door geometry: this light IS
+          the doorway. A light source off-frame implies a space off-frame. */}
+      <pointLight
+        position={DOOR_SPILL_POSITION}
+        color={LAMP_WARM}
+        intensity={DOOR_SPILL_INTENSITY}
+        distance={DOOR_SPILL_DISTANCE}
+        decay={DOOR_SPILL_DECAY}
+      />
+
+      <RoomShell />
+      <AndoWallDetails />
+      <DeskSurface />
+
+      <CameraRig />
+    </>
+  );
+}

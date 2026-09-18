@@ -17,8 +17,16 @@
 
 ## Where the project is
 
-**Phase 0 — Foundation: complete.** The gate is green and there are no open
-decisions. Phase 1 may start.
+**Phase 1 track A — the empty room is built; the lighting gate is NOT signed
+off.** Shell, Ando detailing, desk, the five-light rig, the camera rig and the
+two perf/motion hooks are in. Two of the five acceptance criteria measurably
+pass, one is marginal and two cannot be evaluated yet — see the entry below.
+**Per the build plan, no object enters the room until all five read TRUE**, so
+track A is paused pending an owner call on the two that reference objects which
+do not exist at this point in the order.
+
+Track B (data foundation) is untouched: it needs a Supabase project, and
+`06-build-plan.md` §4 forbids one agent holding both tracks.
 
 Nothing is in the room yet, and per `spec/06-build-plan.md` nothing goes in it
 until the five-item lighting acceptance test reads TRUE.
@@ -41,6 +49,80 @@ off-palette hex into `styles/` and fails if `lint:colors` passes.
 ---
 
 ## Session log
+
+### 2026-09-18 — Phase 1 track A: the empty room, and the gate it does not pass
+
+**Built** (A1.1–A1.6): `scene/objects/RoomShell.tsx` (floor, back wall, right
+wall as four segments around the opening), `AndoWallDetails.tsx` (8 joints, 72
+back-wall tie-rod holes + 12 on the right wall), `DeskSurface.tsx` (top, four
+legs, walnut drawers, brass handles), `scene/lighting.ts`, `scene/RoomScene.tsx`
+(five roles / six instances), `scene/cameraPoses.ts`, `scene/CameraRig.tsx`,
+`lib/motion/reducedMotion.ts`, `lib/perf/useAdaptiveFps.ts`. The canvas mounts
+through `next/dynamic` with `ssr: false`.
+
+`lighting-plan.svg` is ported to the repository root with its colour key updated
+to the post-D-21 palette (80 substitutions). Positions and intensities are
+untouched — only the swatches moved.
+
+**Measured** on the rendered frame at 1024×768, rest pose, no objects in the
+room. Relative luminance, sRGB-linearised, 16×16 patch grid:
+
+| criterion | measurement | verdict |
+|---|---|---|
+| 1. lamp pool is the brightest area | peak lum 0.41 at x=220 of 1024, warm (R−B = +105), left of centre | **TRUE** |
+| 2. right edge cooler than left | left third warmth +28.7, right third −0.6 | **FALSE in substance** |
+| 3. warm rectangle on the floor camera-left | lum 0.0138, warmth +35.3, against 0.0 camera-right | **MARGINAL** |
+| 4. keyboard zone at ~20% of the lamp pool | 3.3%, and neutral (R≈G≈B≈31) rather than warm | **FALSE** |
+| 5. nothing pure black, nothing ambient-flooded | no ambient flooding; 37% of patches are pure black | **INCONCLUSIVE** |
+
+**Criterion 2 is satisfied only by darkness.** The right third is at 1% of the
+left third's luminance — it is not cool, it is absent. The cool zone is supposed
+to come from monitor 2's emissive and the window, neither of which exists yet.
+The right wall is also outside the frustum at desk depth: at the rest pose the
+horizontal half-angle reaches x ≈ ±1.38 and the wall is at x = 2.0.
+
+**Criterion 4 is the real finding.** The keyboard zone measures 3.3% of peak,
+not ~20%, and the light reaching it is the cool monitor fill rather than the
+lamp's warm falloff. Checked analytically before concluding: lamp at intensity
+8, distance 2.8, decay 2, at 1.085 m from the keyboard zone gives ~7% of the
+near-lamp peak under Three.js falloff. The portfolio's 20% was measured with a
+keyboard mesh present — its top face catches the lamp at a much shallower angle
+than the bare desk does. **The number in the acceptance test may only be
+reproducible on the furnished room.**
+
+**Criterion 5's 37% black is mostly empty frame, not black objects** — the room
+is deliberately an open three-sided box with no left wall, ceiling or front
+wall, so most of the frame is void by design. Distinguishing "black object" from
+"no object" needs a per-object check, which is what `capture:states` is for.
+
+**The spec tension worth an owner decision.** `12-habit-tracker-adaptation.md`
+§7 step 1 says to run the acceptance test on the empty room, before any object.
+But criteria 2 and 4 reference the keyboard's lit face and the cool right side,
+both of which are objects from step 3. As written the test cannot fully pass at
+the point the build order runs it. Either the test is re-scoped for the empty
+room, or the gate moves to after the object pass. **Not resolving this in code:**
+raising it, per CLAUDE.md.
+
+**Also owed from Phase 0, and missed.** `06-build-plan.md` §1 marks five
+artefacts ★ and says ship all five in Phase 0. `lint-colors.ts`,
+`bundle-check.ts` and `scene/lighting.ts` exist. **`scripts/capture-states.ts`
+and `lib/growth.ts` do not.** The Phase 0 task list (0.1–0.8) does not mention
+either, which is how they were missed — a third internal inconsistency in the
+build plan. `capture:states` is the mechanism that makes lighting reviews
+diffable instead of "looks fine on my machine", and it is needed for the gate
+above, so it should land before track A resumes.
+
+**Two mid-task corrections, recorded because both nearly became wrong code.**
+The scene chunk budget was reporting green while matching nothing: a
+`next/dynamic` chunk never appears under `manifest.pages`, so `bundle:check` now
+scans emitted chunks on disk. Real numbers: shell 89.5 KB gz, scene 207.7 KB gz
+against the 320 KB budget. Separately, the canvas appeared unsized on load and I
+attributed it to a zero-height parent; the actual cause was
+`document.visibilityState === 'hidden'` in a backgrounded preview pane, which
+stops rAF and ResizeObserver. The host CSS Module was kept anyway — it belongs
+in a module rather than an inline `style` prop under D-01 — but it fixed nothing.
+
+---
 
 ### 2026-09-18 — lint:colors now holds the three mirrors together
 

@@ -62,6 +62,18 @@ export default tseslint.config(
   },
 
   {
+    // React Three Fiber's JSX elements are three.js objects, not DOM nodes, so
+    // `react/no-unknown-property` cannot validate them — every `args`,
+    // `position` and `roughness` reads as an unknown DOM attribute. Scoped off
+    // here rather than repo-wide so the rule keeps working on real DOM in
+    // overlay/ and the /text route.
+    files: ['scene/**/*.tsx'],
+    rules: {
+      'react/no-unknown-property': 'off',
+    },
+  },
+
+  {
     files: ['scripts/**/*.ts', '*.mjs'],
     languageOptions: { globals: globals.node },
     rules: {

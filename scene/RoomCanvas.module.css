@@ -1,0 +1,9 @@
+/* The canvas host. R3F measures its parent to size the drawing buffer, and
+   `main` has no intrinsic height, so the host gives it explicit layout rather
+   than relying on the Canvas `style` prop — which also keeps the styling in a
+   CSS Module where D-01 wants it, instead of inline. */
+.host {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-void);
+}

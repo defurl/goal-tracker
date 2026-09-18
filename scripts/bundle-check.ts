@@ -12,8 +12,8 @@
  */
 
 import { gzipSync } from 'node:zlib';
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, relative } from 'node:path';
 
 const ROOT = process.cwd();
 const NEXT_DIR = join(ROOT, '.next');
@@ -43,6 +43,23 @@ function gzKb(file: string): number {
   const full = join(NEXT_DIR, file);
   if (!existsSync(full)) return 0;
   return gzipSync(readFileSync(full)).length / 1024;
+}
+
+/** Every emitted client chunk on disk, relative to .next. */
+function allBuiltChunks(): string[] {
+  const root = join(NEXT_DIR, 'static', 'chunks');
+  if (!existsSync(root)) return [];
+
+  const out: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry);
+      if (statSync(full).isDirectory()) walk(full);
+      else if (entry.endsWith('.js')) out.push(relative(NEXT_DIR, full));
+    }
+  };
+  walk(root);
+  return out;
 }
 
 function containsThree(file: string): boolean {
@@ -102,12 +119,15 @@ function main(): void {
   }
 
   // ── 2. Scene chunk budget ─────────────────────────────────────────────────
-  const allChunks = new Set(Object.values(manifest.pages).flat());
-  const sceneChunks = [...allChunks].filter(containsThree);
+  // Deliberately NOT from the manifest: the scene arrives through next/dynamic,
+  // and a dynamically imported chunk never appears under manifest.pages. Reading
+  // the manifest here found nothing and reported the budget green while the
+  // chunk existed on disk — a budget that matches no files always passes.
+  const sceneChunks = allBuiltChunks().filter(containsThree);
   const sceneKb = sceneChunks.reduce((sum, c) => sum + gzKb(c), 0);
 
   if (sceneChunks.length === 0) {
-    console.log(`scene   not built yet — no chunk contains three.js (Phase 0)`);
+    console.log('scene   no chunk contains three.js — the scene is not built yet');
   } else {
     console.log(
       `scene   ${sceneKb.toFixed(1)} KB gz / ${SCENE_BUDGET_KB} KB  (${sceneChunks.length} chunks)`,
