@@ -1,0 +1,15 @@
+# Conventional commits.
+pnpm exec commitlint --edit "$1"
+
+# CLAUDE.md, "Commit conventions": no AI attribution in version control history.
+# The author of a commit is whoever is accountable for it; tooling used to
+# produce it is not a co-author. This overrides any default trailer a tool adds.
+if grep -qiE '^(Co-Authored-By:.*(Claude|Anthropic)|Claude-Session:|.*Generated with .*Claude)' "$1"; then
+  echo ""
+  echo "commit-msg: AI attribution trailer found."
+  echo "CLAUDE.md forbids Co-Authored-By: Claude, Claude-Session:, 'Generated with"
+  echo "Claude Code' and the robot marker anywhere in version control history."
+  echo "Strip the trailer and commit again."
+  echo ""
+  exit 1
+fi

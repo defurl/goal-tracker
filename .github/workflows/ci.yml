@@ -1,0 +1,74 @@
+# Phase 0 gate (spec/06-build-plan.md):
+#   `pnpm lint && pnpm lint:colors && pnpm build` passes on an empty app,
+#   and a deliberately introduced hex literal fails the build.
+#
+# The last job is that second half, run as a real assertion rather than a claim.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Colour discipline
+        run: pnpm lint:colors
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Bundle budgets (D-10)
+        run: pnpm bundle:check
+
+  # The colour lint is the one piece of the visual contract that is mechanical
+  # rather than remembered. If it ever stops failing, it stops being worth having.
+  colour-lint-self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: A hex outside the palette must fail the build
+        run: |
+          printf '/* deliberate violation — CI asserts this fails */\n.x { color: #BADA55; }\n' \
+            > styles/__lint_fixture.css
+          if pnpm lint:colors; then
+            echo "::error::lint:colors passed on an off-palette hex literal. The colour lint is broken."
+            exit 1
+          fi
+          echo "lint:colors correctly rejected #BADA55"
+        env:
+          FORCE_COLOR: '0'

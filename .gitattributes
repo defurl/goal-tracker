@@ -1,0 +1,7 @@
+# Normalise to LF in the repository and in the working tree. Without this, Git
+# on Windows checks the husky hooks out with CRLF and `sh` refuses to run them.
+* text=auto eol=lf
+
+*.png binary
+*.woff2 binary
+*.jpg binary
