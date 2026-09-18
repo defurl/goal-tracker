@@ -32,6 +32,8 @@ import {
 import { BG_NIGHT, GLOW_COOL, GLOW_COOL_SOFT, LAMP_WARM } from '../lib/style/colors';
 import { CameraRig } from './CameraRig';
 import { Effects } from './Effects';
+import { InteractiveObject } from './InteractiveObject';
+import { useInteractionStore } from '../lib/stores/interaction';
 import { RoomShell } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
@@ -46,6 +48,7 @@ import { Window } from './objects/Window';
 import { DustMotes } from './objects/DustMotes';
 
 export function RoomScene() {
+  const focusObject = useInteractionStore((s) => s.focusObject);
   // Spot lights aim at an Object3D, so the targets must be stable across
   // renders and mounted into the graph with <primitive>.
   const fillTargets = useMemo(
@@ -134,11 +137,21 @@ export function RoomScene() {
       />
       {/* x and z track MONITOR_FILL_POSITIONS so the cool fill appears to come
           off the screens. y puts the stand feet on the desk. */}
-      <Monitor
-        position={[MONITOR_FILL_POSITIONS[0][0], FOOT_DROP, MONITOR_FILL_POSITIONS[0][2]]}
-        variant="primary"
-        hoverId="monitor1"
-      />
+      {/* The one object wired end to end so far: hover label, click, camera
+          glide, back. The rest get the same wrapper once this shape is proven
+          (12-habit-tracker-adaptation.md §7 step 5). */}
+      <InteractiveObject
+        id="monitor1"
+        label="daily challenge"
+        labelPosition={[MONITOR_FILL_POSITIONS[0][0], 0.64, MONITOR_FILL_POSITIONS[0][2]]}
+        onActivate={() => focusObject('monitor1', 'challenge')}
+      >
+        <Monitor
+          position={[MONITOR_FILL_POSITIONS[0][0], FOOT_DROP, MONITOR_FILL_POSITIONS[0][2]]}
+          variant="primary"
+          hoverId="monitor1"
+        />
+      </InteractiveObject>
       <Monitor
         position={[MONITOR_FILL_POSITIONS[1][0], FOOT_DROP, MONITOR_FILL_POSITIONS[1][2]]}
         variant="terminal"
