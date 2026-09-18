@@ -37,6 +37,7 @@ import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
 import { KEYBOARD_DROP, Keyboard } from './objects/Keyboard';
 import { FOOT_DROP, Monitor } from './objects/Monitor';
+import { Mug } from './objects/Mug';
 
 export function RoomScene() {
   // Spot lights aim at an Object3D, so the targets must be stable across
@@ -140,6 +141,7 @@ export function RoomScene() {
       {/* The keyboard is what the monitor fill lights aim at, so it sits
           between them and forward of the screens. */}
       <Keyboard position={[0.1, KEYBOARD_DROP, 0.1]} />
+      <Mug position={[-0.62, 0, 0.06]} />
 
       <CameraRig />
     </>
