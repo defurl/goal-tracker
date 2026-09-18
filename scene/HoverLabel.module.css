@@ -1,0 +1,46 @@
+/* The floating label above a desk object, and the hidden focus target that puts
+   that object in the tab order. design-system/08-interaction-grammar.md §1.
+
+   Departure Mono, lowercase, wide-tracked. That single treatment does more for
+   the room's character than any other type decision (D-02), which is why the
+   font is vendored rather than left to a fallback.
+
+   Backings use color-mix over a token rather than an rgba() literal: an rgba()
+   would slip past lint:colors, which only sees hex, while still being an
+   off-palette colour. */
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--signal);
+  background: color-mix(in srgb, var(--bg-night) 78%, transparent);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* 48 x 48 is the minimum focus/touch target and is deliberately allowed to be
+   larger than the mesh it stands for. Do not shrink it to match a small object. */
+.focusableButton {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.focusableButton:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg-night) 40%, transparent);
+}
