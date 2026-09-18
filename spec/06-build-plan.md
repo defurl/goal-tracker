@@ -133,6 +133,20 @@ lighting-only screenshot:
 **Nothing else goes in the room until this passes.** It is the reason the room
 is worth reusing.
 
+> **Amendment, 2026-09-18 (owner-approved): the gate runs after the desk-object
+> pass, not on the bare room.** Criteria 2 and 4 cannot be evaluated on an empty
+> room — criterion 4 measures the keyboard's lit face and criterion 2 depends on
+> monitor 2's emissive and the window for the cool side of the frame. Measured
+> on the bare room the keyboard zone reads 3.3% of the lamp pool against the
+> ~20% the test asks for, purely because there is no keyboard to catch the light.
+>
+> So A1.1–A1.6 build the shell, desk, rig, camera and hooks; then the desk
+> objects land; then the five criteria are judged. **The rule itself is
+> unchanged — no object that emits or blocks light beyond the desk dressing goes
+> in until all five read TRUE**, which still keeps the bonsai, wall tracker and
+> monitor textures behind the gate. What moved is where the measurement happens,
+> not what it licenses.
+
 #### Track B · Data foundation
 
 | # | Task |
