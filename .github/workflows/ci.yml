@@ -1,8 +1,15 @@
-# Phase 0 gate (spec/06-build-plan.md):
-#   `pnpm lint && pnpm lint:colors && pnpm build` passes on an empty app,
-#   and a deliberately introduced hex literal fails the build.
+# Three jobs:
+#   verify              the Phase 0 gate — lint, colour discipline, types, build,
+#                       bundle budgets
+#   scene-capture       the scene's own gate — screenshots every state and runs
+#                       the lighting acceptance test against them
+#   colour-lint-self-test
+#                       asserts the colour lint still FAILS on each of the three
+#                       things it is supposed to catch
 #
-# The last job is that second half, run as a real assertion rather than a claim.
+# The last job exists because a check that has quietly stopped failing is worse
+# than no check: it is a claim nobody re-examines. Each failure mode is asserted
+# rather than assumed.
 
 name: ci
 
@@ -42,6 +49,85 @@ jobs:
 
       - name: Bundle budgets (D-10)
         run: pnpm bundle:check
+
+  # The scene has two mechanical checks and neither was running here, which made
+  # them checks only as long as somebody remembered to run them. The capture is
+  # the review record (10-tech-stack.md calls it one of the two scripts that
+  # "kept the design honest across five phases") and the lighting test is the
+  # acceptance gate in 05-lighting-rig.md §4.
+  #
+  # Runs on SwiftShader: the runner has no GPU, and the capture script already
+  # forces ANGLE for exactly that reason. Measured luminances matched an Intel
+  # GPU when this was checked, so software rendering is not a second-class
+  # result here.
+  scene-capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build
+        run: pnpm build
+
+      # nohup + disown so the server survives the end of this step's shell, and
+      # a log file so a failure to start is diagnosable rather than silent.
+      - name: Start the server
+        run: |
+          nohup pnpm start > /tmp/next.log 2>&1 &
+          disown
+          for i in $(seq 1 60); do
+            if curl -fs -o /dev/null http://localhost:3000; then
+              echo "server up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::the server never answered on :3000"
+          cat /tmp/next.log
+          exit 1
+
+      - name: Capture every scene state
+        run: pnpm capture:states ci
+
+      # Both halves, because 05-lighting-rig.md §5 requires the test to pass with
+      # post-processing on AND off. Bloom is disabled under reduced motion, so
+      # the reduced-motion capture is the effects-off case.
+      - name: Lighting acceptance test, effects on
+        run: pnpm lighting:test ci
+
+      - name: Lighting acceptance test, effects off
+        run: pnpm lighting:test ci room-rest-desktop-reduced-motion
+
+      # Uploaded on failure too — a failed lighting gate is exactly when someone
+      # needs to see the frame that failed it.
+      - name: Upload the captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scene-captures
+          path: captures/ci/
+          if-no-files-found: error
+
+      - name: Server log
+        if: failure()
+        run: cat /tmp/next.log || true
+
+      - name: Stop the server
+        if: always()
+        run: pkill -f 'next start' || true
 
   # The colour lint is the one piece of the visual contract that is mechanical
   # rather than remembered. If it ever stops failing, it stops being worth having,

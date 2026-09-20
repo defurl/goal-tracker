@@ -47,3 +47,6 @@ yarn-error.log*
 # vendored (see public/fonts/README.md); the .otf and .woff are unused, and
 # anything under public/ is served, so the extracted folder does not ship.
 public/fonts/DepartureMono-*/
+
+# CI writes its captures here; only captures/local is the committed record.
+captures/ci/
