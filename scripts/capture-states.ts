@@ -9,10 +9,17 @@
  *
  * Captures are committed (see .gitignore) — they are the review record.
  *
+ * **Capture against a production build, not `pnpm dev`.** The adaptive-FPS
+ * detector trips on a dev build and disables bloom, so a capture taken from
+ * `pnpm dev` is an effects-OFF frame wearing an effects-ON label. Measured: the
+ * keyboard reads 15.4% of the lamp pool from dev and 20.4% from `pnpm start`,
+ * while the reduced-motion frames — where bloom is off either way — agree
+ * exactly. CI captures from `pnpm start` for this reason.
+ *
  * Usage:
- *   pnpm dev                       in one terminal
+ *   pnpm build && pnpm start       in one terminal
  *   pnpm capture:states            writes captures/local/
- *   pnpm capture:states -- <label> writes captures/<label>/
+ *   pnpm capture:states <label>    writes captures/<label>/
  *
  * CAPTURE_BASE_URL overrides the default http://localhost:3000.
  */
