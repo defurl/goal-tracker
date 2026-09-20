@@ -6,10 +6,10 @@
 
 ## Start of next session
 
-**State:** Phase 0 complete. **Phase 1 track A is complete through A2.5** —
-room, seven desk objects, window, four atmosphere layers, `InteractiveObject`,
-per-object focus poses, and the DOM overlay shell with its 480 px right-hand
-panel. Four objects are wired end to end. Track B untouched.
+**State:** Phase 0 complete. **Phase 1 track A is complete** — room, seven desk
+objects, window, four atmosphere layers, `InteractiveObject`, per-object focus
+poses, the 480 px detail panel, and `capture:states`. Four objects wired end to
+end. **Both scene gates now run in CI.** Track B has not started.
 
 **A2 gate, all items TRUE**
 - lighting acceptance test passes with post-processing on and off
@@ -17,53 +17,97 @@ panel. Four objects are wired end to end. Track B untouched.
 - labels suppress while a panel is open
 - monitor 2 no longer floats above the desk (`04-room-spec.md` §1)
 
-**Next step:** A2.6 is done (`capture:states`), so track A's remaining work is
-Phase 3 mechanics, which sit behind the gate. The useful next moves are
-**wiring `capture:states` and `lighting:test` into CI** (debt 1) and
-**starting track B**, which needs a Supabase project (debt 2). Do not let one
-agent hold both tracks (`06-build-plan.md` §4).
+---
 
-Port objects from `design-system/references/source-extracts/objects/`; do not
-reinvent the geometry — but read what you port. The phone extract carries the
-portfolio's contact card (a flip to reveal a mailto) and the window extract is
-driven by a market store; neither belongs here.
+### Next: track B, then Phase 3
+
+**Track B is unblocked.** The Supabase project exists:
+`https://nosifadaldhgjeyzhpao.supabase.co`, recorded in `.env.example`. Put the
+anon key and the service-role key in your own `.env.local` — it is gitignored
+and keys never enter this repo.
+
+> **Nothing protects that project yet.** The RLS policies are migration 012 and
+> have not been written. Do not put real data in before B1.3.
+
+Track B is `06-build-plan.md` §"Phase 1 · Track B", B1.1–B1.6: auth with SSR
+sessions, migrations 001–011, RLS as one reviewable file, the three functions,
+generated `database.types.ts`, then `lib/data/` as the only writer to
+`useAppStore`.
+
+**Its gate is the cross-user isolation test** — authenticated as user A, try to
+read AND write all 12 tables as user B; all 24 attempts must fail, as an
+automated test rather than a manual check. Treat that as the deliverable, not
+an afterthought: it is the one gate in the plan that is about other people's
+data.
+
+**Then Phase 3** (3.1–3.8), sequential, one mechanic at a time, re-running the
+lighting acceptance test after **each** one — this is the phase most likely to
+break the room. Two rows carry their own warnings: 3.1 raises monitor 1's
+emissive to 1.4 and says to verify criterion 1 at that value and lower the
+ceiling if the lamp pool loses primacy; 3.6 is the bonsai, second to last on
+purpose. `lib/growth.ts` already exists and is verified monotonic.
+
+**One agent must not hold both tracks** (`06-build-plan.md` §4).
 
 **Commands**
 ```
-pnpm dev                 # then pnpm capture:states in another terminal
+pnpm build && pnpm start   # captures MUST come from a production build, see below
+pnpm capture:states        # in another terminal; writes captures/local/
 pnpm lighting:test                                          # effects on
 pnpm lighting:test local room-rest-desktop-reduced-motion   # effects off
 pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build
-pnpm bundle:check        # needs a build; stop `pnpm dev` first, they share .next
+pnpm bundle:check          # needs a build; stop any dev server first, they share .next
 ```
 
 **Carried debt, none blocking**
-1. `capture:states` and `lighting:test` are not in CI — they need a
-   build/start/wait/capture step.
-2. Track B needs a Supabase project created before it can start.
-3. The mobile capture is framed tight: the camera pose is not adjusted for
+1. Track B needs its keys in `.env.local` and migration 012 before real data.
+2. The mobile capture is framed tight: the camera pose is not adjusted for
    portrait, so the desk crops. `/text` is the mobile fast path (D-07), but the
    room should still frame on a phone.
-4. **The window is outside the rest-pose frustum by about 2 degrees.**
+3. **The window is outside the rest-pose frustum by about 2 degrees.**
    04-room-spec.md §4 says the opening is placed "so it peeks past the
-   monitors' right edge"; at `REST_POSE` with FOV 50 it does not appear at all.
-   Owner decision: widen the FOV, move the rest pose, or accept it.
-5. The window frame shows two bright bars along the top and bottom of the
+   monitors' right edge"; at `REST_POSE` with FOV 50 it does not. Owner
+   decision: widen the FOV, move the rest pose, or accept it. Phase 3.7 gives
+   the window a state table, which makes this worth settling first.
+4. The window frame shows two bright bars along the top and bottom of the
    opening — frame geometry catching light, not the pane. Invisible at rest.
-6. **The notebook reads as a silhouette when focused.** Its cover is `BG_PANEL`
-   on a dark desk, which is inside the matte band 06-materials.md §1 allows, so
-   this is a design call rather than a bug. Moving it into the monitor fill
-   helped and was not enough. Owner decision: a lighter cover token, or accept
-   that the panel carries the content.
-7. The headphones and the window are not wrapped. The headphones are a toggle
-   and the focus mode they flip does not exist; the window is glide-only and
-   out of frame at rest. Both need their mechanic before a wrapper means
-   anything.
-8. The focus poses are checked at 16:10. The panel is a fixed 480 px, so it
-   takes a larger share of a narrow window — the composition should be
-   re-checked at around 1024 px wide.
+5. **The notebook reads as a silhouette when focused.** Its cover is `BG_PANEL`
+   on a dark desk, inside the matte band 06-materials.md §1 allows, so this is
+   a design call rather than a bug. Owner decision: a lighter cover token, or
+   accept that the panel carries the content. Phase 3.4 puts the journal there.
+6. The headphones and the window are not wrapped. The headphones are a toggle
+   whose focus mode arrives in 3.8; the window is glide-only and arrives in
+   3.7. Both get their wrapper with their mechanic.
+7. The focus poses are checked at 16:10. The panel is a fixed 480 px, so it
+   takes a larger share of a narrow window — re-check around 1024 px wide.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-20 — both scene gates in CI, and a mislabelled record
+
+`capture:states` and `lighting:test` now run in CI: build, serve, capture every
+state, assert the acceptance test with post-processing on and off, upload the
+frames even on failure. The job was run locally end to end first rather than
+pushed and watched.
+
+**Wiring it up exposed a bad assumption in the committed record.** Against a
+production build the keyboard reads **20.4%** of the lamp pool; against `pnpm
+dev` it read 15.4%. The reduced-motion frames — where bloom is off either way —
+agreed exactly between the two. That pattern only fits one explanation: the
+adaptive-FPS detector trips on a slower dev build and disables bloom, so every
+"effects on" capture taken from `pnpm dev` was an effects-OFF frame wearing an
+effects-ON label. Both halves of the gate had been measuring the same thing.
+
+Fixed by capturing from `pnpm start`, re-recording `captures/local/`, and
+documenting the trap at the top of `capture-states.ts`. CI captures from a
+production build for the same reason. The difference is visible, not just
+numeric: the drawer strips glow and the room reads warmer.
+
+Worth noting what this says about the earlier sessions' numbers — the five
+criteria passed either way, but the effects-on column in the last two entries
+was not measuring what it claimed.
 
 ---
 
