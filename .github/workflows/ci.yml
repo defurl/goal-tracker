@@ -24,9 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here. package.json's `packageManager` field pins pnpm, and
+      # action-setup refuses to run when both are set — which is why every run
+      # of this workflow failed until this was removed.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 11
 
       - uses: actions/setup-node@v4
         with:
@@ -65,9 +66,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here. package.json's `packageManager` field pins pnpm, and
+      # action-setup refuses to run when both are set — which is why every run
+      # of this workflow failed until this was removed.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 11
 
       - uses: actions/setup-node@v4
         with:
@@ -112,14 +114,17 @@ jobs:
         run: pnpm lighting:test ci room-rest-desktop-reduced-motion
 
       # Uploaded on failure too — a failed lighting gate is exactly when someone
-      # needs to see the frame that failed it.
+      # needs to see the frame that failed it. `warn`, not `error`, on an empty
+      # directory: if an earlier step failed there is nothing to upload, and a
+      # second red mark here only buries the first. The capture step already
+      # fails on its own if it produces nothing.
       - name: Upload the captures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: scene-captures
           path: captures/ci/
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Server log
         if: failure()
@@ -137,9 +142,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here. package.json's `packageManager` field pins pnpm, and
+      # action-setup refuses to run when both are set — which is why every run
+      # of this workflow failed until this was removed.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 11
 
       - uses: actions/setup-node@v4
         with:
