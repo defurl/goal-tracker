@@ -12,7 +12,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | | Track A — the room | Track B — the data |
 |---|---|---|
 | Phase 0 | done | done (shared) |
-| Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24; CI job not yet seen on a runner; not on the hosted project). See the 2026-09-24 track B entry |
+| Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI job not yet seen on a runner; migrations 001–016 not on the hosted project). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | B2.1–B2.7 |
 | Phase 3 | blocked: it is sequential and starts at 3.1, which needs track B's data. 3.7 and 3.8 need no data, but the order is LOCKED | |
 
@@ -183,38 +183,43 @@ delete users.
    Postgres grants EXECUTE on new functions to PUBLIC and Supabase adds anon
    and authenticated, so as written in `03-data-model.md` §4 any signed-in user
    could `rpc('award_points', …)` with any user id and any amount. X-6 holds
-   only with the revoke. Same for the seeder. Tested in the X-6 block. Worth an
-   amendment note in §4 so the next reader does not "simplify" it away.
+   only with the revoke. Same for the seeder. Tested in the X-6 block, and
+   noted in `03-data-model.md` §7 so nobody "simplifies" it away.
 2. **`handle_new_user()` is new — PROPOSED.** A trigger on `auth.users` that
    creates the `profiles` row. The spec never says who creates it, and the
    seeder reads FROM profiles, so without it nobody would ever be seeded.
 3. **Every security-definer function pins `search_path`.** Standard hardening;
    not in the spec's SQL.
 
-**Raise with the owner — schema is LOCKED, so these are raises, not patches.**
-Each is a `todo` test, visible in every run:
+**Owner decisions, 2026-09-24 — all raised gaps closed.** Each was a `todo`
+test, shown failing before its fix and passing after; `pnpm test:db` now reads
+41 pass, 0 fail, **0 todo**, stable over repeated runs. Amendment notes are in
+the LOCKED docs, dated, with the original text left intact.
 
-1. **Rows can point at another user's parent rows.** Policies check `user_id`
-   only, so A can insert a `habit_log` on B's habit, a milestone on B's goal, a
-   challenge on B's action — in A's own name. B sees nothing and nothing of B's
-   changes, so the 24 attempts still fail, but a server route that trusts the
-   parent id (award points for `habit_id`) would act on it. Fix: a
-   `with check` that also verifies the parent's owner, on three policies.
-2. **A null `ref_id` defeats award idempotency.** `unique (user_id, event,
-   ref_id, date)` treats NULLs as distinct, so `perfect_day` — which has no
-   natural ref — could be awarded twice a day. Either give it a ref or declare
-   the constraint `nulls not distinct` (Postgres 15+).
-3. **The habit cap has two holes:** the concurrent-insert race already recorded
-   below, and un-archiving — the trigger is `before insert`, so setting
-   `archived_at = null` on an eleventh habit bypasses it.
-4. **`GoalCategory` disagrees across the seam.** `lib/stores/app.ts` has
-   `health | career | learning | personal`; the `goal_category` enum has
-   `health | career | learning | relationships | finance | other`. spec/05 is a
-   shared file, so this needs both tracks to agree before F4 loads goals.
+| raised | decision | where |
+|---|---|---|
+| a row could point at another user's parent row | a fault — forbidden | `014_parent_ownership.sql`: composite foreign keys `(parent_id, user_id)`, so it holds for the service role too. 03 §7 note |
+| a null `ref_id` defeated award idempotency (Perfect Day twice a day) | `nulls not distinct` | `015_award_idempotency.sql`. 03 §4 note |
+| habit cap: concurrent-insert race + un-archive bypass | fix both | `016_habit_cap.sql`: per-user advisory lock, trigger also on `update of archived_at`. The race reproduced every run before the fix. 03 §2 note |
+| `GoalCategory` disagreed with the enum | the schema's six | `lib/stores/app.ts` now derives the type from the generated enum |
+| signed-out visitor to `/` | default room; signed in, their own room | `lib/data/hydrate.ts` + `app/(app)/SessionHydrator.tsx`, re-hydrating on auth events. spec/05 §7 note — shared, track A needs nothing new |
+| how to sign in without menus | corner control, bottom-right (08 §5 global controls) | `app/(app)/AccountControl.tsx`, on the room and `/text`; hides while a panel is open |
 
-**OPEN — asked, not guessed:** does a signed-out visitor to `/` see the empty
-room or get sent to `/login`? spec/05 §7 argues for the room; nothing decides
-it. Middleware refreshes sessions and gates nothing until the owner says.
+**PROPOSED, flag in review:** `hydrate()` records the browser's timezone on a
+profile still at the `UTC` default, so the seeder's midnight is the user's. A
+zone the user set is never overwritten.
+
+**Verified in the browser:** the default room shows `sign in` bottom-right and
+links to `/login`; the form renders; no console errors; no network call without
+a session. **Not verified: the signed-in half** (sign up → own room → sign
+out). The agent does not create accounts or type passwords into sign-in forms,
+even throwaway local ones — the owner walks it once. To do it against the local
+stack rather than the hosted one, put the local URL and anon key from
+`pnpm exec supabase status` in a `.env.local`, which overrides `.env`.
+
+**Scene captures:** with a `.env` configured, the corner control appears in
+local `capture:states` frames; CI has no env, so its frames are unchanged. No
+light-emitting or light-blocking change, so no lighting re-run was needed.
 
 **Owner setup for Google sign-in:** a Google OAuth client, the provider enabled
 in the hosted project's dashboard, and `<site>/auth/callback` in its redirect
