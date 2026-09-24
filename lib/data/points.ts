@@ -7,9 +7,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { leafCountForPoints } from '../growth';
 import type { AppState } from '../stores/app';
+import type { Database } from '../supabase/database.types';
 
 export async function loadPoints(
-  supabase: SupabaseClient,
+  supabase: SupabaseClient<Database>,
   userId: string,
   today: string,
 ): Promise<AppState['points']> {
