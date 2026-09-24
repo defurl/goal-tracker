@@ -126,18 +126,48 @@ describe('seed_daily_challenge() — FR-1.4', () => {
   });
 });
 
-describe('owner decisions 2026-09-24 — 015 fixed; the habit-cap holes still open', () => {
-  it('two concurrent habit inserts cannot both pass the cap at 9', {
-    todo: 'count-then-insert race in enforce_habit_cap(); raised in PROGRESS.md',
-  });
-  it('un-archiving a habit respects the cap', {
-    todo: 'the trigger is before insert only; an update clearing archived_at bypasses it',
-  });
+describe('owner decisions 2026-09-24 — 015 and 016', () => {
   it('an award with no ref is still awarded once per day (015, nulls not distinct)', async () => {
     const u = await createUser('perfect-day');
     const award = { p_user_id: u.id, p_event: 'perfect_day', p_points: 25, p_ref_id: null, p_date: DAY };
     assert.equal((await admin.rpc('award_points', award)).error, null);
     assert.equal((await admin.rpc('award_points', award)).error, null);
     assert.equal(await total(u.id), 25);
+  });
+
+  async function nineActiveHabits() {
+    const u = await createUser('race');
+    const rows = Array.from({ length: 9 }, (_, i) => ({ user_id: u.id, name: `h${i}`, type: 'build' }));
+    const { error } = await admin.from('habits').insert(rows);
+    assert.equal(error, null);
+    return u;
+  }
+
+  async function activeCount(userId: string): Promise<number> {
+    const { count } = await admin.from('habits').select('id', { count: 'exact', head: true })
+      .eq('user_id', userId).is('archived_at', null);
+    return count ?? -1;
+  }
+
+  it('concurrent inserts at nine: exactly one gets the tenth slot (016)', async () => {
+    const u = await nineActiveHabits();
+    const results = await Promise.all(
+      Array.from({ length: 5 }, (_, i) =>
+        u.client.from('habits').insert({ user_id: u.id, name: `racer ${i}`, type: 'build' })),
+    );
+    assert.equal(results.filter((r) => r.error === null).length, 1);
+    assert.equal(await activeCount(u.id), 10);
+  });
+
+  it('un-archiving a habit respects the cap (016)', async () => {
+    const u = await nineActiveHabits();
+    const { data: old } = await u.client.from('habits')
+      .insert({ user_id: u.id, name: 'old', type: 'build', archived_at: new Date().toISOString() })
+      .select().single();
+    await u.client.from('habits').insert({ user_id: u.id, name: 'tenth', type: 'build' });
+
+    const revived = await u.client.from('habits').update({ archived_at: null }).eq('id', old?.id);
+    assert.match(revived.error?.message ?? '', /habit_cap_reached/);
+    assert.equal(await activeCount(u.id), 10);
   });
 });
