@@ -126,14 +126,18 @@ describe('seed_daily_challenge() — FR-1.4', () => {
   });
 });
 
-describe('known gaps — raised with the owner, not patched (03-data-model.md is LOCKED)', () => {
+describe('owner decisions 2026-09-24 — 015 fixed; the habit-cap holes still open', () => {
   it('two concurrent habit inserts cannot both pass the cap at 9', {
     todo: 'count-then-insert race in enforce_habit_cap(); raised in PROGRESS.md',
   });
   it('un-archiving a habit respects the cap', {
     todo: 'the trigger is before insert only; an update clearing archived_at bypasses it',
   });
-  it('an award with a null ref_id is still idempotent', {
-    todo: 'unique (user_id, event, ref_id, date) treats nulls as distinct; perfect_day needs a ref or NULLS NOT DISTINCT',
+  it('an award with no ref is still awarded once per day (015, nulls not distinct)', async () => {
+    const u = await createUser('perfect-day');
+    const award = { p_user_id: u.id, p_event: 'perfect_day', p_points: 25, p_ref_id: null, p_date: DAY };
+    assert.equal((await admin.rpc('award_points', award)).error, null);
+    assert.equal((await admin.rpc('award_points', award)).error, null);
+    assert.equal(await total(u.id), 25);
   });
 });
