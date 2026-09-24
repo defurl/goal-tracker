@@ -12,7 +12,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | | Track A — the room | Track B — the data |
 |---|---|---|
 | Phase 0 | done | done (shared) |
-| Phase 1 | done — A1.1–A1.6, gate TRUE | **B1.1–B1.6 — next** |
+| Phase 1 | done — A1.1–A1.6, gate TRUE | **in progress** — B1.1, B1.6 committed; B1.2–B1.4 + the gate written, **not yet run**; B1.5 blocked on the CLI. See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | B2.1–B2.7 |
 | Phase 3 | blocked: it is sequential and starts at 3.1, which needs track B's data. 3.7 and 3.8 need no data, but the order is LOCKED | |
 
@@ -24,6 +24,9 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 ---
 
 ### Next phase: Phase 1 track B — the data foundation
+
+> **Started 2026-09-24 — read the track B entry below first.** The brief that
+> follows is the original handoff and still holds.
 
 **Use a fresh agent.** This one held track A through Phases 1 and 2, and
 `06-build-plan.md` §4 forbids one agent holding both tracks in a phase: "the
@@ -117,6 +120,107 @@ pnpm bundle:check          # needs a build; stop any dev server first, they shar
    releases exist.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-24 — Phase 1 track B: schema, gate and auth written; gate not yet run
+
+**Resume here for track B.** Everything below is on disk. What is committed
+passed lint, colour lint, typecheck, build and both bundle budgets; what is not
+committed has never executed, because no local stack could be started.
+
+| task | state | where |
+|---|---|---|
+| B1.1 auth, SSR sessions | committed (5 commits) | `lib/supabase/`, `middleware.ts`, `app/auth/`, `app/(auth)/` |
+| B1.2 migrations 001–011 | **written, uncommitted, unrun** | `supabase/migrations/` |
+| B1.3 migration 012, RLS | **written, uncommitted, unrun** | `supabase/migrations/012_rls_policies.sql` |
+| B1.4 migration 013 | **written, uncommitted, unrun** | `supabase/migrations/013_functions.sql` |
+| B1.5 generated types | **blocked** — needs the CLI | `lib/supabase/database.types.ts` |
+| B1.6 `lib/data/` skeleton | committed | `lib/data/` — hydrates clock + points |
+| gate | **written, unrun** | `supabase/tests/isolation.test.ts`, `pnpm test:db`, CI job `database` |
+
+**Why unrun.** The Docker daemon was not running and the Supabase CLI is not
+installed. `pnpm add -D supabase` was refused by the agent's permission
+classifier twice — once before and once after the owner approved it — so it
+was not worked around. **To unblock, run it yourself:**
+
+```
+pnpm add -D supabase        # pnpm may ask to approve its postinstall; allow it
+# start Docker Desktop
+pnpm exec supabase start
+pnpm test:db                # the gate: 24 isolation tests + controls + 013 tests
+```
+
+Then commit the migrations one per file, the tests, `scripts/test-db.ts`, the
+`test:db` script, the `tsconfig.json` change (`allowImportingTsExtensions`, so
+Node's native type-stripping can import `./harness.ts`) and the CI job — only
+once `pnpm test:db` is green. Then B1.5: add
+`"db:types": "supabase gen types typescript --local > lib/supabase/database.types.ts"`,
+run it, commit the output, and type the clients with `Database`. CI uses
+`supabase/setup-cli@v1` at `latest`; pin it to the devDep's version once that
+lands.
+
+**The migrations are not on the hosted project.** Owner decision this session:
+review 012 before anything is pushed. Pushing needs `supabase link` with the
+database password, which the owner runs.
+
+**How the gate is built.** User B gets one seeded row in every table. A then
+tries, per table, one read and one write — and "write" means insert in B's
+name, update B's row AND delete B's row; all three must fail. Inserts must fail
+with Postgres `42501`, not merely fail, so a check constraint cannot pass for
+isolation. Every refusal is confirmed from the service-role side by reading
+B's row back unchanged. A control asserts A can read its own profile, so a
+broken session cannot make every read "pass" by returning nothing. The harness
+refuses any URL that is not `127.0.0.1`/`localhost`: the tests create and
+delete users.
+
+**Beyond the spec text — each flagged, none routed around:**
+
+1. **`award_points()` has EXECUTE revoked from `anon` and `authenticated`.**
+   Postgres grants EXECUTE on new functions to PUBLIC and Supabase adds anon
+   and authenticated, so as written in `03-data-model.md` §4 any signed-in user
+   could `rpc('award_points', …)` with any user id and any amount. X-6 holds
+   only with the revoke. Same for the seeder. Tested in the X-6 block. Worth an
+   amendment note in §4 so the next reader does not "simplify" it away.
+2. **`handle_new_user()` is new — PROPOSED.** A trigger on `auth.users` that
+   creates the `profiles` row. The spec never says who creates it, and the
+   seeder reads FROM profiles, so without it nobody would ever be seeded.
+3. **Every security-definer function pins `search_path`.** Standard hardening;
+   not in the spec's SQL.
+
+**Raise with the owner — schema is LOCKED, so these are raises, not patches.**
+Each is a `todo` test, visible in every run:
+
+1. **Rows can point at another user's parent rows.** Policies check `user_id`
+   only, so A can insert a `habit_log` on B's habit, a milestone on B's goal, a
+   challenge on B's action — in A's own name. B sees nothing and nothing of B's
+   changes, so the 24 attempts still fail, but a server route that trusts the
+   parent id (award points for `habit_id`) would act on it. Fix: a
+   `with check` that also verifies the parent's owner, on three policies.
+2. **A null `ref_id` defeats award idempotency.** `unique (user_id, event,
+   ref_id, date)` treats NULLs as distinct, so `perfect_day` — which has no
+   natural ref — could be awarded twice a day. Either give it a ref or declare
+   the constraint `nulls not distinct` (Postgres 15+).
+3. **The habit cap has two holes:** the concurrent-insert race already recorded
+   below, and un-archiving — the trigger is `before insert`, so setting
+   `archived_at = null` on an eleventh habit bypasses it.
+4. **`GoalCategory` disagrees across the seam.** `lib/stores/app.ts` has
+   `health | career | learning | personal`; the `goal_category` enum has
+   `health | career | learning | relationships | finance | other`. spec/05 is a
+   shared file, so this needs both tracks to agree before F4 loads goals.
+
+**OPEN — asked, not guessed:** does a signed-out visitor to `/` see the empty
+room or get sent to `/login`? spec/05 §7 argues for the room; nothing decides
+it. Middleware refreshes sessions and gates nothing until the owner says.
+
+**Owner setup for Google sign-in:** a Google OAuth client, the provider enabled
+in the hosted project's dashboard, and `<site>/auth/callback` in its redirect
+URLs. Email sign-in needs nothing further.
+
+**Proposed, blocked by tooling:** a `no-restricted-syntax` rule failing any
+`useAppStore.setState` outside `lib/data/`, which would make spec/05 §6
+mechanical. The agent's config-protection hook refuses edits to
+`eslint.config.mjs`, even tightening ones; the owner can add it.
 
 ---
 
