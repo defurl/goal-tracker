@@ -285,6 +285,14 @@ screens with rotating tips, and because the room's whole proposition is that it
 is a space you enter rather than a page that loads. **A new user and a loading
 user see the same room.** The only difference is what arrives in it.
 
+> **Amendment, 2026-09-24 (owner decision): a signed-out visitor gets the
+> default room, not a redirect.** `/` is never gated. Signed out, the store
+> holds `initialAppState` — the same empty room a new user sees. Signing in
+> hydrates that user's own data into the same room; signing out returns it to
+> the default. `lib/data/` does both, driven by Supabase auth events, so no
+> route or scene object has to know who is signed in. Shared change: track A
+> needs nothing new, because the default room is the state it already renders.
+
 Offline (`offline: true`): the room renders from the last cached store snapshot
 and the `/text` route serves the shell. Nothing in the 3D layer indicates
 offline state — the corner furniture does, per `08-interaction-grammar.md` §5.
