@@ -1,0 +1,30 @@
+# Supabase CLI configuration — the LOCAL stack only (`supabase start`).
+#
+# The hosted project (see .env.example) is configured in its dashboard, not
+# here. Anything omitted takes the CLI's default.
+
+project_id = "be-better-everyday"
+
+[db]
+major_version = 17
+
+[db.seed]
+# No seed data. The tests create their own users and delete them afterwards.
+enabled = false
+
+[auth]
+site_url = "http://localhost:3000"
+# The OAuth and email-confirmation return path — app/auth/callback/route.ts.
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+
+[auth.email]
+enable_signup = true
+# Local only: no mail server to confirm against. The hosted project confirms.
+enable_confirmations = false
+
+[auth.external.google]
+# Needs a Google OAuth client. Enabled on the hosted project; locally the email
+# path is enough to exercise sessions and RLS.
+enabled = false
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
