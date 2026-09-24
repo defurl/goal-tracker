@@ -1,0 +1,108 @@
+/* Auth pages. A single column on the night background — no card, no centred
+   modal (11-anti-patterns.md). Every colour is a token. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-3);
+
+  width: 100%;
+  max-width: 24rem;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: var(--step-6) var(--step-3) var(--step-4);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--step-5);
+  line-height: 1.1;
+  color: var(--ink-paper);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-2);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* The mono label voice from 02-typography.md. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+}
+
+.input {
+  padding: 0.6rem 0;
+  font-size: var(--step-1-up);
+  color: var(--ink-paper);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-ghost);
+  transition: border-color var(--dur-ui) var(--ease-ui);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--signal);
+}
+
+.submit,
+.secondary,
+.switch {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--ink-ghost);
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.submit {
+  margin-top: var(--step-1);
+  color: var(--signal);
+  border-color: var(--signal-dim);
+}
+
+.secondary,
+.switch {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.submit:hover,
+.submit:focus-visible,
+.secondary:hover,
+.secondary:focus-visible,
+.switch:hover,
+.switch:focus-visible {
+  color: var(--signal-hot);
+  border-color: var(--signal);
+  outline: none;
+}
+
+.submit:disabled,
+.secondary:disabled {
+  color: var(--ink-faint);
+  border-color: var(--ink-ghost);
+  cursor: default;
+}
+
+.message {
+  color: var(--ink-muted);
+  max-width: 34ch;
+}
