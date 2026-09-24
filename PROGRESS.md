@@ -6,52 +6,88 @@
 
 ## Start of next session
 
-**State:** Phase 0 complete. **Phase 1 track A is complete** — room, seven desk
-objects, window, four atmosphere layers, `InteractiveObject`, per-object focus
-poses, the 480 px detail panel, and `capture:states`. Four objects wired end to
-end. **Both scene gates now run in CI.** Track B has not started.
+**State.** The two tracks are at very different points, and the phase labels
+in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 
-**A2 gate, all items TRUE**
-- lighting acceptance test passes with post-processing on and off
-- every interactive object is tab-reachable and activates with Enter/Space
-- labels suppress while a panel is open
-- monitor 2 no longer floats above the desk (`04-room-spec.md` §1)
+| | Track A — the room | Track B — the data |
+|---|---|---|
+| Phase 0 | done | done (shared) |
+| Phase 1 | done — A1.1–A1.6, gate TRUE | **B1.1–B1.6 — next** |
+| Phase 2 | done — A2.1–A2.6, gate TRUE | B2.1–B2.7 |
+| Phase 3 | blocked: it is sequential and starts at 3.1, which needs track B's data. 3.7 and 3.8 need no data, but the order is LOCKED | |
+
+**CI is green, for the first time.** All three jobs pass on a real runner:
+`verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
+`colour-lint-self-test` (all three failure modes still fail). Until
+2026-09-24 every run had failed before any project code executed.
 
 ---
 
-### Next: track B, then Phase 3
+### Next phase: Phase 1 track B — the data foundation
 
-**Track B is unblocked.** The Supabase project exists:
-`https://nosifadaldhgjeyzhpao.supabase.co`, recorded in `.env.example`. Put the
-anon key and the service-role key in your own `.env.local` — it is gitignored
-and keys never enter this repo.
+**Use a fresh agent.** This one held track A through Phases 1 and 2, and
+`06-build-plan.md` §4 forbids one agent holding both tracks in a phase: "the
+data work gets an uninterrupted run at RLS." Track B touches `app/api/`,
+`lib/` and `supabase/`; it should not need to open `scene/` at all.
 
-> **Nothing protects that project yet.** The RLS policies are migration 012 and
-> have not been written. Do not put real data in before B1.3.
+**Project:** `https://nosifadaldhgjeyzhpao.supabase.co`, already in
+`.env.example`. Anon and service-role keys go in `.env.local` (gitignored) —
+never in the repo, never in a commit.
 
-Track B is `06-build-plan.md` §"Phase 1 · Track B", B1.1–B1.6: auth with SSR
-sessions, migrations 001–011, RLS as one reviewable file, the three functions,
-generated `database.types.ts`, then `lib/data/` as the only writer to
-`useAppStore`.
+> **Nothing protects that project yet.** RLS is migration 012 and is not
+> written. No real data before B1.3 lands.
 
-**Its gate is the cross-user isolation test** — authenticated as user A, try to
-read AND write all 12 tables as user B; all 24 attempts must fail, as an
-automated test rather than a manual check. Treat that as the deliverable, not
-an afterthought: it is the one gate in the plan that is about other people's
-data.
+**Tasks** (`06-build-plan.md` Phase 1 · Track B, schema in `03-data-model.md`):
+B1.1 auth, email + Google OAuth, SSR sessions · B1.2 migrations 001–011 ·
+B1.3 migration 012, every RLS policy in one reviewable file · B1.4 migration
+013, `award_points()`, `enforce_habit_cap()`, `seed_daily_challenge()` · B1.5
+generated `database.types.ts`, committed · B1.6 `lib/data/` as the only writer
+to `useAppStore`.
 
-**Then Phase 3** (3.1–3.8), sequential, one mechanic at a time, re-running the
-lighting acceptance test after **each** one — this is the phase most likely to
-break the room. Two rows carry their own warnings: 3.1 raises monitor 1's
-emissive to 1.4 and says to verify criterion 1 at that value and lower the
-ceiling if the lamp pool loses primacy; 3.6 is the bonsai, second to last on
-purpose. `lib/growth.ts` already exists and is verified monotonic.
+**Gate:** the cross-user isolation test. As user A, read AND write all 12
+tables as user B; **all 24 attempts must fail**, as an automated test. This is
+the one gate in the plan about other people's data — treat it as the
+deliverable.
 
-**One agent must not hold both tracks** (`06-build-plan.md` §4).
+**Constraints enforced in the schema on purpose** — LOCKED, and each is a
+breach if routed around:
+- `journal_entries` has **no column able to hold entry text** (FR-3.6). Only
+  the AI summary is stored. Never log the body of `/api/agent/reflect`.
+- `CHECK (points_awarded >= 0)` — no negative points (D-08).
+- Points are written only through `award_points()`; `point_ledger` and
+  `glow_points` are select-only to the user (X-6).
+- `rate_limits` has **no user policy at all** — a user who can write their own
+  rate-limit row has no rate limit.
+- Habits are archived via `archived_at`, never deleted; deletion would orphan
+  logs and rewrite the history the wall grid shows.
+
+**Three things in the spec the track B agent should know first:**
+1. **Which phase owns the isolation test is stated two ways.**
+   `03-data-model.md` §7 says "Phase 2 does not pass until this test does";
+   `06-build-plan.md` makes it **Phase 1 track B's gate**. The build plan is
+   the document LOCKED for sequencing, so it governs: do not defer the test to
+   Phase 2.
+2. `03-data-model.md` §1 annotates migration 013 as `award_points(),
+   seed_daily_challenge()` and omits `enforce_habit_cap()`. Not a conflict — §2
+   defines it and assigns it to 013, and the build plan lists all three. An
+   incomplete comment. Build all three.
+3. **Raise with the owner, do not fix unilaterally:** `enforce_habit_cap()`
+   counts and then inserts, so two concurrent inserts can both see 9 and both
+   succeed, leaving 11 active habits. Low impact — one extra habit, and it needs
+   deliberate concurrency — but it is the schema's own invariant failing. The
+   schema is LOCKED, so this is a raise, not a patch.
+
+**Then** Phase 2 track B (B2.1–B2.7: prompts and Zod schemas,
+`AgentProvider`, `/api/agent/extract` with SSRF guards, `/api/agent/reflect`
+with no body logging, atomic rate limiting, `agent_logs`, the hourly seeder).
+**Then Phase 3**, which needs both tracks: sequential, re-running the lighting
+test after each mechanic.
+
+---
 
 **Commands**
 ```
-pnpm build && pnpm start   # captures MUST come from a production build, see below
+pnpm build && pnpm start   # captures MUST come from a production build
 pnpm capture:states        # in another terminal; writes captures/local/
 pnpm lighting:test                                          # effects on
 pnpm lighting:test local room-rest-desktop-reduced-motion   # effects off
@@ -59,29 +95,60 @@ pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build
 pnpm bundle:check          # needs a build; stop any dev server first, they share .next
 ```
 
-**Carried debt, none blocking**
-1. Track B needs its keys in `.env.local` and migration 012 before real data.
-2. The mobile capture is framed tight: the camera pose is not adjusted for
+**Carried debt — track A, none blocking track B**
+1. The mobile capture is framed tight: the camera pose is not adjusted for
    portrait, so the desk crops. `/text` is the mobile fast path (D-07), but the
    room should still frame on a phone.
-3. **The window is outside the rest-pose frustum by about 2 degrees.**
-   04-room-spec.md §4 says the opening is placed "so it peeks past the
-   monitors' right edge"; at `REST_POSE` with FOV 50 it does not. Owner
-   decision: widen the FOV, move the rest pose, or accept it. Phase 3.7 gives
-   the window a state table, which makes this worth settling first.
-4. The window frame shows two bright bars along the top and bottom of the
+2. **The window is outside the rest-pose frustum by about 2 degrees.**
+   `04-room-spec.md` §4 says the opening "peeks past the monitors' right edge";
+   at `REST_POSE` with FOV 50 it does not. Owner decision, worth settling before
+   Phase 3.7 gives the window a state table.
+3. The window frame shows two bright bars along the top and bottom of the
    opening — frame geometry catching light, not the pane. Invisible at rest.
-5. **The notebook reads as a silhouette when focused.** Its cover is `BG_PANEL`
-   on a dark desk, inside the matte band 06-materials.md §1 allows, so this is
-   a design call rather than a bug. Owner decision: a lighter cover token, or
-   accept that the panel carries the content. Phase 3.4 puts the journal there.
-6. The headphones and the window are not wrapped. The headphones are a toggle
-   whose focus mode arrives in 3.8; the window is glide-only and arrives in
-   3.7. Both get their wrapper with their mechanic.
-7. The focus poses are checked at 16:10. The panel is a fixed 480 px, so it
+4. **The notebook reads as a silhouette when focused.** Its `BG_PANEL` cover is
+   inside the matte band `06-materials.md` §1 allows, so this is a design call.
+   Owner decision before Phase 3.4 puts the journal there.
+5. The headphones and the window are not wrapped. Each gets its wrapper with its
+   mechanic (3.8 and 3.7).
+6. The focus poses are checked at 16:10. The panel is a fixed 480 px, so it
    takes a larger share of a narrow window — re-check around 1024 px wide.
+7. GitHub forces `actions/checkout@v4` and `pnpm/action-setup@v4` onto Node 24
+   and warns they target Node 20. Harmless today; bump them when Node-24-native
+   releases exist.
 
 **Do not** let one agent hold both tracks in a phase (`06-build-plan.md` §4).
+
+---
+
+## 2026-09-24 — pushed, CI green for the first time, and a relabelling
+
+Pushed 44 commits — all `defurl`, no attribution, work address absent, checked
+before the push rather than after.
+
+**CI had never passed.** Both runs in the project's history failed at
+`pnpm/action-setup@v4`, before any project code ran: the workflow set
+`version: 11` while `package.json` pins `packageManager: pnpm@11.1.2`, and the
+action refuses to run with both. So every "the gate runs in CI" statement in
+this file — including Phase 0's claim that the colour-lint self-test is
+asserted in CI — was true of the config and never true of a runner. Nobody had
+looked at a run. Fixed by letting `package.json` be the single source; the next
+run passed all three jobs, and each gate step was confirmed individually rather
+than read off the overall conclusion.
+
+**The phase labels were wrong.** A2.x are Phase **2** track A tasks, not
+Phase 1. Track A has finished two phases while track B has not started its
+first, which is what "next phase" actually means now: Phase 1 track B, under a
+fresh agent.
+
+Also this session:
+- `06-build-plan.md` gained a dated amendment: every lighting gate is measured
+  against a production build. Given the dev-server trap found on 2026-09-20,
+  the plan's "effects on and off" had been testing "off" twice.
+- `.env.example` cited `spec/02-data-model.md`; the file is `03-data-model.md`.
+- `6ce160b` carries a second change its message does not mention: the capture
+  upload moved from `error` to `warn` on an empty directory. It was pushed
+  before that was noticed, so it is recorded here rather than by rewriting
+  public history.
 
 ---
 
