@@ -100,11 +100,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "daily_challenges_action_id_fkey"
-            columns: ["action_id"]
+            foreignKeyName: "daily_challenges_action_owner_fkey"
+            columns: ["action_id", "user_id"]
             isOneToOne: false
             referencedRelation: "user_actions"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "user_id"]
           },
         ]
       }
@@ -192,11 +192,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "habit_logs_habit_id_fkey"
-            columns: ["habit_id"]
+            foreignKeyName: "habit_logs_habit_owner_fkey"
+            columns: ["habit_id", "user_id"]
             isOneToOne: false
             referencedRelation: "habits"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "user_id"]
           },
         ]
       }
@@ -311,11 +311,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "milestones_goal_id_fkey"
-            columns: ["goal_id"]
+            foreignKeyName: "milestones_goal_owner_fkey"
+            columns: ["goal_id", "user_id"]
             isOneToOne: false
             referencedRelation: "goals"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "user_id"]
           },
         ]
       }

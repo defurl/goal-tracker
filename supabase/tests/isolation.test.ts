@@ -249,13 +249,39 @@ describe('X-6: points are awarded server-side only', () => {
   });
 });
 
-describe('known gaps — raised with the owner, not patched (03-data-model.md is LOCKED)', () => {
-  // The owner-scoped policies check user_id only. A can insert a row in its OWN
-  // name that references B's parent row: a habit_log on B's habit, a milestone
-  // on B's goal, a challenge on B's action. B sees none of it and nothing of B's
-  // is read or changed, so the 24 attempts above still fail — but A's data can
-  // point into B's, and server code that trusts the parent id would act on it.
-  it('A cannot attach its own rows to B\'s parent rows', {
-    todo: 'needs a parent-ownership check in 012; raised in PROGRESS.md',
+describe('a child row belongs to its parent\'s owner — 014_parent_ownership.sql', () => {
+  // The policies check user_id only, so without 014 A could insert a row in its
+  // OWN name pointing at B's parent: a habit_log on B's habit, a milestone on
+  // B's goal, a challenge on B's action. Nothing of B's would be read or
+  // changed, but server code trusting the parent id would act on it. The
+  // composite foreign keys make that row impossible to store at all.
+  const FK_VIOLATION = '23503';
+
+  async function parentsOfB() {
+    const [habit, goal, action] = await Promise.all([
+      admin.from('habits').select('id').eq('user_id', b.id).limit(1).single<Row>(),
+      admin.from('goals').select('id').eq('user_id', b.id).limit(1).single<Row>(),
+      admin.from('user_actions').select('id').eq('user_id', b.id).limit(1).single<Row>(),
+    ]);
+    return { habitId: habit.data?.id, goalId: goal.data?.id, actionId: action.data?.id };
+  }
+
+  it('A cannot attach its own rows to B\'s parent rows', async () => {
+    const { habitId, goalId, actionId } = await parentsOfB();
+    const attempts = await Promise.all([
+      a.client.from('habit_logs')
+        .insert({ habit_id: habitId, user_id: a.id, date: NEXT_DAY, completed: true }),
+      a.client.from('milestones').insert({ goal_id: goalId, user_id: a.id, title: 'Attached' }),
+      a.client.from('daily_challenges')
+        .insert({ user_id: a.id, action_id: actionId, date: NEXT_DAY }),
+    ]);
+    for (const { error } of attempts) assert.equal(error?.code, FK_VIOLATION);
+  });
+
+  it('holds for the service role too — it is the schema, not a policy', async () => {
+    const { habitId } = await parentsOfB();
+    const { error } = await admin.from('habit_logs')
+      .insert({ habit_id: habitId, user_id: a.id, date: NEXT_DAY, completed: true });
+    assert.equal(error?.code, FK_VIOLATION);
   });
 });
