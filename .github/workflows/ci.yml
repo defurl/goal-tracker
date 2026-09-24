@@ -1,8 +1,10 @@
-# Three jobs:
+# Four jobs:
 #   verify              the Phase 0 gate — lint, colour discipline, types, build,
 #                       bundle budgets
 #   scene-capture       the scene's own gate — screenshots every state and runs
 #                       the lighting acceptance test against them
+#   database            the track B gate — cross-user isolation over all twelve
+#                       tables, and the 013 functions, on a fresh local stack
 #   colour-lint-self-test
 #                       asserts the colour lint still FAILS on each of the three
 #                       things it is supposed to catch
@@ -133,6 +135,52 @@ jobs:
       - name: Stop the server
         if: always()
         run: pkill -f 'next start' || true
+
+  # The Phase 1 track B gate (06-build-plan.md): as user A, read and write all
+  # twelve tables as user B, and all 24 attempts must fail. Plus the behaviour of
+  # 013_functions.sql. Runs against a fresh local stack built from
+  # supabase/migrations/, never against the hosted project — the harness
+  # refuses any non-local URL.
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` here. package.json's `packageManager` field pins pnpm, and
+      # action-setup refuses to run when both are set — which is why every run
+      # of this workflow failed until this was removed.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # The CLI is a devDependency, so CI runs the version the lockfile pins —
+      # the same one that generated the committed types.
+      - run: pnpm install --frozen-lockfile
+
+      # Only what the tests touch: Postgres, auth, PostgREST and the gateway.
+      # The rest of the stack costs minutes of image pulls for nothing.
+      - name: Start the local stack and apply every migration
+        run: pnpm exec supabase start -x studio,imgproxy,realtime,storage-api,edge-runtime,logflare,vector,supavisor
+
+      - name: Cross-user isolation gate and function tests
+        run: pnpm test:db
+
+      # 03-data-model.md §8: regenerate on every migration. A migration
+      # committed without its types fails here instead of at runtime.
+      - name: Generated types match the migrations
+        run: |
+          pnpm db:types
+          if ! git diff --exit-code lib/supabase/database.types.ts; then
+            echo "::error::lib/supabase/database.types.ts is stale. Run pnpm db:types and commit it."
+            exit 1
+          fi
+
+      - name: Stop the stack
+        if: always()
+        run: pnpm exec supabase stop --no-backup
 
   # The colour lint is the one piece of the visual contract that is mechanical
   # rather than remembered. If it ever stops failing, it stops being worth having,
