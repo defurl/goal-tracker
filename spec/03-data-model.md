@@ -136,6 +136,13 @@ create trigger habits_cap before insert on habits
 `archived_at` rather than deletion: deleting a habit would orphan its logs and
 silently rewrite the user's history, which the wall grid displays.
 
+> **Amendment, 2026-09-24 (owner decision): the cap has no way round it.** The
+> trigger above counts and then inserts, so two inserts at nine could both
+> pass; and it fired on INSERT only, so un-archiving an old habit made an
+> eleventh. `016_habit_cap.sql` fires it on `insert or update of archived_at`
+> and takes a per-user `pg_advisory_xact_lock` before counting. Asserted in
+> `supabase/tests/functions.test.ts`, including five concurrent inserts at nine.
+
 ### habit_logs
 
 ```sql
@@ -227,6 +234,12 @@ create table glow_points (
 The `unique (user_id, event, ref_id, date)` constraint is what makes
 AC-2.3 ("does not award it twice") and AC-4.2 true by construction rather than
 by careful application code.
+
+> **Amendment, 2026-09-24 (owner decision): `nulls not distinct`.** Postgres
+> treats NULLs as distinct in a unique constraint, so an award with no natural
+> `ref_id` — Perfect Day — could land twice in one day. `015_award_idempotency.sql`
+> redeclares the constraint `unique nulls not distinct (...)` (Postgres 15+).
+> `award_points()` is unchanged.
 
 ### The ledger
 
