@@ -12,7 +12,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | | Track A — the room | Track B — the data |
 |---|---|---|
 | Phase 0 | done | done (shared) |
-| Phase 1 | done — A1.1–A1.6, gate TRUE | **in progress** — B1.1, B1.6 committed; B1.2–B1.4 + the gate written, **not yet run**; B1.5 blocked on the CLI. See the 2026-09-24 track B entry |
+| Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24; CI job not yet seen on a runner; not on the hosted project). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | B2.1–B2.7 |
 | Phase 3 | blocked: it is sequential and starts at 3.1, which needs track B's data. 3.7 and 3.8 need no data, but the order is LOCKED | |
 
@@ -125,44 +125,47 @@ pnpm bundle:check          # needs a build; stop any dev server first, they shar
 
 ## 2026-09-24 — Phase 1 track B: schema, gate and auth written; gate not yet run
 
-**Resume here for track B.** Everything below is on disk. What is committed
-passed lint, colour lint, typecheck, build and both bundle budgets; what is not
-committed has never executed, because no local stack could be started.
+**Phase 1 track B is done locally; the gate reads TRUE.** All six tasks are
+committed (one commit per migration). Not pushed.
 
 | task | state | where |
 |---|---|---|
-| B1.1 auth, SSR sessions | committed (5 commits) | `lib/supabase/`, `middleware.ts`, `app/auth/`, `app/(auth)/` |
-| B1.2 migrations 001–011 | **written, uncommitted, unrun** | `supabase/migrations/` |
-| B1.3 migration 012, RLS | **written, uncommitted, unrun** | `supabase/migrations/012_rls_policies.sql` |
-| B1.4 migration 013 | **written, uncommitted, unrun** | `supabase/migrations/013_functions.sql` |
-| B1.5 generated types | **blocked** — needs the CLI | `lib/supabase/database.types.ts` |
-| B1.6 `lib/data/` skeleton | committed | `lib/data/` — hydrates clock + points |
-| gate | **written, unrun** | `supabase/tests/isolation.test.ts`, `pnpm test:db`, CI job `database` |
-
-**Why unrun.** The Docker daemon was not running and the Supabase CLI is not
-installed. `pnpm add -D supabase` was refused by the agent's permission
-classifier twice — once before and once after the owner approved it — so it
-was not worked around. **To unblock, run it yourself:**
+| B1.1 auth, SSR sessions | done | `lib/supabase/`, `middleware.ts`, `app/auth/`, `app/(auth)/` |
+| B1.2 migrations 001–011 | done, applied cleanly to a fresh local stack | `supabase/migrations/` |
+| B1.3 migration 012, RLS | done | `supabase/migrations/012_rls_policies.sql` |
+| B1.4 migration 013 | done, behaviour tested | `supabase/migrations/013_functions.sql` |
+| B1.5 generated types | done, threaded through the clients | `lib/supabase/database.types.ts`, `pnpm db:types` |
+| B1.6 `lib/data/` skeleton | done | `lib/data/` — hydrates clock + points |
+| **gate** | **TRUE — 24/24** | `supabase/tests/isolation.test.ts`, `pnpm test:db` |
 
 ```
-pnpm add -D supabase        # pnpm may ask to approve its postinstall; allow it
-# start Docker Desktop
-pnpm exec supabase start
-pnpm test:db                # the gate: 24 isolation tests + controls + 013 tests
+pnpm test:db   40 tests · 36 pass · 0 fail · 4 todo (the known gaps below)
 ```
 
-Then commit the migrations one per file, the tests, `scripts/test-db.ts`, the
-`test:db` script, the `tsconfig.json` change (`allowImportingTsExtensions`, so
-Node's native type-stripping can import `./harness.ts`) and the CI job — only
-once `pnpm test:db` is green. Then B1.5: add
-`"db:types": "supabase gen types typescript --local > lib/supabase/database.types.ts"`,
-run it, commit the output, and type the clients with `Database`. CI uses
-`supabase/setup-cli@v1` at `latest`; pin it to the devDep's version once that
-lands.
+**The gate was shown to be able to fail**, because a gate that passes on its
+first run could be passing vacuously. With `own_habits` replaced by
+`using (true)` on the live local database, exactly two tests failed —
+`read habits as B` and `write habits as B` — and nothing else. `supabase db
+reset` restored the migrations and the run went green again.
 
-**The migrations are not on the hosted project.** Owner decision this session:
-review 012 before anything is pushed. Pushing needs `supabase link` with the
-database password, which the owner runs.
+**Local stack:** `pnpm exec supabase start` (Docker Desktop must be running),
+then `pnpm test:db`. The CLI is a devDependency, 2.117.0; CI runs the same
+pinned version.
+
+**Not yet verified on a runner.** The CI `database` job starts a local stack,
+runs `pnpm test:db`, and fails if `database.types.ts` no longer matches the
+migrations. It has run only locally in pieces, never on GitHub — confirm the
+first run step by step, as the 2026-09-24 CI entry below learned to.
+
+**Before pushing to `main`: check the Supabase GitHub integration.** The hosted
+project is linked to `defurl/goal-tracker`. If its "deploy to production"
+option is on, pushing `supabase/migrations/` to `main` applies them to the
+hosted database — which the owner wanted to review first. Confirm it is off, or
+review 012 and accept that the push deploys it. Otherwise pushing migrations
+means `supabase link` with the database password, which the owner runs.
+
+**The hosted project has no schema yet** — no tables, so nothing exposed. No
+real data until 012 is live there.
 
 **How the gate is built.** User B gets one seeded row in every table. A then
 tries, per table, one read and one write — and "write" means insert in B's
