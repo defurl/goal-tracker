@@ -147,6 +147,20 @@ is worth reusing.
 > monitor textures behind the gate. What moved is where the measurement happens,
 > not what it licenses.
 
+> **Amendment, 2026-09-24 (owner-instructed; verification, not sequencing):
+> every lighting gate is measured against a production build.** Captures taken
+> from `pnpm dev` are not valid evidence for this test. The adaptive-FPS detector
+> trips on a dev build and disables bloom, so a dev capture labelled "effects
+> on" is an effects-off frame: measured, the keyboard read 15.4% of the lamp pool
+> from `pnpm dev` and 20.4% from `pnpm start`, while the reduced-motion frames —
+> bloom off either way — agreed exactly. The "on and off" requirement in the
+> Phase 2 gate was, in practice, testing "off" twice.
+>
+> This applies to every re-run the plan asks for: this gate, the Phase 2 track A
+> gate, and each of the eight Phase 3 mechanics. `capture:states` documents it,
+> and the `scene-capture` CI job builds and serves before capturing, so a pull
+> request cannot pass on dev-server evidence. **Sequencing is unchanged.**
+
 #### Track B · Data foundation
 
 | # | Task |
