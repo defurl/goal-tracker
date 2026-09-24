@@ -1,22 +1,54 @@
-// First load (spec/05 §7). Until it completes, `hydrated` is false and the room
-// renders fully lit with empty state — a new user and a loading user see the
-// same room. The only difference is what arrives in it.
+// First load, and every sign-in and sign-out after it (spec/05 §7).
+//
+// Owner decision 2026-09-24: `/` is never gated. Signed out, the store holds
+// the default room — initialAppState, exactly what a new user sees. Signed in,
+// that user's own data is loaded into the same room. Until the first load
+// completes `hydrated` is false and the room renders fully lit and empty, so a
+// new user, a loading user and a signed-out visitor all see the same place.
 //
 // Phase 1 skeleton: the profile clock and points. Challenge, habits, journal and
 // goals each join this with their feature, in the same phase for both surfaces
 // (D-07).
 
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { initialAppState } from '../stores/app';
 import { createClient } from '../supabase/client';
+import type { Database } from '../supabase/database.types';
 import { supabaseConfigured } from '../supabase/env';
 import { loadPoints } from './points';
 import { localDate, localHour } from './time';
 import { write } from './write';
 
+function browserTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+}
+
+/** The default room. The window still follows the visitor's real clock. */
+function writeDefaultRoom(): void {
+  write({ ...initialAppState, localHour: localHour(browserTimeZone()), hydrated: true });
+}
+
+/**
+ * The profile row starts at UTC (handle_new_user). The first time a signed-in
+ * browser sees that default, it records the browser's zone, so the seeder's
+ * "local midnight" is the user's midnight. PROPOSED — a zone the user set
+ * deliberately is never overwritten, because only the untouched default is.
+ */
+async function resolveTimeZone(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  stored: string,
+): Promise<string> {
+  const browser = browserTimeZone();
+  if (stored !== 'UTC' || browser === 'UTC') return stored;
+  const { error } = await supabase.from('profiles').update({ timezone: browser }).eq('id', userId);
+  return error ? stored : browser;
+}
+
 export async function hydrate(): Promise<void> {
-  // No backend, or nobody signed in: the empty room is the correct state, and
-  // it is already in the store. Mark it hydrated so nothing waits on it.
   if (!supabaseConfigured) {
-    write({ hydrated: true });
+    writeDefaultRoom();
     return;
   }
 
@@ -25,7 +57,7 @@ export async function hydrate(): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    write({ hydrated: true });
+    writeDefaultRoom();
     return;
   }
 
@@ -37,13 +69,37 @@ export async function hydrate(): Promise<void> {
       .single();
     if (error) throw error;
 
-    const timeZone: string = profile.timezone;
+    const timeZone = await resolveTimeZone(supabase, user.id, profile.timezone);
     const points = await loadPoints(supabase, user.id, localDate(timeZone));
 
-    write({ points, localHour: localHour(timeZone), hydrated: true, offline: false });
+    // From initialAppState, not a merge: nothing of a previous session's user
+    // may survive into this one's room.
+    write({
+      ...initialAppState,
+      points,
+      localHour: localHour(timeZone),
+      hydrated: true,
+      offline: false,
+    });
   } catch {
     // A failed load leaves the last known state standing. No error surface in
     // the room — the corner furniture shows offline (spec/05 §7).
     write({ hydrated: true, offline: typeof navigator !== 'undefined' && !navigator.onLine });
   }
+}
+
+/**
+ * Re-hydrates on sign-in and sign-out, so the room swaps between the default
+ * and the user's own without a reload. Returns the unsubscribe.
+ */
+export function watchSession(): () => void {
+  if (!supabaseConfigured) return () => {};
+  const { data } = createClient().auth.onAuthStateChange((event) => {
+    // INITIAL_SESSION is covered by the first hydrate(); TOKEN_REFRESHED
+    // changes nothing the room shows.
+    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+      void hydrate();
+    }
+  });
+  return () => data.subscription.unsubscribe();
 }
