@@ -13,10 +13,17 @@
 
 import { create } from 'zustand';
 
+import type { Database } from '../supabase/database.types';
+
 /** 0 unfilled · 1 filled · 2 today. 365 entries, oldest first. */
 export type DayCell = 0 | 1 | 2;
 
-export type GoalCategory = 'health' | 'career' | 'learning' | 'personal';
+/**
+ * The database's goal_category enum, derived rather than restated so the two
+ * cannot drift apart again (they did: this once read `personal`, which the
+ * schema never had). Owner decision 2026-09-24: the schema's six are the set.
+ */
+export type GoalCategory = Database['public']['Enums']['goal_category'];
 
 export interface HabitSummary {
   id: string;
