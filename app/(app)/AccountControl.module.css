@@ -1,0 +1,31 @@
+/* Bottom-right corner furniture — global controls (08-interaction-grammar.md
+   §5). Same voice as the bottom-left back control. */
+
+.corner {
+  position: fixed;
+  right: var(--step-3);
+  bottom: var(--step-3);
+  z-index: 20;
+}
+
+.control {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  text-decoration: none;
+  color: var(--ink-muted);
+  background: color-mix(in srgb, var(--bg-night) 78%, transparent);
+  border: 1px solid var(--ink-ghost);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.control:hover,
+.control:focus-visible {
+  color: var(--signal);
+  border-color: var(--signal-dim);
+  outline: none;
+}
