@@ -411,6 +411,23 @@ read and to write every table as user B, and assert that all 24 attempts fail.
 Write it as a test, not a manual check — it is the kind of thing that silently
 regresses when someone adds a policy for a new feature.
 
+> **Amendment, 2026-09-24 (owner decision): a child row must share its parent's
+> owner.** The policies above check the child's `user_id` only, and §2's plain
+> foreign keys let user A store a row in A's own name that points at B's parent
+> — a `habit_log` on B's habit, a milestone on B's goal, a challenge on B's
+> action. Nothing of B's is read or changed, so the 24 attempts above still
+> fail, but server code trusting the parent id would act on B's data. The owner
+> ruled it a fault. `014_parent_ownership.sql` replaces the three foreign keys
+> with composite ones — `(habit_id, user_id) references habits (id, user_id)`
+> and likewise for goals and actions — so a mismatched owner cannot be stored,
+> including by the service role. Asserted in `supabase/tests/isolation.test.ts`.
+> The policies themselves are unchanged and still live in 012 alone.
+>
+> Noted alongside, not a new decision: `013_functions.sql` revokes EXECUTE on
+> `award_points()` and `seed_daily_challenge()` from `anon` and `authenticated`.
+> Supabase grants it to both by default, which would make §4's "the client can
+> never write its own score" false. Do not remove the revokes.
+
 ---
 
 ## 8. Generated types
