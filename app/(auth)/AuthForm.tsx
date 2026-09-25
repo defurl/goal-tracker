@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
-import { supabaseConfigured } from '@/lib/supabase/env';
+import { googleAuthEnabled, supabaseConfigured } from '@/lib/supabase/env';
 
 import styles from './AuthForm.module.css';
 
@@ -135,9 +135,11 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
         </button>
       </form>
 
-      <button className={styles.secondary} type="button" onClick={google} disabled={busy}>
-        continue with google
-      </button>
+      {googleAuthEnabled && (
+        <button className={styles.secondary} type="button" onClick={google} disabled={busy}>
+          continue with google
+        </button>
+      )}
 
       {message && (
         <p className={styles.message} role="status">

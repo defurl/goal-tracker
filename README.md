@@ -163,6 +163,12 @@ and Google both land there.
 3. **Supabase dashboard → Authentication → Sign In / Providers → Google:** enable,
    paste the client ID and secret.
 4. Make sure the redirect URLs from the section above are set.
+5. Set `NEXT_PUBLIC_AUTH_GOOGLE=on` in your env file and restart. Until then the
+   "continue with google" button is hidden.
+
+An OAuth client itself needs no billing account. If the Cloud console insists
+on a trial or "express mode" upgrade first, email sign-in covers everything in
+the meantime; Google can be added later without code changes.
 
 Locally Google is off (`supabase/config.toml`); email sign-in covers local work.
 
