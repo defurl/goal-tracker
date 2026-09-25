@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: full-bleed background, the mark inside the central 80 % safe zone.
+       Palette values only (lint:colors). -->
+  <rect width="512" height="512" fill="#05070D"/>
+  <g transform="translate(256 256) scale(0.72) translate(-256 -256)">
+    <rect x="120" y="150" width="232" height="150" rx="10" fill="#8E4A5C"/>
+    <rect x="146" y="176" width="120" height="14" rx="7" fill="#F2A0B5"/>
+    <rect x="146" y="206" width="84" height="10" rx="5" fill="#F2A0B5" opacity="0.6"/>
+    <circle cx="392" cy="176" r="26" fill="#FFB661"/>
+    <rect x="96" y="356" width="320" height="10" rx="5" fill="#8E4A5C" opacity="0.7"/>
+  </g>
+</svg>
