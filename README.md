@@ -12,9 +12,10 @@ becomes the record of having done them.
 > *"The same 3 a.m. desk — but every object on it is evidence that you acted on
 > something you saved."*
 
-**Status:** Phase 1 done on both tracks — the lit, furnished room, and the data
-foundation (auth, schema, RLS) behind it. Features arrive in Phases 2–3. See
-`PROGRESS.md` for where things stand.
+**Status:** Phases 1 and 2 done on both tracks. The room is lit and furnished;
+behind it are auth, the schema and RLS, the two AI agents, and `/text` — every
+feature, usable without WebGL and offline. The room's own mechanics arrive in
+Phase 3. See `PROGRESS.md` for where things stand.
 
 ---
 
@@ -81,12 +82,17 @@ pnpm install
 
 ### Environment
 
-Copy `.env.example` to `.env.local` (or `.env` — both are gitignored) and fill in
-the anon key from the Supabase dashboard → **API Keys**. The service-role key is
-not needed yet; never prefix it with `NEXT_PUBLIC_`.
+Copy `.env.example` to `.env.local` (or `.env` — both are gitignored) and fill in:
 
-Without a key the app still runs: you get the default room, and sign-in says it
-is not configured.
+| variable | from | without it |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase dashboard → **API Keys** | the default room only; sign-in says it is not configured |
+| `SUPABASE_SERVICE_ROLE_KEY` | same page, the secret key | the agents cannot rate-limit, so they never call the model — every import and reflection gets a curated fallback |
+| `OPENAI_API_KEY` | OpenAI dashboard — **set a $20/day hard cap first** (COST-1) | every import and reflection gets a curated fallback instead |
+| `CRON_SECRET` | any long random string | `/api/cron/seed-challenges` refuses every call (the hourly sweep runs in the database regardless) |
+
+The last three are server-only: never prefix them with `NEXT_PUBLIC_`, and they
+are read only under `app/api/`.
 
 ### The app
 
@@ -97,7 +103,7 @@ pnpm dev                    # http://localhost:3000 — the room
 | route | what |
 |---|---|
 | `/` | the room. Signed out, the default room; signed in, your own |
-| `/text` | the same product without WebGL — the mobile and offline path |
+| `/text` | the same product without WebGL — the mobile and offline path. Phones visiting `/` land here; its "enter the room" link opts that browser out |
 | `/login`, `/signup` | email + password, and Google once it is set up (below) |
 
 `pnpm dev` is for working. **Screenshots and the lighting test must come from a
@@ -119,7 +125,7 @@ any non-local URL.
 
 ```bash
 pnpm exec supabase start    # Docker must be running; applies supabase/migrations/
-pnpm test:db                # the cross-user isolation gate + function tests
+pnpm test:db                # isolation gate, functions, both agents, the AC-3.2 dump gate
 pnpm exec supabase db reset # re-apply every migration from scratch
 pnpm db:types               # regenerate lib/supabase/database.types.ts — commit it
 pnpm exec supabase stop
@@ -133,8 +139,14 @@ Local sign-up needs no email confirmation.
 ### Checks — what CI runs
 
 ```bash
-pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm build && pnpm bundle:check
+pnpm lint && pnpm lint:colors && pnpm typecheck && pnpm test && pnpm build && pnpm bundle:check
 ```
+
+`pnpm test` needs no database and no network: the agents' guards, error mapping
+and fallbacks, with everything external injected.
+
+The service worker registers in production builds only, so check offline
+behaviour against `pnpm build && pnpm start`, not `pnpm dev`.
 
 ### The hosted project
 
@@ -146,6 +158,9 @@ pnpm exec supabase login                                     # once; opens the b
 pnpm exec supabase link --project-ref nosifadaldhgjeyzhpao   # asks for the DB password
 pnpm exec supabase db push                                   # applies what is new
 ```
+
+Migration 018 enables `pg_cron` and schedules the hourly Daily Challenge sweep
+inside the database — no Vercel cron, so any hosting plan works.
 
 Then in the dashboard → **Authentication → URL Configuration**: set **Site URL**
 to where the app lives, and add `<that URL>/auth/callback` (and
