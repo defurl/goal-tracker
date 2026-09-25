@@ -18,6 +18,7 @@
     "prepare": "husky",
     "capture:states": "node scripts/capture-states.ts",
     "lighting:test": "node scripts/lighting-test.ts",
+    "test": "node --test tests/unit/*.test.ts",
     "test:db": "node scripts/test-db.ts",
     "db:types": "supabase gen types typescript --local > lib/supabase/database.types.ts"
   },

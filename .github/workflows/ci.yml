@@ -47,6 +47,11 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # No database and no network to the model provider: the agents' guards,
+      # error mapping and fallbacks, exercised with injected dependencies.
+      - name: Unit tests
+        run: pnpm test
+
       - name: Build
         run: pnpm build
 
