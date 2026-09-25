@@ -29,6 +29,10 @@ async function action(u: TestUser, text: string): Promise<string> {
   return row.id;
 }
 
+async function habit(u: TestUser, type: 'build' | 'break', extra: Record<string, unknown> = {}) {
+  return seed<{ id: string }>('habits', { user_id: u.id, name: `${type} habit`, type, ...extra });
+}
+
 describe('consume_rate_limit() — 017', () => {
   it('counts atomically for the service role', async () => {
     const u = await createUser('rate');
@@ -153,5 +157,73 @@ describe('Daily Challenge — 019', () => {
       .insert({ user_id: u.id, action_id: a, date: utcDay(-30) }).select().single();
     await u.client.rpc('complete_challenge', { p_challenge_id: c?.id });
     assert.equal(await total(u.id), 0);
+  });
+});
+
+describe('log_habit() — 020', () => {
+  it('build +10 and Perfect Day +25, once each however often it is re-checked', async () => {
+    const u = await createUser('build');
+    const h = await habit(u, 'build');
+    for (const completed of [true, false, true]) {
+      assert.equal((await u.client.rpc('log_habit', { p_habit_id: h.id, p_completed: completed })).error, null);
+    }
+    assert.equal(await total(u.id), 35);
+    const { data } = await admin.from('habit_logs').select('completed, points_awarded').eq('habit_id', h.id).single();
+    assert.deepEqual(data, { completed: true, points_awarded: 10 });
+  });
+
+  it('break avoided +15; a relapse awards 0, never less (D-08)', async () => {
+    const u = await createUser('break');
+    const avoided = await habit(u, 'break');
+    const relapsed = await habit(u, 'break');
+    await u.client.rpc('log_habit', { p_habit_id: relapsed.id, p_completed: false });
+    assert.equal(await total(u.id), 0);
+    await u.client.rpc('log_habit', { p_habit_id: avoided.id, p_completed: true });
+    // 1 of 2 due is 50 % — no Perfect Day.
+    assert.equal(await total(u.id), 15);
+    const { data } = await admin.from('habit_logs').select('points_awarded').eq('habit_id', relapsed.id).single();
+    assert.equal(data?.points_awarded, 0);
+  });
+
+  it('a habit not due today is not in the Perfect Day denominator (AC-2.7)', async () => {
+    const u = await createUser('due');
+    const due = await habit(u, 'build');
+    const today = new Date().getUTCDay();
+    await habit(u, 'build', { frequency: { days: [(today + 1) % 7] } });
+    await u.client.rpc('log_habit', { p_habit_id: due.id, p_completed: true });
+    assert.equal(await total(u.id), 35);
+  });
+
+  it('recomputes the streak, and a seventh day awards +50', async () => {
+    const u = await createUser('streak');
+    const h = await habit(u, 'build', { created_at: new Date(Date.now() - 10 * 86400e3).toISOString() });
+    for (let back = 1; back <= 6; back++) {
+      await seed('habit_logs', { habit_id: h.id, user_id: u.id, date: utcDay(-back), completed: true });
+    }
+    await u.client.rpc('log_habit', { p_habit_id: h.id, p_completed: true });
+    const { data } = await admin.from('habits').select('streak, longest_streak').eq('id', h.id).single();
+    assert.deepEqual(data, { streak: 7, longest_streak: 7 });
+    assert.equal(await total(u.id), 10 + 50 + 25);
+  });
+
+  it('bounds habit awards at ten a day, so archive-and-recreate mints nothing', async () => {
+    const u = await createUser('churn');
+    const ids: string[] = [];
+    for (let i = 0; i < 10; i++) ids.push((await habit(u, 'build')).id);
+    for (const id of ids) await u.client.rpc('log_habit', { p_habit_id: id, p_completed: true });
+    const afterTen = await total(u.id);
+    assert.equal(afterTen, 100 + 25);
+
+    await u.client.from('habits').update({ archived_at: new Date().toISOString() }).eq('id', ids[0] as string);
+    const fresh = await habit(u, 'break');
+    await u.client.rpc('log_habit', { p_habit_id: fresh.id, p_completed: true });
+    assert.equal(await total(u.id), afterTen);
+  });
+
+  it('refuses an archived habit', async () => {
+    const u = await createUser('archived');
+    const h = await habit(u, 'build', { archived_at: new Date().toISOString() });
+    const { error } = await u.client.rpc('log_habit', { p_habit_id: h.id, p_completed: true });
+    assert.match(error?.message ?? '', /habit_not_found/);
   });
 });

@@ -442,7 +442,15 @@ export type Database = {
         Returns: number
       }
       ensure_daily_challenge: { Args: never; Returns: undefined }
+      habit_due_on: {
+        Args: { p_date: string; p_frequency: Json }
+        Returns: boolean
+      }
       local_today: { Args: { p_user_id: string }; Returns: string }
+      log_habit: {
+        Args: { p_completed: boolean; p_habit_id: string }
+        Returns: undefined
+      }
       roll_challenge: { Args: { p_challenge_id: string }; Returns: undefined }
       run_challenge_sweep: { Args: never; Returns: number }
       seed_daily_challenge: { Args: never; Returns: number }
