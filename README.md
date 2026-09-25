@@ -88,11 +88,83 @@ Copy `.env.example` to `.env.local` (or `.env` — both are gitignored) and fill
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase dashboard → **API Keys** | the default room only; sign-in says it is not configured |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page, the secret key | the agents cannot rate-limit, so they never call the model — every import and reflection gets a curated fallback |
-| `OPENAI_API_KEY` | OpenAI dashboard — **set a $20/day hard cap first** (COST-1) | every import and reflection gets a curated fallback instead |
+| `OPENAI_API_KEY` | OpenAI dashboard — paid; **cap spend first** (below, COST-1) | every import and reflection gets a curated fallback instead |
 | `CRON_SECRET` | any long random string | `/api/cron/seed-challenges` refuses every call (the hourly sweep runs in the database regardless) |
 
 The last three are server-only: never prefix them with `NEXT_PUBLIC_`, and they
 are read only under `app/api/`.
+
+### Getting the keys
+
+**What is required, and what is not.** Only the anon key is needed to use the
+product. With it alone you can sign up, and use habits, the journal (without AI
+Reflect), goals and the Daily Challenge in full. The other three switch on
+extras:
+
+| you have | what works |
+|---|---|
+| nothing | the default room and `/text`, signed out |
+| anon key | everything except the AI: imports become curated two-minute actions, reflections a gentle note |
+| + service-role key + OpenAI key | the AI agents: real actions from articles, real journal reflections |
+| + `CRON_SECRET` | the manual seeder route — optional; the hourly sweep already runs in the database |
+
+Without an AI key the app never shows an error — every AI path ends in a curated
+fallback by design (FALLBACK-1). You can run on that indefinitely and add the
+key later; nothing needs changing but the env file.
+
+**1 · Supabase — anon and service-role keys (free).** The project already exists.
+
+1. Open the project in the [Supabase dashboard](https://supabase.com/dashboard)
+   → **Project Settings** → **API Keys**.
+2. **Anon key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`. On the newer key screen this
+   is the *publishable* key (`sb_publishable_…`); on the **Legacy API keys** tab
+   it is `anon`. Either works. Safe in the browser: RLS limits it to the
+   signed-in user's own rows.
+3. **Service-role key** → `SUPABASE_SERVICE_ROLE_KEY`. The *secret* key
+   (`sb_secret_…`), or `service_role` on the legacy tab. **This one bypasses
+   every RLS policy.** Never commit it, never paste it into chat or a ticket,
+   never give it a `NEXT_PUBLIC_` prefix. If it leaks, rotate it on the same
+   page.
+
+**2 · OpenAI — the AI key (paid, but small).** There is no free tier for the
+OpenAI API; it bills per use. At `gpt-4o-mini` prices one import or reflection
+costs a fraction of a cent, so a few dollars of credit lasts a long time for
+one person. Check current pricing on OpenAI's site before relying on that.
+
+1. Create an account at [platform.openai.com](https://platform.openai.com) —
+   this is separate from a ChatGPT subscription, which does not include API use.
+2. **Settings → Billing**: add a small prepaid credit and **leave auto-recharge
+   off**. Prepaid credit with no auto-recharge is a hard ceiling — the key
+   cannot spend more than is loaded. That is the backstop COST-1 asks for (the
+   spec says a $20/day cap; prepaid credit is stricter).
+3. Also set a budget under **Settings → Limits** if the dashboard offers one.
+4. **API keys → Create new secret key** → `OPENAI_API_KEY`. It is shown once.
+   Same rules as the service-role key: server-only, never committed.
+
+Journal entries are sent to OpenAI when — and only when — someone presses
+**AI Reflect** (D-16). OpenAI's API terms at the time of writing say API data is
+not used for training by default; read them yourself before relying on that,
+since the Privacy Policy (Phase 4) will have to say it plainly.
+
+> **Why not a free provider?** Some providers have free tiers, but on several of
+> them the free tier's terms allow prompts to be reviewed or used for training
+> — the wrong home for journal entries. And the project is locked to one
+> provider (D-19): switching means amending `spec/01-decisions.md` and writing
+> a second `AgentProvider`, not changing a key.
+
+**3 · `CRON_SECRET` (free, optional).** Any long random string. Generate one:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Call the route with it as `Authorization: Bearer <secret>` to run the Daily
+Challenge sweep by hand.
+
+**Where the keys go.** Locally, in `.env.local` (or `.env`), then restart
+`pnpm dev`. When the app is deployed, the same four names go in the host's
+environment variables (on Vercel: **Project → Settings → Environment
+Variables**). They are never committed: both env files are gitignored.
 
 ### The app
 
