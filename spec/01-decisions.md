@@ -406,6 +406,17 @@ the fallback is needed. The curated fallback array already covers the
 user-facing failure case, which is the one that matters. The interface means
 adding Gemini later is an afternoon, not a refactor.
 
+> **Amendment, 2026-09-25 (owner decision): Gemini replaces OpenAI.** Still
+> one live provider, now `GeminiProvider` on a Google AI Studio key, model
+> `gemini-2.5-flash-lite`; `OpenAIProvider` is deleted. The prompts moved to
+> `_V2` (same text, new model); V1 stays as the record. **On the free tier,
+> the journal agent is off:** Google's unpaid terms let inputs improve its
+> products and be read by reviewers, which FR-3.6's promise cannot sit beside.
+> `NEXT_PUBLIC_AI_REFLECT` stays empty until a key whose terms exclude that
+> (Gemini's paid tier) is in place. The import agent runs on the free tier —
+> an article is public. COST-1 is met while no billing is attached; COST-2's
+> `gpt-4o-mini` ceiling reads as "the smallest capable model" of the provider.
+
 ---
 
 ### D-20 · Monitor 1 emissive range is 1.1 → 1.4, not 0.6 → 1.4 — **LOCKED**

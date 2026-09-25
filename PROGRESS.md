@@ -31,7 +31,7 @@ writing — see "Owner actions" below.
 | task | state | where |
 |---|---|---|
 | B2.1 prompts, schemas, ≥ 20 fallbacks | done — verbatim V1 templates, 24 fallbacks | `lib/prompts/` |
-| B2.2 `AgentProvider` + `OpenAIProvider` | done — plain fetch, errors leave as a code only | `lib/agents/provider.ts`, `openai.ts` |
+| B2.2 `AgentProvider` + provider | done — plain fetch, errors leave as a code only. **Now `GeminiProvider`** (see the Gemini note below) | `lib/agents/provider.ts`, `gemini.ts` |
 | B2.3 `/api/agent/extract` | done — SSRF guard in the socket's DNS lookup, 8 s, 6000 chars, retry once, fallback | `lib/agents/extract.ts`, `fetchPage.ts`, `ssrf.ts` |
 | B2.4 `/api/agent/reflect` | done — no body logging (comment in the route), codes only | `lib/agents/reflect.ts` |
 | B2.5 atomic rate limiting | done — `consume_rate_limit()`, 429 + `Retry-After` to local midnight | `017`, `lib/agents/ops.ts` |
@@ -51,7 +51,7 @@ full reflection with distinctive words in the entry, confirms the entry really
 reached the provider, then `pg_dump`s the whole database — every schema — and
 finds none of them; the stored summary is found, so the dump is real. Making
 `reflect.ts` write the entry into `ai_next_action` failed exactly that test.
-Blocked-network: the real `OpenAIProvider` with a fetch that throws, for both
+Blocked-network: the real provider (now `GeminiProvider`) with a fetch that throws, for both
 agents. Other mutations checked the same way: removing the once-per-goal check
 in 021, and removing the DNS-level address check in `fetchPage.ts` (exactly the
 two name-based tests failed).
@@ -104,8 +104,8 @@ habit check-off, journal save and reflect, a goal with milestones.
 **Owner actions:**
 - Push migrations 017–021 to the hosted project (`pnpm exec supabase db push`);
   018 enables pg_cron there.
-- Put `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY` and `CRON_SECRET` in the
-  env; set the **$20/day hard cap** on the OpenAI key first (COST-1).
+- Put `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY` and `CRON_SECRET` in the
+  env — the AI key is now `GEMINI_API_KEY` (see the Gemini note below).
 - Walk the signed-in `/text` once (above).
 
 **Carried:** the shell is at 181 of 200 KB, most of it supabase-js — watch it.

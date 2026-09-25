@@ -366,3 +366,9 @@ Two live providers means two prompt-tuning surfaces, two JSON-mode dialects and
 two sets of error semantics to map — real cost, before any evidence the fallback
 is needed. The curated fallback array already covers the user-facing failure
 case, which is the one that matters.
+
+> **Amendment, 2026-09-25 (owner decision):** the live provider is now
+> `GeminiProvider`, and on the free tier the journal agent is switched off
+> (`NEXT_PUBLIC_AI_REFLECT`). The full note is under D-19 in
+> `01-decisions.md`. The model named in §2, §3 and §5 is V1's; the active
+> prompts are `_V2`, identical but for the model.
