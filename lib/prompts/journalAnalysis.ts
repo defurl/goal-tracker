@@ -38,4 +38,16 @@ Return JSON:
   }),
 } as const;
 
+/**
+ * V2 — the same prompt on Gemini (owner decision 2026-09-25). Registered, but
+ * AI Reflect is OFF by default: Google's free tier may use inputs to improve
+ * its products and let reviewers read them, which is no place for a journal
+ * entry. See NEXT_PUBLIC_AI_REFLECT and README, "Getting the keys".
+ */
+export const JOURNAL_ANALYSIS_V2 = {
+  ...JOURNAL_ANALYSIS_V1,
+  version: '2.0',
+  model: 'gemini-2.5-flash-lite',
+} as const;
+
 export type JournalReflection = z.infer<typeof JOURNAL_ANALYSIS_V1.schema>;

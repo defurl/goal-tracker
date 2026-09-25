@@ -24,6 +24,17 @@ Rules:
   }),
 } as const;
 
+/**
+ * V2 — the same prompt, schema and parameters on Gemini (owner decision
+ * 2026-09-25, amending D-19). Only the model changed; it is a new version
+ * because the version recorded with a result must name what produced it.
+ */
+export const CONTENT_EXTRACTION_V2 = {
+  ...CONTENT_EXTRACTION_V1,
+  version: '2.0',
+  model: 'gemini-2.5-flash-lite',
+} as const;
+
 export type ExtractedAction = z.infer<typeof CONTENT_EXTRACTION_V1.schema>;
 
 /** FR-1.2 / AC-1.1. The schema caps characters; the rule is words. */
