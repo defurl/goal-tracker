@@ -22,6 +22,7 @@ import { loadHabits } from './habits';
 import { loadJournal } from './journal';
 import { loadPoints } from './points';
 import { setSession } from './session';
+import { clearSnapshot, readSnapshot } from './snapshot';
 import { localDate, localHour } from './time';
 import { write } from './write';
 
@@ -63,6 +64,17 @@ export async function hydrate(): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
+    // getUser() asks the auth server, so offline it finds nobody. The session
+    // held on this device still says who was here: show their last snapshot.
+    if (isOffline()) {
+      const { data } = await supabase.auth.getSession();
+      const cached = data.session ? readSnapshot(data.session.user.id) : null;
+      if (cached) {
+        setSession(null);
+        write({ ...initialAppState, ...cached, localHour: localHour(browserTimeZone()), hydrated: true, offline: true });
+        return;
+      }
+    }
     writeDefaultRoom();
     return;
   }
@@ -101,10 +113,16 @@ export async function hydrate(): Promise<void> {
       offline: false,
     });
   } catch {
-    // A failed load leaves the last known state standing. No error surface in
-    // the room — the corner furniture shows offline (spec/05 §7).
-    write({ hydrated: true, offline: typeof navigator !== 'undefined' && !navigator.onLine });
+    // A failed load leaves the last known state standing — this user's
+    // snapshot if there is one. No error surface in the room; the corner
+    // furniture and /text say offline (spec/05 §7).
+    const cached = readSnapshot(user.id);
+    write({ ...(cached ?? {}), hydrated: true, offline: isOffline() });
   }
+}
+
+function isOffline(): boolean {
+  return typeof navigator !== 'undefined' && !navigator.onLine;
 }
 
 /**
@@ -114,11 +132,24 @@ export async function hydrate(): Promise<void> {
 export function watchSession(): () => void {
   if (!supabaseConfigured) return () => {};
   const { data } = createClient().auth.onAuthStateChange((event) => {
+    // A shared device must not keep the last person's room.
+    if (event === 'SIGNED_OUT') clearSnapshot();
     // INITIAL_SESSION is covered by the first hydrate(); TOKEN_REFRESHED
     // changes nothing the room shows.
     if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
       void hydrate();
     }
   });
-  return () => data.subscription.unsubscribe();
+
+  // Back online: load what changed. Gone offline: say so, keep what is shown.
+  const online = () => void hydrate();
+  const offline = () => write({ offline: true });
+  window.addEventListener('online', online);
+  window.addEventListener('offline', offline);
+
+  return () => {
+    data.subscription.unsubscribe();
+    window.removeEventListener('online', online);
+    window.removeEventListener('offline', offline);
+  };
 }
