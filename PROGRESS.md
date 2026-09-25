@@ -23,6 +23,97 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 
 ---
 
+## 2026-09-25 — Phase 2 track B: agents, /text and the offline shell
+
+**All nine tasks done locally; the gate reads TRUE.** Unpushed at the time of
+writing — see "Owner actions" below.
+
+| task | state | where |
+|---|---|---|
+| B2.1 prompts, schemas, ≥ 20 fallbacks | done — verbatim V1 templates, 24 fallbacks | `lib/prompts/` |
+| B2.2 `AgentProvider` + `OpenAIProvider` | done — plain fetch, errors leave as a code only | `lib/agents/provider.ts`, `openai.ts` |
+| B2.3 `/api/agent/extract` | done — SSRF guard in the socket's DNS lookup, 8 s, 6000 chars, retry once, fallback | `lib/agents/extract.ts`, `fetchPage.ts`, `ssrf.ts` |
+| B2.4 `/api/agent/reflect` | done — no body logging (comment in the route), codes only | `lib/agents/reflect.ts` |
+| B2.5 atomic rate limiting | done — `consume_rate_limit()`, 429 + `Retry-After` to local midnight | `017`, `lib/agents/ops.ts` |
+| B2.6 `agent_logs` on every path | done — tokens, latency, a code | `lib/agents/ops.ts` |
+| B2.7 hourly seeder | done — pg_cron in the database (owner decision), route behind `CRON_SECRET` | `018`, `app/api/cron/seed-challenges/` |
+| B2.8 `/text`, all four features | done — challenge + import, habits, journal, goals + SVG timeline | `app/(app)/text/`, `lib/data/` |
+| B2.9 PWA | done — manifest, service worker caching the `/text` shell only, per-user offline snapshot | `public/sw.js`, `app/manifest.ts`, `lib/data/snapshot.ts` |
+
+```
+pnpm test      74 pass · 0 fail   (no database, no network)
+pnpm test:db   72 pass · 0 fail   (isolation gate, functions, both agents, the dump gate)
+bundle:check   shell 181.1 / 200 KB gz · scene 232.5 / 320 KB gz · shell free of three.js
+```
+
+**The gate, and that it can fail.** `supabase/tests/reflect.test.ts` runs a
+full reflection with distinctive words in the entry, confirms the entry really
+reached the provider, then `pg_dump`s the whole database — every schema — and
+finds none of them; the stored summary is found, so the dump is real. Making
+`reflect.ts` write the entry into `ai_next_action` failed exactly that test.
+Blocked-network: the real `OpenAIProvider` with a fetch that throws, for both
+agents. Other mutations checked the same way: removing the once-per-goal check
+in 021, and removing the DNS-level address check in `fetchPage.ts` (exactly the
+two name-based tests failed).
+
+**Verified in the browser (production build):** `/text` signed out renders all
+five sections in the room's voices, no console errors, no overflow at 375 px.
+The service worker activates and caches `/text`, its CSS, fonts and scripts —
+no dev or 3D chunks. With the server stopped, `/text` still loads from cache
+and `/` falls through to it. Phones: `/` → 307 `/text`; `/?room=1` sets
+`bbe_room` and stops the redirect; desktops are never redirected. The mobile
+scene capture uses a desktop user agent, so track A's frames are unchanged.
+**Not verified: the signed-in half of `/text`** — the agent does not create
+accounts or type passwords. The owner walks it once: import, complete, roll,
+habit check-off, journal save and reflect, a goal with milestones.
+
+**PROPOSED — flag in review:**
+1. Award paths live in the database (019–021): callable by the signed-in user,
+   acting on `auth.uid()` only, amount decided in SQL. 03 §4 carries a note.
+   Two bounds added: only today's challenge awards; habit awards stop at ten a day.
+2. A failed or rate-limited reflection saves mood and tags and stores **no**
+   AI fields; the gentle fallback is shown, never stored as an insight.
+3. An unreadable URL (blocked, not HTML, gone) still yields a curated action,
+   plus a quiet line suggesting the user paste the text.
+4. Extra log codes beside the four provider codes: `SOURCE_UNREADABLE`,
+   `LIMITER_UNAVAILABLE`. A 429 is not logged — no call was made.
+5. A rate limiter that cannot be reached never calls the provider, and serves
+   a fallback rather than a false "used up today".
+6. Mood set (8) and topic tags (8) in `lib/journal/moods.ts`; calendar colours
+   per FR-3.5's proposal.
+7. The offline snapshot in `localStorage`, per user, cleared on sign-out.
+
+**Raised, not fixed — owner decisions:**
+1. **Owner-writable history.** 012 lets a user write `habit_logs` and
+   `daily_challenges` directly, so they can backfill a streak to farm the +50
+   weekly bonus (bounded: one per habit per day) and reset `roll_count` past
+   D-15's cap. Only their own room is affected. Fix would be select-only
+   policies on both, with writes through 019/020 — a change to 012.
+2. **Goal farming.** Create a goal with one milestone, complete it, +100;
+   repeat. The spec has no bound. Options: once per day, or a minimum age.
+3. **No record of the prompt version** behind a stored row (04 §7 asks for it);
+   no table has a column for it.
+4. **The model may quote the entry in its summary.** The gate passes with a
+   scripted provider; a real summary that quotes a phrase would put a fragment
+   in the database. Proposed: a `JOURNAL_ANALYSIS_V2` rule, "do not quote the
+   entry".
+5. **Support resources are unverified.** `lib/support/resources.ts` — 988 (US),
+   Samaritans 116 123 (UK/IE), findahelpline.com. Check each against the
+   service's own site and set `VERIFIED_ON` (D-13: human-verified).
+
+**Owner actions:**
+- Push migrations 017–021 to the hosted project (`pnpm exec supabase db push`);
+  018 enables pg_cron there.
+- Put `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY` and `CRON_SECRET` in the
+  env; set the **$20/day hard cap** on the OpenAI key first (COST-1).
+- Walk the signed-in `/text` once (above).
+
+**Carried:** the shell is at 181 of 200 KB, most of it supabase-js — watch it.
+Icons are SVG only; iOS wants a PNG `apple-touch-icon` (Phase 4). `archive` on a
+habit has no confirmation step.
+
+---
+
 ### Next phase: Phase 1 track B — the data foundation
 
 > **Started 2026-09-24 — read the track B entry below first.** The brief that
