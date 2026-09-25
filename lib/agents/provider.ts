@@ -1,6 +1,6 @@
 // The provider seam — spec/04-ai-agents.md §8, D-19. One interface, one live
-// implementation (OpenAIProvider); a second provider is an afternoon, not a
-// refactor, and it is deliberately not written.
+// implementation: GeminiProvider, which replaced OpenAIProvider by owner
+// decision on 2026-09-25. Moving providers again is an afternoon, not a refactor.
 //
 // Errors cross this seam as a CODE, never a message (04 §3). Provider error
 // payloads can echo the request back, and for the journal agent the request is

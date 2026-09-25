@@ -1,11 +1,11 @@
-// Shared by the agent tests: the real OpenAIProvider with its network blocked,
+// Shared by the agent tests: the real GeminiProvider with its network blocked,
 // a scripted stand-in that records what it was sent, and a provider that fails
-// the test if it is called at all. Nothing here reaches OpenAI.
+// the test if it is called at all. Nothing here reaches Google.
 
 import assert from 'node:assert/strict';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-import { OpenAIProvider } from '../../lib/agents/openai.ts';
+import { GeminiProvider } from '../../lib/agents/gemini.ts';
 import type { AgentProvider, CompletionRequest } from '../../lib/agents/provider.ts';
 import type { Database } from '../../lib/supabase/database.types.ts';
 import { admin, url, type TestUser } from './harness.ts';
@@ -19,7 +19,7 @@ export const brokenService = createClient(url, 'not-a-service-key', {
 }) as unknown as Db;
 
 /** The real provider, with every request failing the way a blocked network fails. */
-export const networkBlocked = new OpenAIProvider({
+export const networkBlocked = new GeminiProvider({
   apiKey: 'test-key',
   fetch: async () => {
     throw new TypeError('fetch failed: connect ENETUNREACH');

@@ -7,7 +7,7 @@
 
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-import { OpenAIProvider } from '../../../lib/agents/openai.ts';
+import { GeminiProvider } from '../../../lib/agents/gemini.ts';
 import type { Database } from '../../../lib/supabase/database.types.ts';
 import { supabaseUrl } from '../../../lib/supabase/env.ts';
 import { createClient as createUserClient } from '../../../lib/supabase/server.ts';
@@ -26,7 +26,7 @@ export function serviceClient() {
 
 /** No key means every call fails fast to PROVIDER_ERROR, and the fallback ships. */
 export function provider() {
-  return new OpenAIProvider({ apiKey: process.env.OPENAI_API_KEY ?? '' });
+  return new GeminiProvider({ apiKey: process.env.GEMINI_API_KEY ?? '' });
 }
 
 /** The caller's own client and verified id, or null when signed out. */
