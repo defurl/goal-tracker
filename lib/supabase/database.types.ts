@@ -433,6 +433,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      consume_rate_limit: {
+        Args: { p_agent_id: string; p_date: string; p_user_id: string }
+        Returns: number
+      }
       seed_daily_challenge: { Args: never; Returns: number }
     }
     Enums: {
