@@ -18,6 +18,7 @@ import type { Database } from '../supabase/database.types';
 import { supabaseConfigured } from '../supabase/env';
 import { loadChallenge } from './challenge';
 import { loadHabits } from './habits';
+import { loadJournal } from './journal';
 import { loadPoints } from './points';
 import { setSession } from './session';
 import { localDate, localHour } from './time';
@@ -77,10 +78,11 @@ export async function hydrate(): Promise<void> {
     const session = { supabase, userId: user.id, timeZone };
     setSession(session);
 
-    const [points, challenge, habits] = await Promise.all([
+    const [points, challenge, habits, journal] = await Promise.all([
       loadPoints(supabase, user.id, localDate(timeZone)),
       loadChallenge(session),
       loadHabits(session),
+      loadJournal(session),
     ]);
 
     // From initialAppState, not a merge: nothing of a previous session's user
@@ -90,6 +92,7 @@ export async function hydrate(): Promise<void> {
       points,
       challenge,
       ...habits,
+      journal,
       localHour: localHour(timeZone),
       hydrated: true,
       offline: false,

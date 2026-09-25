@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 import { ChallengeSection } from './ChallengeSection';
 import { HabitsSection } from './HabitsSection';
+import { JournalSection } from './JournalSection';
 
 import { useAppStore } from '../../../lib/stores/app';
 import { supabaseConfigured } from '../../../lib/supabase/env';
@@ -47,6 +48,7 @@ export function TextSurface() {
 
       <ChallengeSection signedIn={signedIn} />
       <HabitsSection signedIn={signedIn} />
+      <JournalSection signedIn={signedIn} />
     </main>
   );
 }
