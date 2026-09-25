@@ -9,6 +9,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import { secondsIntoLocalDay } from '../data/time.ts';
 import type { Database } from '../supabase/database.types.ts';
 import type { AgentErrorCode } from './provider.ts';
 
@@ -57,16 +58,7 @@ export async function consumeRateLimit(
 
 /** Seconds until the user's next local midnight, when their count resets. */
 export function retryAfterSeconds(timeZone: string, now: Date = new Date()): number {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23',
-  }).formatToParts(now);
-  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
-  const elapsed = get('hour') * 3600 + get('minute') * 60 + get('second');
-  return Math.max(1, 86400 - elapsed);
+  return Math.max(1, 86400 - secondsIntoLocalDay(timeZone, now));
 }
 
 /** LOG-1. A failed log write never fails the user's request. */
