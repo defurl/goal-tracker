@@ -17,6 +17,11 @@ function utcDay(offset = 0): string {
   return d.toISOString().slice(0, 10);
 }
 
+async function total(userId: string): Promise<number> {
+  const { data } = await admin.from('glow_points').select('total').eq('user_id', userId);
+  return (data?.[0]?.total as number | undefined) ?? 0;
+}
+
 async function action(u: TestUser, text: string): Promise<string> {
   const row = await seed<{ id: string }>('user_actions', {
     user_id: u.id, action_text: text, source_summary: 'test',
@@ -78,5 +83,75 @@ describe('run_challenge_sweep() — 018', () => {
     const u = await createUser('sweep-user');
     const { error } = await u.client.rpc('run_challenge_sweep');
     assert.equal(error?.code, RLS_DENIED);
+  });
+});
+
+describe('Daily Challenge — 019', () => {
+  it('ensure_daily_challenge() seeds today once, and not without a pending action', async () => {
+    const empty = await createUser('ensure-empty');
+    assert.equal((await empty.client.rpc('ensure_daily_challenge')).error, null);
+    const none = await admin.from('daily_challenges').select('id').eq('user_id', empty.id);
+    assert.equal(none.data?.length, 0);
+
+    const u = await createUser('ensure');
+    await action(u, 'Drink a glass of water');
+    await u.client.rpc('ensure_daily_challenge');
+    await u.client.rpc('ensure_daily_challenge');
+    const { data } = await admin.from('daily_challenges').select('date').eq('user_id', u.id);
+    assert.deepEqual(data, [{ date: utcDay() }]);
+  });
+
+  it('rolls to a different pending action, and stops at three (D-15)', async () => {
+    const u = await createUser('roll');
+    const first = await action(u, 'one');
+    await action(u, 'two');
+    const c = await seed<{ id: string }>('daily_challenges', {
+      user_id: u.id, action_id: first, date: utcDay(),
+    });
+
+    let previous = first;
+    for (let i = 1; i <= 3; i++) {
+      assert.equal((await u.client.rpc('roll_challenge', { p_challenge_id: c.id })).error, null);
+      const { data } = await admin.from('daily_challenges').select().eq('id', c.id).single();
+      assert.equal(data?.roll_count, i);
+      assert.notEqual(data?.action_id, previous);
+      previous = data?.action_id as string;
+    }
+    const fourth = await u.client.rpc('roll_challenge', { p_challenge_id: c.id });
+    assert.match(fourth.error?.message ?? '', /roll_cap_reached/);
+  });
+
+  it('refuses a roll with nothing else to roll to', async () => {
+    const u = await createUser('roll-alone');
+    const only = await action(u, 'only');
+    const c = await seed<{ id: string }>('daily_challenges', {
+      user_id: u.id, action_id: only, date: utcDay(),
+    });
+    const { error } = await u.client.rpc('roll_challenge', { p_challenge_id: c.id });
+    assert.match(error?.message ?? '', /no_other_pending/);
+  });
+
+  it('awards +30 once and marks the action done (FR-1.6, AC-1.5)', async () => {
+    const u = await createUser('complete');
+    const a = await action(u, 'Stretch for a minute');
+    const c = await seed<{ id: string }>('daily_challenges', {
+      user_id: u.id, action_id: a, date: utcDay(),
+    });
+    for (let i = 0; i < 2; i++) {
+      assert.equal((await u.client.rpc('complete_challenge', { p_challenge_id: c.id })).error, null);
+    }
+    assert.equal(await total(u.id), 30);
+    const { data } = await admin.from('user_actions').select('status').eq('id', a).single();
+    assert.equal(data?.status, 'done');
+  });
+
+  it('awards nothing for a challenge dated any day but today', async () => {
+    const u = await createUser('complete-past');
+    const a = await action(u, 'backdated');
+    // Owner-writable under 012: the user can insert this row themselves.
+    const { data: c } = await u.client.from('daily_challenges')
+      .insert({ user_id: u.id, action_id: a, date: utcDay(-30) }).select().single();
+    await u.client.rpc('complete_challenge', { p_challenge_id: c?.id });
+    assert.equal(await total(u.id), 0);
   });
 });

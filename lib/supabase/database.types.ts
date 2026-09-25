@@ -433,10 +433,17 @@ export type Database = {
         }
         Returns: undefined
       }
+      complete_challenge: {
+        Args: { p_challenge_id: string }
+        Returns: undefined
+      }
       consume_rate_limit: {
         Args: { p_agent_id: string; p_date: string; p_user_id: string }
         Returns: number
       }
+      ensure_daily_challenge: { Args: never; Returns: undefined }
+      local_today: { Args: { p_user_id: string }; Returns: string }
+      roll_challenge: { Args: { p_challenge_id: string }; Returns: undefined }
       run_challenge_sweep: { Args: never; Returns: number }
       seed_daily_challenge: { Args: never; Returns: number }
     }
