@@ -454,6 +454,10 @@ export type Database = {
       roll_challenge: { Args: { p_challenge_id: string }; Returns: undefined }
       run_challenge_sweep: { Args: never; Returns: number }
       seed_daily_challenge: { Args: never; Returns: number }
+      set_milestone: {
+        Args: { p_complete: boolean; p_milestone_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       action_status: "pending" | "active" | "done" | "skipped"

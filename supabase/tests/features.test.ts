@@ -6,7 +6,8 @@
 
 import { after, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { admin, createUser, deleteUsers, RLS_DENIED, seed, type TestUser } from './harness.ts';
+import { createClient } from '@supabase/supabase-js';
+import { admin, anonKey, createUser, deleteUsers, RLS_DENIED, seed, url, type TestUser } from './harness.ts';
 
 after(deleteUsers);
 
@@ -225,5 +226,79 @@ describe('log_habit() — 020', () => {
     const h = await habit(u, 'build', { archived_at: new Date().toISOString() });
     const { error } = await u.client.rpc('log_habit', { p_habit_id: h.id, p_completed: true });
     assert.match(error?.message ?? '', /habit_not_found/);
+  });
+});
+
+describe('set_milestone() — 021', () => {
+  it('+100 when the last milestone completes, once ever (AC-4.2)', async () => {
+    const u = await createUser('goal');
+    const goal = await seed<{ id: string }>('goals', {
+      user_id: u.id, title: 'Run 5k', start_date: utcDay(-5), target_date: utcDay(30),
+    });
+    const m1 = await seed<{ id: string }>('milestones', { goal_id: goal.id, user_id: u.id, title: 'a' });
+    const m2 = await seed<{ id: string }>('milestones', { goal_id: goal.id, user_id: u.id, title: 'b' });
+
+    await u.client.rpc('set_milestone', { p_milestone_id: m1.id, p_complete: true });
+    assert.equal(await total(u.id), 0);
+    await u.client.rpc('set_milestone', { p_milestone_id: m2.id, p_complete: true });
+    assert.equal(await total(u.id), 100);
+    let row = await admin.from('goals').select('completed_at').eq('id', goal.id).single();
+    assert.notEqual(row.data?.completed_at, null);
+
+    await u.client.rpc('set_milestone', { p_milestone_id: m2.id, p_complete: false });
+    row = await admin.from('goals').select('completed_at').eq('id', goal.id).single();
+    assert.equal(row.data?.completed_at, null);
+
+    // Re-completing on a later day would pass the ledger key; the function must not.
+    await admin.from('point_ledger').update({ date: utcDay(-1) }).eq('user_id', u.id);
+    await u.client.rpc('set_milestone', { p_milestone_id: m2.id, p_complete: true });
+    assert.equal(await total(u.id), 100);
+  });
+});
+
+describe('the write paths act only on the caller’s own rows', () => {
+  it('A cannot complete, roll, log or tick anything of B’s', async () => {
+    const a = await createUser('fa');
+    const b = await createUser('fb');
+    const bAction = await action(b, 'B’s');
+    await action(b, 'B’s other');
+    const bChallenge = await seed<{ id: string }>('daily_challenges', {
+      user_id: b.id, action_id: bAction, date: utcDay(),
+    });
+    const bHabit = await habit(b, 'build');
+    const bGoal = await seed<{ id: string }>('goals', {
+      user_id: b.id, title: 'B', start_date: utcDay(), target_date: utcDay(1),
+    });
+    const bMilestone = await seed<{ id: string }>('milestones', { goal_id: bGoal.id, user_id: b.id, title: 'm' });
+
+    const attempts = [
+      [await a.client.rpc('complete_challenge', { p_challenge_id: bChallenge.id }), /challenge_not_found/],
+      [await a.client.rpc('roll_challenge', { p_challenge_id: bChallenge.id }), /challenge_not_found/],
+      [await a.client.rpc('log_habit', { p_habit_id: bHabit.id, p_completed: true }), /habit_not_found/],
+      [await a.client.rpc('set_milestone', { p_milestone_id: bMilestone.id, p_complete: true }), /milestone_not_found/],
+    ] as const;
+    for (const [result, pattern] of attempts) assert.match(result.error?.message ?? '', pattern);
+
+    assert.equal(await total(a.id), 0);
+    assert.equal(await total(b.id), 0);
+    const { data } = await admin.from('daily_challenges').select('roll_count, completed_at').eq('id', bChallenge.id).single();
+    assert.deepEqual(data, { roll_count: 0, completed_at: null });
+    const logs = await admin.from('habit_logs').select('id').eq('habit_id', bHabit.id);
+    assert.equal(logs.data?.length, 0);
+  });
+
+  it('a signed-out caller reaches none of them', async () => {
+    const anon = createClient(url, anonKey, { auth: { persistSession: false } });
+    const id = '00000000-0000-0000-0000-000000000000';
+    for (const [fn, args] of [
+      ['ensure_daily_challenge', {}],
+      ['complete_challenge', { p_challenge_id: id }],
+      ['roll_challenge', { p_challenge_id: id }],
+      ['log_habit', { p_habit_id: id, p_completed: true }],
+      ['set_milestone', { p_milestone_id: id, p_complete: true }],
+    ] as const) {
+      const { error } = await anon.rpc(fn, args);
+      assert.equal(error?.code, RLS_DENIED, fn);
+    }
   });
 });

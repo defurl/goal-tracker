@@ -24,7 +24,7 @@ function env(...names: string[]): string {
 }
 
 export const url = env('SUPABASE_URL', 'API_URL');
-const anonKey = env('SUPABASE_ANON_KEY', 'ANON_KEY');
+export const anonKey = env('SUPABASE_ANON_KEY', 'ANON_KEY');
 const serviceKey = env('SUPABASE_SERVICE_ROLE_KEY', 'SERVICE_ROLE_KEY');
 
 // These tests create and delete auth users. Pointed at the hosted project they
