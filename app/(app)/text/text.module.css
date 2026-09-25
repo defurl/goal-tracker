@@ -1,0 +1,426 @@
+/* /text — the moment surface (D-07). One column, stacked sections, no cards and
+   nothing styled to resemble one (D-04): sections are separated by space and a
+   hairline, not by boxes. Every colour is a token; the voices are the room's —
+   Fraunces italic for titles, Geist for prose, lowercase wide-tracked mono for
+   labels and controls (02-typography.md). */
+
+.page {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--step-5) var(--step-3) calc(var(--step-6) + var(--step-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-5);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-1);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--step-5);
+  line-height: 1.1;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem var(--step-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-2);
+  padding-top: var(--step-3);
+  border-top: 1px solid var(--ink-ghost);
+  scroll-margin-top: var(--step-3);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--step-3);
+  line-height: 1.2;
+}
+
+/* ── voices ──────────────────────────────────────────────────────────────── */
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+}
+
+.prose {
+  font-size: var(--step-1-up);
+  line-height: 1.55;
+  color: var(--ink-paper);
+}
+
+.quiet {
+  font-size: var(--step-0);
+  color: var(--ink-muted);
+}
+
+.faint {
+  font-size: var(--step-1);
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
+}
+
+.number {
+  font-family: var(--font-mono);
+  color: var(--ink-paper);
+}
+
+/* ── controls ────────────────────────────────────────────────────────────── */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--step-1) var(--step-3);
+}
+
+.action,
+.primary {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+  padding: 0.35rem 0 0.15rem;
+  border-bottom: 1px solid var(--ink-ghost);
+  min-height: 2.75rem;
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.primary {
+  color: var(--signal);
+  border-color: var(--signal-dim);
+}
+
+.action:hover,
+.action:focus-visible,
+.primary:hover,
+.primary:focus-visible {
+  color: var(--signal-hot);
+  border-color: var(--signal);
+  outline: none;
+}
+
+.action:disabled,
+.primary:disabled {
+  color: var(--ink-faint);
+  border-color: var(--ink-ghost);
+  cursor: default;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 0.55rem 0;
+  font-size: var(--step-1-up);
+  color: var(--ink-paper);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-ghost);
+  border-radius: 0;
+  transition: border-color var(--dur-ui) var(--ease-ui);
+}
+
+.textarea {
+  min-height: 9rem;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.select {
+  appearance: none;
+}
+
+.select option {
+  background: var(--bg-panel);
+}
+
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible {
+  outline: none;
+  border-color: var(--signal);
+}
+
+.counter {
+  align-self: flex-end;
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  color: var(--ink-faint);
+}
+
+/* Toggles (tags, days, mood, habit type): a pressed state that is warmth
+   present, not a filled chip. */
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.toggle {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--ink-ghost);
+  transition: color var(--dur-ui) var(--ease-ui), border-color var(--dur-ui) var(--ease-ui);
+}
+
+.toggle[aria-pressed='true'],
+.toggle[aria-checked='true'] {
+  color: var(--signal);
+  border-color: var(--signal-dim);
+}
+
+.toggle:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.mood {
+  font-size: var(--step-3);
+  letter-spacing: 0;
+  padding: 0;
+}
+
+/* ── lists ───────────────────────────────────────────────────────────────── */
+
+.list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--step-2);
+  padding: var(--step-1) 0;
+}
+
+.itemBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  padding-top: 0.6rem;
+}
+
+/* A hand-built check: a square that fills with warmth. 44 px target. */
+.check {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+}
+
+.check::before {
+  content: '';
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid var(--ink-faint);
+  transition: background-color var(--dur-tick) var(--ease-data), border-color var(--dur-tick) var(--ease-data);
+}
+
+.check[aria-checked='true']::before {
+  background: var(--signal);
+  border-color: var(--signal);
+}
+
+.check:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: -4px;
+}
+
+/* ── AI Insight — unmistakably not the user's own words (AC-3.3) ─────────── */
+
+.insight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-1);
+  padding: var(--step-2) 0 var(--step-2) var(--step-2);
+  border-left: 2px solid var(--glow-cool-soft);
+}
+
+.insightLabel {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--glow-cool);
+}
+
+/* D-13: the support response drops the structure and the accent. */
+.support {
+  border-left-color: var(--ink-ghost);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: var(--step-1) 0;
+}
+
+.skeleton span {
+  display: block;
+  height: 0.7rem;
+  background: var(--ink-ghost);
+  animation: breathe var(--dur-scene) var(--ease-ui) infinite alternate;
+}
+
+.skeleton span:nth-child(2) {
+  width: 82%;
+}
+
+.skeleton span:nth-child(3) {
+  width: 64%;
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+/* ── the journal calendar (FR-3.5, PROPOSED colours) ─────────────────────── */
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1.4rem);
+  gap: 0.3rem;
+}
+
+.day {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1px solid var(--ink-ghost);
+}
+
+/* Warmth present, or warmth absent — never good or bad. */
+.dayWarm {
+  background: var(--signal);
+  border-color: var(--signal);
+}
+
+.dayMild {
+  background: var(--signal-dim);
+  border-color: var(--signal-dim);
+}
+
+.dayCool {
+  background: var(--ink-ghost);
+  border-color: var(--glow-cool-soft);
+}
+
+/* ── the goal timeline (FR-4.3, hand-authored SVG) ───────────────────────── */
+
+.timeline {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.timelineTrack {
+  stroke: var(--ink-ghost);
+}
+
+.timelineBar {
+  fill: var(--signal-dim);
+}
+
+.timelineDone {
+  fill: var(--signal);
+}
+
+.timelineToday {
+  stroke: var(--glow-cool-soft);
+  stroke-dasharray: 2 3;
+}
+
+.timelineText {
+  fill: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.goal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--step-1) 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step-2);
+  padding-top: var(--step-1);
+  min-width: 0;
+  border: 0;
+  padding-inline: 0;
+  padding-bottom: 0;
+}
+
+.details summary {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.details summary:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.details[open] summary {
+  color: var(--signal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton span {
+    animation: none;
+  }
+}

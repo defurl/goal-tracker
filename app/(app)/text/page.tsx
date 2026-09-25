@@ -5,10 +5,14 @@
 // This route must never transitively import three.js. CI asserts it
 // (scripts/bundle-check.ts, D-10) because a careless shared type import breaks it.
 
+import type { Metadata } from 'next';
+
+import { TextSurface } from './TextSurface';
+
+export const metadata: Metadata = {
+  title: 'Be Better Everyday — text',
+};
+
 export default function TextPage() {
-  return (
-    <main>
-      <h1>Be Better Everyday</h1>
-    </main>
-  );
+  return <TextSurface />;
 }

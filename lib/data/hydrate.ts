@@ -6,9 +6,9 @@
 // completes `hydrated` is false and the room renders fully lit and empty, so a
 // new user, a loading user and a signed-out visitor all see the same place.
 //
-// Phase 1 skeleton: the profile clock and points. Challenge, habits, journal and
-// goals each join this with their feature, in the same phase for both surfaces
-// (D-07).
+// Every feature's slice loads here, in the same phase for both surfaces (D-07):
+// the profile clock, points, the challenge, habits and the day grid, the
+// journal, and goals.
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -16,7 +16,9 @@ import { initialAppState } from '../stores/app';
 import { createClient } from '../supabase/client';
 import type { Database } from '../supabase/database.types';
 import { supabaseConfigured } from '../supabase/env';
+import { loadChallenge } from './challenge';
 import { loadPoints } from './points';
+import { setSession } from './session';
 import { localDate, localHour } from './time';
 import { write } from './write';
 
@@ -26,6 +28,7 @@ function browserTimeZone(): string {
 
 /** The default room. The window still follows the visitor's real clock. */
 function writeDefaultRoom(): void {
+  setSession(null);
   write({ ...initialAppState, localHour: localHour(browserTimeZone()), hydrated: true });
 }
 
@@ -70,13 +73,20 @@ export async function hydrate(): Promise<void> {
     if (error) throw error;
 
     const timeZone = await resolveTimeZone(supabase, user.id, profile.timezone);
-    const points = await loadPoints(supabase, user.id, localDate(timeZone));
+    const session = { supabase, userId: user.id, timeZone };
+    setSession(session);
+
+    const [points, challenge] = await Promise.all([
+      loadPoints(supabase, user.id, localDate(timeZone)),
+      loadChallenge(session),
+    ]);
 
     // From initialAppState, not a merge: nothing of a previous session's user
     // may survive into this one's room.
     write({
       ...initialAppState,
       points,
+      challenge,
       localHour: localHour(timeZone),
       hydrated: true,
       offline: false,
