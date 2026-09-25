@@ -437,6 +437,7 @@ export type Database = {
         Args: { p_agent_id: string; p_date: string; p_user_id: string }
         Returns: number
       }
+      run_challenge_sweep: { Args: never; Returns: number }
       seed_daily_challenge: { Args: never; Returns: number }
     }
     Enums: {
