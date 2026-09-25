@@ -13,6 +13,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { loadJournalDays, reflect, saveEntry, type JournalDay } from '../../../lib/data/journal';
+import { aiReflectEnabled } from '../../../lib/flags';
 import { MAX_ENTRY_CHARS, MOODS, TOPIC_TAGS } from '../../../lib/journal/moods';
 import type { JournalReflection } from '../../../lib/prompts/journalAnalysis';
 import { useAppStore } from '../../../lib/stores/app';
@@ -212,20 +213,24 @@ export function JournalSection({ signedIn }: { signedIn: boolean }) {
             <button type="button" className={styles.action} disabled={!mood || busy !== null} onClick={onSave}>
               save
             </button>
-            <button
-              type="button"
-              className={styles.primary}
-              disabled={!mood || !text.trim() || busy !== null || noReflections}
-              aria-describedby="reflect-note"
-              onClick={onReflect}
-            >
-              save &amp; ai reflect
-            </button>
+            {aiReflectEnabled && (
+              <button
+                type="button"
+                className={styles.primary}
+                disabled={!mood || !text.trim() || busy !== null || noReflections}
+                aria-describedby="reflect-note"
+                onClick={onReflect}
+              >
+                save &amp; ai reflect
+              </button>
+            )}
           </div>
           <p id="reflect-note" className={styles.faint}>
-            {noReflections
-              ? 'Three reflections a day — the next one is available tomorrow.'
-              : `${journal.reflectionsRemaining} reflection${journal.reflectionsRemaining === 1 ? '' : 's'} left today. Reflect sends this entry to an AI once, to write the insight.`}
+            {!aiReflectEnabled
+              ? 'AI reflection is switched off for now, so what you write stays on this page and is gone when you save.'
+              : noReflections
+                ? 'Three reflections a day — the next one is available tomorrow.'
+                : `${journal.reflectionsRemaining} reflection${journal.reflectionsRemaining === 1 ? '' : 's'} left today. Reflect sends this entry to an AI once, to write the insight.`}
           </p>
         </div>
       )}

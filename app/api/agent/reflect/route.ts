@@ -12,6 +12,7 @@
 // Wiring only; the pipeline is lib/agents/reflect.ts.
 
 import { reflectOnEntry } from '../../../../lib/agents/reflect.ts';
+import { aiReflectEnabled } from '../../../../lib/flags.ts';
 import { json, provider, readJson, serviceClient, signedInUser } from '../../_lib/server.ts';
 
 export const runtime = 'nodejs';
@@ -23,7 +24,14 @@ export async function POST(request: Request) {
   if (!caller) return json({ error: 'signed_out' }, 401);
 
   const result = await reflectOnEntry(
-    { provider: provider(), db: caller.db, service: serviceClient(), userId: caller.userId },
+    {
+      provider: provider(),
+      db: caller.db,
+      service: serviceClient(),
+      userId: caller.userId,
+      // Off by default: the free Gemini tier is no place for a journal entry.
+      reflectionEnabled: aiReflectEnabled,
+    },
     await readJson(request),
   );
 

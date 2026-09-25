@@ -82,6 +82,22 @@ describe('journal agent', () => {
     assert.equal(result.status, 400);
   });
 
+  it('with AI Reflect off, the entry never leaves: no provider, no rate limit, no log — mood saved', async () => {
+    const u = await createUser('reflect-off');
+    const result = await reflectOnEntry(
+      { ...deps(u, neverCalled), reflectionEnabled: false },
+      { entry_text: 'Private words.', mood: 'content', tags: ['home'] },
+    );
+    assert.equal(result.status, 200);
+    if (result.status === 200) assert.deepEqual(result.body.reflection, GENTLE_REFLECTION);
+
+    const { data: entry } = await admin.from('journal_entries').select('mood, tags, ai_summary').eq('user_id', u.id).single();
+    assert.deepEqual(entry, { mood: 'content', tags: ['home'], ai_summary: null });
+    const limits = await admin.from('rate_limits').select('count').eq('user_id', u.id);
+    assert.equal(limits.data?.length, 0);
+    assert.equal((await lastLog(u.id, 'journal_analysis_agent')).count, 0);
+  });
+
   it('with the rate limiter unreachable: the entry is saved and the gentle reflection shown, not a 429', async () => {
     const u = await createUser('reflect-limiter-down');
     const result = await reflectOnEntry(

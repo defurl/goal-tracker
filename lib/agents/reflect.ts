@@ -45,6 +45,12 @@ export interface ReflectDeps {
   /** Service role, for rate_limits and agent_logs only. */
   service: Db;
   userId: string;
+  /**
+   * NEXT_PUBLIC_AI_REFLECT (lib/flags.ts). When false the entry text is never
+   * sent anywhere: mood and tags are saved, no rate limit is spent, and the
+   * provider is not called. Required, so no caller can forget to decide.
+   */
+  reflectionEnabled: boolean;
 }
 
 export const ReflectInput = z.object({
@@ -73,7 +79,9 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
   const timeZone = profile?.timezone ?? 'UTC';
   const today = localDate(timeZone);
 
-  const rate = await consumeRateLimit(service, userId, AGENT_ID, today, dailyLimit);
+  const rate = deps.reflectionEnabled
+    ? await consumeRateLimit(service, userId, AGENT_ID, today, dailyLimit)
+    : null;
 
   const parsed = ReflectInput.safeParse(rawInput);
   if (!parsed.success) return { status: 400, body: { error: 'invalid_input' } };
@@ -87,6 +95,11 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
       { onConflict: 'user_id,date' },
     );
   if (saveError) return { status: 503, body: { error: 'unavailable' } };
+
+  // AI Reflect switched off: nothing leaves this function but the saved mood.
+  if (rate === null) {
+    return { status: 200, body: { reflection: GENTLE_REFLECTION, fallback: true } };
+  }
 
   if (!rate.allowed && !rate.unavailable) {
     return {

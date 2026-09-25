@@ -42,8 +42,9 @@ export const neverCalled: AgentProvider = {
   complete: async () => assert.fail('the provider must not be called'),
 };
 
+/** The reflect tests exercise the agent itself, so AI Reflect is on unless a test says otherwise. */
 export function deps(u: TestUser, provider: AgentProvider) {
-  return { provider, db: u.client as unknown as Db, service, userId: u.id };
+  return { provider, db: u.client as unknown as Db, service, userId: u.id, reflectionEnabled: true };
 }
 
 export async function lastLog(userId: string, agentId: string) {
