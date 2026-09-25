@@ -280,6 +280,13 @@ thousand users, batch it by timezone offset.
 prefers — but note that Vercel Cron on the Hobby plan is limited to daily
 invocations, which is not enough. Confirm the plan before choosing.
 
+> **Amendment, 2026-09-25 (owner decision): pg_cron.** `018_challenge_sweep_schedule.sql`
+> schedules `run_challenge_sweep()` at minute 0 of every hour inside the
+> database, so the sweep works on any hosting plan and no secret crosses the
+> network. The route stays, as above: `/api/cron/seed-challenges`, behind
+> `CRON_SECRET`, runs the same function on demand. Both paths log to
+> `agent_logs` as `challenge_generator_agent`, model `none`.
+
 ---
 
 ## 5. Agent registry

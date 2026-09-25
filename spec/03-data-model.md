@@ -276,6 +276,15 @@ begin
 end $$;
 ```
 
+> **Note, 2026-09-25 — who calls `award_points()`. PROPOSED, not yet ratified.**
+> The function stays the only writer of the ledger and stays service-role only.
+> Its callers are database functions that decide the amount themselves and act
+> only on `auth.uid()`'s rows: `complete_challenge()` / `roll_challenge()`
+> (019), `log_habit()` (020), `set_milestone()` (021). No caller takes a user
+> id or a points argument. Two bounds were added because owner-writable rows
+> (012) could otherwise mint points: only *today's* challenge awards, and habit
+> awards stop at ten a day. See PROGRESS.md for the two gaps still open.
+
 There is no "today" column. Today's points are a query:
 `select coalesce(sum(points),0) from point_ledger where user_id = $1 and date = $2`.
 A daily cron resetting a counter is a thing that can fail silently at 3 a.m.;
