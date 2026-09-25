@@ -61,7 +61,7 @@ deliberate trade and the onboarding says so.
 ## Stack
 
 Next.js 14 (App Router) · React Three Fiber · Supabase (Postgres + Auth + RLS) ·
-OpenAI `gpt-4o-mini` · CSS Modules · Vercel
+Google Gemini `gemini-2.5-flash-lite` · CSS Modules · Vercel
 
 Notably **not** used, and for documented reasons — see `spec/01-decisions.md`:
 Tailwind, shadcn/ui, Inter, and any light mode.
@@ -88,11 +88,12 @@ Copy `.env.example` to `.env.local` (or `.env` — both are gitignored) and fill
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase dashboard → **API Keys** | the default room only; sign-in says it is not configured |
 | `SUPABASE_SERVICE_ROLE_KEY` | same page, the secret key | the agents cannot rate-limit, so they never call the model — every import and reflection gets a curated fallback |
-| `OPENAI_API_KEY` | OpenAI dashboard — paid; **cap spend first** (below, COST-1) | every import and reflection gets a curated fallback instead |
+| `GEMINI_API_KEY` | Google AI Studio — free tier (below) | every import gets a curated fallback action instead |
 | `CRON_SECRET` | any long random string | `/api/cron/seed-challenges` refuses every call (the hourly sweep runs in the database regardless) |
+| `NEXT_PUBLIC_AI_REFLECT` | `on`, or leave empty | **leave it empty on a free key** — the journal then saves mood and tags and never sends an entry to the AI |
 
-The last three are server-only: never prefix them with `NEXT_PUBLIC_`, and they
-are read only under `app/api/`.
+`SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY` and `CRON_SECRET` are server-only:
+never prefix them with `NEXT_PUBLIC_`, and they are read only under `app/api/`.
 
 ### Getting the keys
 
@@ -104,9 +105,10 @@ extras:
 | you have | what works |
 |---|---|
 | nothing | the default room and `/text`, signed out |
-| anon key | everything except the AI: imports become curated two-minute actions, reflections a gentle note |
-| + service-role key + OpenAI key | the AI agents: real actions from articles, real journal reflections |
+| anon key | everything except the AI: imports become curated two-minute actions |
+| + service-role key + Gemini key | the import agent: a real action drawn from each article |
 | + `CRON_SECRET` | the manual seeder route — optional; the hourly sweep already runs in the database |
+| + `NEXT_PUBLIC_AI_REFLECT=on` | journal reflections — **only with a paid key**, see below |
 
 Without an AI key the app never shows an error — every AI path ends in a curated
 fallback by design (FALLBACK-1). You can run on that indefinitely and add the
@@ -126,31 +128,34 @@ key later; nothing needs changing but the env file.
    never give it a `NEXT_PUBLIC_` prefix. If it leaks, rotate it on the same
    page.
 
-**2 · OpenAI — the AI key (paid, but small).** There is no free tier for the
-OpenAI API; it bills per use. At `gpt-4o-mini` prices one import or reflection
-costs a fraction of a cent, so a few dollars of credit lasts a long time for
-one person. Check current pricing on OpenAI's site before relying on that.
+**2 · Gemini — the AI key (free tier).** The provider is Google's Gemini
+(owner decision 2026-09-25, amending D-19), model `gemini-2.5-flash-lite`.
 
-1. Create an account at [platform.openai.com](https://platform.openai.com) —
-   this is separate from a ChatGPT subscription, which does not include API use.
-2. **Settings → Billing**: add a small prepaid credit and **leave auto-recharge
-   off**. Prepaid credit with no auto-recharge is a hard ceiling — the key
-   cannot spend more than is loaded. That is the backstop COST-1 asks for (the
-   spec says a $20/day cap; prepaid credit is stricter).
-3. Also set a budget under **Settings → Limits** if the dashboard offers one.
-4. **API keys → Create new secret key** → `OPENAI_API_KEY`. It is shown once.
-   Same rules as the service-role key: server-only, never committed.
+1. Go to [Google AI Studio](https://aistudio.google.com) and sign in with a
+   Google account. No Google Cloud billing is needed for the free tier.
+2. **Get API key → Create API key.** Copy it into `GEMINI_API_KEY`.
+3. Same rules as the service-role key: server-only, never committed, never
+   pasted anywhere else. If it leaks, delete it in AI Studio and make another.
 
-Journal entries are sent to OpenAI when — and only when — someone presses
-**AI Reflect** (D-16). OpenAI's API terms at the time of writing say API data is
-not used for training by default; read them yourself before relying on that,
-since the Privacy Policy (Phase 4) will have to say it plainly.
+What the free tier means for this app — read Google's current Gemini API terms
+yourself, because these are the parts that matter:
 
-> **Why not a free provider?** Some providers have free tiers, but on several of
-> them the free tier's terms allow prompts to be reviewed or used for training
-> — the wrong home for journal entries. And the project is locked to one
-> provider (D-19): switching means amending `spec/01-decisions.md` and writing
-> a second `AgentProvider`, not changing a key.
+- **It costs nothing, and it cannot run up a bill.** COST-1's spend cap is met
+  by construction while no billing is attached.
+- **It is rate-limited** (requests per minute and per day). Past the limit
+  Google answers 429 and the user simply gets a curated fallback action.
+- **Google may use what is sent to improve its products, and human reviewers
+  may read it.** That is fine for a public article. It is **not** fine for a
+  journal entry, which is why AI Reflect is off: with `NEXT_PUBLIC_AI_REFLECT`
+  empty, the journal saves mood and tags, never sends the text anywhere, and
+  says so on the form.
+
+**Turning AI Reflect on later.** Only with a key whose terms do not use inputs
+for training or review — on Gemini, that means enabling billing on the key's
+Google Cloud project (the paid tier). Then set `NEXT_PUBLIC_AI_REFLECT=on`,
+rebuild, and put a hard budget on that project first (COST-1). Nothing else
+changes. Before it goes to real users, the Privacy Policy (Phase 4) has to say
+plainly where entries go.
 
 **3 · `CRON_SECRET` (free, optional).** Any long random string. Generate one:
 
@@ -162,7 +167,8 @@ Call the route with it as `Authorization: Bearer <secret>` to run the Daily
 Challenge sweep by hand.
 
 **Where the keys go.** Locally, in `.env.local` (or `.env`), then restart
-`pnpm dev`. When the app is deployed, the same four names go in the host's
+`pnpm dev` (a `NEXT_PUBLIC_` value is baked in at build time, so also rebuild
+before `pnpm start`). When the app is deployed, the same names go in the host's
 environment variables (on Vercel: **Project → Settings → Environment
 Variables**). They are never committed: both env files are gitignored.
 
