@@ -102,11 +102,26 @@ habit check-off, journal save and reflect, a goal with milestones.
    service's own site and set `VERIFIED_ON` (D-13: human-verified).
 
 **Owner actions:**
-- Push migrations 017–021 to the hosted project (`pnpm exec supabase db push`);
-  018 enables pg_cron there.
-- Put `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY` and `CRON_SECRET` in the
-  env — the AI key is now `GEMINI_API_KEY` (see the Gemini note below).
+- ~~Push migrations 017–021 to the hosted project~~ — done by the owner, 2026-09-25.
+- Put `SUPABASE_SERVICE_ROLE_KEY` and `GEMINI_API_KEY` in the env
+  (`CRON_SECRET` optional). Leave `NEXT_PUBLIC_AI_REFLECT` empty.
 - Walk the signed-in `/text` once (above).
+
+**Gemini, 2026-09-25 (owner decisions).** OpenAI had no free tier; the owner
+has a Google AI Studio key. Two decisions: **Gemini replaces OpenAI** (D-19
+amended, `OpenAIProvider` deleted), and **the free tier runs imports only** —
+its terms let inputs improve Google's products and be read by reviewers, so
+journal entries must not go there. AI Reflect is behind `NEXT_PUBLIC_AI_REFLECT`,
+off by default: the route then saves mood and tags, spends no rate limit and
+calls nothing (tested), and the form says the words are not kept. Prompts are
+`_V2` — identical text, model `gemini-2.5-flash-lite`. **Not yet verified
+against the live API**: the model name and the `thinkingConfig` field are from
+the docs as known, not from a call. Once the key is in the env, one real import
+settles both; a wrong model name shows as `PROVIDER_ERROR` in `agent_logs` and
+the user still gets a fallback. Raise when a paid key exists: Gemini's safety
+filters may block a distressed entry, which would drop the D-13 resource block
+— lower the dangerous-content threshold for the journal call before switching
+AI Reflect on.
 
 **Carried:** the shell is at 181 of 200 KB, most of it supabase-js — watch it.
 Icons are SVG only; iOS wants a PNG `apple-touch-icon` (Phase 4). `archive` on a
