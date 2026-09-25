@@ -89,16 +89,20 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
   const timeZone = await timeZoneOf(db, userId);
 
   const rate = await consumeRateLimit(service, userId, AGENT_ID, localDate(timeZone), dailyLimit);
-  if (!rate.allowed) {
+  if (!rate.allowed && !rate.unavailable) {
     return { status: 429, retryAfter: retryAfterSeconds(timeZone), body: { limited: true } };
   }
+  // The limiter could not be reached: no provider call, but still an action.
+  const limiterDown = !rate.allowed;
 
   const parsed = ExtractInput.safeParse(rawInput);
   if (!parsed.success) return { status: 400, body: { error: 'invalid_input' } };
   const { url, text } = parsed.data;
 
   let source = '';
-  if (text) {
+  if (limiterDown) {
+    source = '';
+  } else if (text) {
     source = capSource(text);
   } else if (url) {
     try {
@@ -129,7 +133,13 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
     .select('id, action_text, source_summary, source_url')
     .single();
 
-  const errorCode: LoggedErrorCode | null = run === null ? 'SOURCE_UNREADABLE' : run.ok ? null : run.code;
+  const errorCode: LoggedErrorCode | null = limiterDown
+    ? 'LIMITER_UNAVAILABLE'
+    : run === null
+      ? 'SOURCE_UNREADABLE'
+      : run.ok
+        ? null
+        : run.code;
   await logAgentCall(service, {
     agentId: AGENT_ID,
     userId,
@@ -156,7 +166,7 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
         sourceUrl: row.source_url,
       },
       fallback: run?.ok !== true,
-      sourceUnreadable: run === null && Boolean(url),
+      sourceUnreadable: run === null && Boolean(url) && !limiterDown,
     },
   };
 }

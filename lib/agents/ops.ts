@@ -20,7 +20,7 @@ type Db = SupabaseClient<Database>;
  * could not be read, so the model was never called. Also a code, never a
  * message — a fetch error can name the URL.
  */
-export type LoggedErrorCode = AgentErrorCode | 'SOURCE_UNREADABLE';
+export type LoggedErrorCode = AgentErrorCode | 'SOURCE_UNREADABLE' | 'LIMITER_UNAVAILABLE';
 
 export interface AgentLogRow {
   agentId: string;
@@ -33,12 +33,14 @@ export interface AgentLogRow {
   errorCode: LoggedErrorCode | null;
 }
 
-export type RateDecision = { allowed: true } | { allowed: false };
+export type RateDecision = { allowed: true } | { allowed: false; unavailable: boolean };
 
 /**
  * Counts this request and says whether it is within the cap. If the counter
- * cannot be reached the request is refused, not waved through: an outage in
- * the rate limiter must not become unmetered provider spend.
+ * cannot be reached the provider is not called — an outage in the rate
+ * limiter must not become unmetered spend — but that is `unavailable`, not
+ * "over the limit": the caller serves a curated fallback rather than telling
+ * the user they have used up a day they have not.
  */
 export async function consumeRateLimit(
   service: Db,
@@ -52,8 +54,8 @@ export async function consumeRateLimit(
     p_agent_id: agentId,
     p_date: date,
   });
-  if (error || typeof data !== 'number') return { allowed: false };
-  return data <= cap ? { allowed: true } : { allowed: false };
+  if (error || typeof data !== 'number') return { allowed: false, unavailable: true };
+  return data <= cap ? { allowed: true } : { allowed: false, unavailable: false };
 }
 
 /** Seconds until the user's next local midnight, when their count resets. */

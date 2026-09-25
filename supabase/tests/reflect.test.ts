@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 
 import { reflectOnEntry } from '../../lib/agents/reflect.ts';
 import { GENTLE_REFLECTION } from '../../lib/prompts/fallbacks.ts';
-import { deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
+import { brokenService, deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
 import { admin, createUser, deleteUsers } from './harness.ts';
 
 after(deleteUsers);
@@ -80,6 +80,18 @@ describe('journal agent', () => {
     const u = await createUser('reflect-long');
     const result = await reflectOnEntry(deps(u, neverCalled), { entry_text: 'x'.repeat(2001), mood: 'calm' });
     assert.equal(result.status, 400);
+  });
+
+  it('with the rate limiter unreachable: the entry is saved and the gentle reflection shown, not a 429', async () => {
+    const u = await createUser('reflect-limiter-down');
+    const result = await reflectOnEntry(
+      { ...deps(u, neverCalled), service: brokenService },
+      { entry_text: 'A quiet day.', mood: 'calm' },
+    );
+    assert.equal(result.status, 200);
+    if (result.status === 200) assert.deepEqual(result.body.reflection, GENTLE_REFLECTION);
+    const { data } = await admin.from('journal_entries').select('mood').eq('user_id', u.id).single();
+    assert.equal(data?.mood, 'calm');
   });
 });
 

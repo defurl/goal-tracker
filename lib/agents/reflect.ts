@@ -88,12 +88,27 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
     );
   if (saveError) return { status: 503, body: { error: 'unavailable' } };
 
-  if (!rate.allowed) {
+  if (!rate.allowed && !rate.unavailable) {
     return {
       status: 429,
       retryAfter: retryAfterSeconds(timeZone),
       body: { reflection: GENTLE_REFLECTION, fallback: true, limited: true },
     };
+  }
+  if (!rate.allowed) {
+    // The limiter could not be reached: no provider call, and no false claim
+    // that today's reflections are spent.
+    await logAgentCall(service, {
+      agentId: AGENT_ID,
+      userId,
+      model: prompt.model,
+      inputTokens: null,
+      outputTokens: null,
+      latencyMs: Date.now() - started,
+      success: false,
+      errorCode: 'LIMITER_UNAVAILABLE',
+    });
+    return { status: 200, body: { reflection: GENTLE_REFLECTION, fallback: true } };
   }
 
   const run = await runAgent(provider, prompt, parsed.data.entry_text);

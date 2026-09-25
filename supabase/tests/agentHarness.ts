@@ -3,15 +3,20 @@
 // the test if it is called at all. Nothing here reaches OpenAI.
 
 import assert from 'node:assert/strict';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 import { OpenAIProvider } from '../../lib/agents/openai.ts';
 import type { AgentProvider, CompletionRequest } from '../../lib/agents/provider.ts';
 import type { Database } from '../../lib/supabase/database.types.ts';
-import { admin, type TestUser } from './harness.ts';
+import { admin, url, type TestUser } from './harness.ts';
 
 type Db = SupabaseClient<Database>;
 export const service = admin as unknown as Db;
+
+/** A deploy with a missing or wrong SUPABASE_SERVICE_ROLE_KEY: every service call fails. */
+export const brokenService = createClient(url, 'not-a-service-key', {
+  auth: { persistSession: false, autoRefreshToken: false },
+}) as unknown as Db;
 
 /** The real provider, with every request failing the way a blocked network fails. */
 export const networkBlocked = new OpenAIProvider({

@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 
 import { extractAction } from '../../lib/agents/extract.ts';
 import { FALLBACK_SOURCE_SUMMARY } from '../../lib/prompts/fallbacks.ts';
-import { deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
+import { brokenService, deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
 import { admin, createUser, deleteUsers } from './harness.ts';
 
 after(deleteUsers);
@@ -78,6 +78,16 @@ describe('extraction agent', () => {
     const u = await createUser('extract-400');
     for (const body of [undefined, {}, { url: 'x', text: 'y' }, { text: '' }]) {
       assert.equal((await extractAction(deps(u, neverCalled), body)).status, 400);
+    }
+  });
+
+  it('with the rate limiter unreachable: no provider call, no false 429, still an action', async () => {
+    const u = await createUser('extract-limiter-down');
+    const result = await extractAction({ ...deps(u, neverCalled), service: brokenService }, { text: 'An article.' });
+    assert.equal(result.status, 200);
+    if (result.status === 200) {
+      assert.equal(result.body.fallback, true);
+      assert.equal(result.body.sourceUnreadable, false);
     }
   });
 });
