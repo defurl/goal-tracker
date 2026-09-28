@@ -43,11 +43,13 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.3] },
   door: { position: [-0.4, 0.7, 1.2], target: [-1.4, -0.74, 0.3] },
 
-  // PROPOSED — the two BBE objects do not exist yet (Phase 3). These are
-  // derived from their specified positions, not tuned against a render, and
-  // must be re-framed once the geometry lands.
+  // PROPOSED — the bonsai does not exist yet (Phase 3.6). Derived from its
+  // specified position, not tuned against a render; re-frame it once the
+  // geometry lands.
   //   bonsai   D-11: desk at [-0.8, 0, 0.1], capped at 0.35 m
-  //   wallGrid back wall, the 365-day tracker
   bonsai: { position: [-0.95, 0.5, 0.75], target: [-0.8, 0.15, 0.1] },
+  // The 365-day tracker (3.5). Checked against a render with the panel open,
+  // 2026-09-28: the whole band sits left of the panel. A closer camera clipped
+  // the band and let monitor 1 fill the frame; a lower target did the same.
   wallGrid: { position: [-0.2, 0.85, 0.9], target: [0, 0.75, -1.2] },
 };

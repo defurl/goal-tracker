@@ -46,6 +46,7 @@ import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
 import { Headphones } from './objects/Headphones';
 import { Window } from './objects/Window';
+import { GRID_CENTRE, GRID_HEIGHT, WallGrid } from './objects/WallGrid';
 import { DustMotes } from './objects/DustMotes';
 
 export function RoomScene() {
@@ -185,6 +186,16 @@ export function RoomScene() {
         <Phone position={[0.45, 0, 0.2]} />
       </InteractiveObject>
       <Headphones position={[-0.42, 0, 0.14]} />
+      {/* The 365-day tracker on the back-wall panel behind the monitors
+          (design-system/12 §3.3). Texture at rest; the numbers are in the panel. */}
+      <InteractiveObject
+        id="wallGrid"
+        label="tracker"
+        labelPosition={[GRID_CENTRE[0], GRID_CENTRE[1] + GRID_HEIGHT / 2 + 0.06, GRID_CENTRE[2] + 0.02]}
+        onActivate={() => focusObject('wallGrid', 'habits')}
+      >
+        <WallGrid />
+      </InteractiveObject>
       {/* Right wall, in the opening RoomShell is built around (04-room-spec §6). */}
       <Window position={[1.98, 1.0, -0.3]} rotation={[0, -Math.PI / 2, 0]} />
       <DustMotes />
