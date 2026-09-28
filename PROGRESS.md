@@ -14,12 +14,40 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **3.1–3.6 done** — challenge, import, goals, journal, wall tracker, and the bonsai. Next is 3.7 (window sky by hour), then 3.8 (headphones, audio off by default). See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
+| Phase 3 | **3.1–3.7 done** — challenge, import, goals, journal, wall tracker, bonsai, window sky. Next is 3.8, the last: headphones and the ambient bed, **off by default**. See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.7: the window sky by the hour
+
+**Done; the lighting test reads TRUE in all five bands**, effects on and off,
+with spec/05 §5's table exactly as written (`lib/sky.ts`, 4 unit tests).
+
+- `scene/objects/Window.tsx`: the sky plane lerps colour and intensity toward
+  the band at k = 0.05; the first hydrated frame snaps, so a page load does
+  not fade in from night; reduced motion snaps always. The city plane is
+  untouched (spec/05 §5).
+- `lib/data/clock.ts`: `localHour` was written once at load, so the window
+  would have held that hour all session. A one-minute clock in the data layer
+  now rewrites it, in the profile zone or the visitor's. `browserTimeZone`
+  moved to `lib/data/time.ts` to share it.
+- Seen: at a 2.4:1 frame, where the window is in view, night and evening are
+  near-black, dawn and day cool (day brighter), dusk warm.
+
+**Worth knowing:** at the 16:10 rest pose the window's sky is just outside the
+frame (≈ 38° off-axis against a ≈ 36.5° half-width), which is why every band
+measures identically — the table cannot disturb the rig there. On a frame
+wider than ≈ 1.7:1 the window comes into view, and dusk's `LAMP_WARM` × 1.0
+(L ≈ 0.55) blooms on the right edge, the cool side. Not a failing criterion
+(the test captures at 16:10), but criterion 2's spirit — the right edge reads
+cooler — would weaken at dusk on an ultrawide screen. Also: night's
+`BG_NIGHT` × 0.8 is darker than the fixed tint it replaces (L 0.004 vs
+0.046); the city below now carries the window at night.
 
 ---
 
