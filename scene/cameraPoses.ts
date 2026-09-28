@@ -53,3 +53,90 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   // the band and let monitor 1 fill the frame; a lower target did the same.
   wallGrid: { position: [-0.2, 0.85, 0.9], target: [0, 0.75, -1.2] },
 };
+
+// ── Portrait ─────────────────────────────────────────────────────────────────
+//
+// The poses above are composed for a wide frame: object left of centre, panel
+// on the right. On a frame taller than it is wide the panel spans the top
+// instead, and pushing the object left pushes it off-screen. So in portrait
+// the object is centred horizontally and dropped into the lower part of the
+// frame, under the panel.
+//
+// Derived, not hand-tuned, so it holds for any portrait size and field of
+// view: the camera keeps the wide pose's viewing ANGLE onto the object, backs
+// off until the object fills FILL of the frame's width, and aims above the
+// object so its centre sits DROP of the half-height below the middle.
+
+interface FocusSubject {
+  /** The visual centre of the object, in world space. */
+  centre: [number, number, number];
+  /** Its widest extent across the view, in metres. */
+  width: number;
+}
+
+/**
+ * Every object that opens a panel. The glide-only objects (window, door,
+ * headphones) keep their wide pose in portrait — there is no panel to clear.
+ * Positions mirror scene/RoomScene.tsx and the objects' own geometry.
+ */
+export const FOCUS_SUBJECTS: Partial<Record<ObjectId, FocusSubject>> = {
+  // MONITOR_FILL_POSITIONS x/z; screen centre 0.306 above the desk (Monitor.tsx).
+  monitor1: { centre: [-0.3, 0.306, -0.4], width: 0.62 },
+  monitor2: { centre: [0.5, 0.306, -0.4], width: 0.62 },
+  notebook: { centre: [0.66, 0.007, 0.15], width: 0.27 },
+  phone: { centre: [0.45, 0.004, 0.2], width: 0.16 },
+  // GRID_CENTRE, a 1.33 m band (WallGrid.tsx).
+  wallGrid: { centre: [-0.75, 0.493, -1.2], width: 1.36 },
+  // PROPOSED with its pose above — re-check when the bonsai exists.
+  bonsai: { centre: [-0.8, 0.15, 0.1], width: 0.35 },
+};
+
+const FILL = 0.8;
+const DROP = 0.35;
+/**
+ * No further than the wide rest pose sits from the desk, so the camera never
+ * leaves the room. Only the wall band reaches it: in portrait it is cropped at
+ * the sides, and the panel carries its numbers.
+ */
+const MAX_DISTANCE = 3.0;
+
+export function isPortrait(aspect: number): boolean {
+  return aspect < 1;
+}
+
+/** The focus pose for `id` on a portrait frame of `aspect` and vertical `fovDeg`. */
+export function portraitPose(id: ObjectId, aspect: number, fovDeg: number): CameraPose {
+  const wide = FOCUS_POSES[id];
+  const subject = FOCUS_SUBJECTS[id];
+  if (!subject) return wide;
+
+  const [cx, cy, cz] = subject.centre;
+  // Unit vector from the object back toward the wide pose's camera.
+  let bx = wide.position[0] - cx;
+  let by = wide.position[1] - cy;
+  let bz = wide.position[2] - cz;
+  const length = Math.hypot(bx, by, bz);
+  bx /= length;
+  by /= length;
+  bz /= length;
+
+  const halfV = (fovDeg * Math.PI) / 360;
+  const halfH = Math.atan(Math.tan(halfV) * aspect);
+  const distance = Math.min(subject.width / (2 * FILL * Math.tan(halfH)), MAX_DISTANCE);
+
+  // "Up" on screen: world up with its component along the view removed.
+  const along = -by; // world up · (camera → object)
+  let ux = along * bx;
+  let uy = 1 + along * by;
+  let uz = along * bz;
+  const upLength = Math.hypot(ux, uy, uz);
+  ux /= upLength;
+  uy /= upLength;
+  uz /= upLength;
+  const lift = distance * Math.tan(halfV) * DROP;
+
+  return {
+    position: [cx + bx * distance, cy + by * distance, cz + bz * distance],
+    target: [cx + ux * lift, cy + uy * lift, cz + uz * lift],
+  };
+}
