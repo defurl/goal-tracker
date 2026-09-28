@@ -14,12 +14,48 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **3.1–3.7 done** — challenge, import, goals, journal, wall tracker, bonsai, window sky. Next is 3.8, the last: headphones and the ambient bed, **off by default**. See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
+| Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries. Next is Phase 4, hardening | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.8, and the Phase 3 gate
+
+**3.8 done.** The headphones and a bottom-right "sound off / on" control flip
+`focusMode` (`lib/data/focus.ts`, not persisted — every visit starts silent);
+`app/(app)/AudioControl.tsx` owns the bed and follows it. The bed
+(`lib/audio/ambient.ts`) is synthesised with Tone.js — lo-fi pad, room hum,
+brown-noise rain, an occasional gust — and fades 0 → 0.3 over 600 ms. Leaving
+the room fades it out and turns focus mode off.
+
+Measured on the production build, with the AudioContext tapped by an analyser:
+no AudioContext and no Tone chunk before a click · after "sound on" one
+running context, output RMS 0.015, `aria-pressed` true · after "sound off",
+RMS 0 once faded · the headphones via Enter turn it back on and the corner
+control follows. No console errors.
+
+**Budget.** Tone.js is one lazy chunk, 76.3 KB gz. `bundle:check` counted it as
+scene (the room at 312 of 320 KB) though nothing needs it to render the room;
+it now reports its own line — `audio ≤ 100 KB`, **PROPOSED**, not one of
+D-10's two — and fails if it ever reaches the shell. Scene is back to 236.1.
+
+**Not built, raise with the owner:** spec/00 lists the headphones as "Focus
+Mode toggle. Two-minute timer." The build plan's 3.8 and spec/05's table
+have the toggle and the audio only, so there is no timer. `/text` has no
+sound control — ambient, not one of the four features.
+
+**Phase 3 gate — TRUE.** Every row of spec/05 §3 is wired and lerps (snaps
+under reduced motion): monitor 1 emissive and texture (3.1), phone screen
+(3.2), monitor 2 texture (3.3), notebook bookmark (3.4), wall grid (3.5),
+bonsai (3.6), window sky (3.7), ambient gain (3.8). At rest the wall grid
+reads as texture (3.5, filled glow 0.1). The lighting test read TRUE after
+each step, effects on and off. The owner decisions still open are listed in
+the entries below: the bonsai's place in the lamp pool (D-11), the wall's
+layout and glow, the leaf tone and base leaves, the phone lying face up.
 
 ---
 
