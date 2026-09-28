@@ -21,6 +21,7 @@ import styles from './DetailPanel.module.css';
 import { ChallengePanel } from './panels/ChallengePanel';
 import { GoalsPanel } from './panels/GoalsPanel';
 import { ImportPanel } from './panels/ImportPanel';
+import { JournalPanel } from './panels/JournalPanel';
 
 const TITLES: Record<Exclude<PanelId, null>, string> = {
   challenge: 'Daily challenge',
@@ -34,6 +35,7 @@ const CONTENT: Partial<Record<Exclude<PanelId, null>, ComponentType>> = {
   challenge: ChallengePanel,
   goals: GoalsPanel,
   import: ImportPanel,
+  journal: JournalPanel,
 };
 
 export function DetailPanel() {
