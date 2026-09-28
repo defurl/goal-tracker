@@ -122,14 +122,26 @@ function NewHabit({ atCap }: { atCap: boolean }) {
 }
 
 export function HabitsSection({ signedIn }: { signedIn: boolean }) {
+  return (
+    <section className={styles.section} aria-labelledby="habits-heading">
+      <h2 id="habits-heading" className={styles.heading}>Habits</h2>
+      <HabitsBody signedIn={signedIn} />
+    </section>
+  );
+}
+
+/**
+ * Everything under the heading. The wall tracker's panel in the room renders
+ * this too, so check-off, streaks and the habit cap are one implementation
+ * on both surfaces (D-07).
+ */
+export function HabitsBody({ signedIn }: { signedIn: boolean }) {
   const habits = useAppStore((s) => s.habits);
   const due = habits.filter((h) => h.dueToday);
   const rest = habits.filter((h) => !h.dueToday);
 
   return (
-    <section className={styles.section} aria-labelledby="habits-heading">
-      <h2 id="habits-heading" className={styles.heading}>Habits</h2>
-
+    <>
       {habits.length === 0 ? (
         <p className={styles.quiet}>
           No habits yet. Add something you are building, or something you are quitting — each one kept grows the bonsai.
@@ -161,6 +173,6 @@ export function HabitsSection({ signedIn }: { signedIn: boolean }) {
           <a href="/login" className={styles.label}>sign in</a> to keep habits.
         </p>
       )}
-    </section>
+    </>
   );
 }
