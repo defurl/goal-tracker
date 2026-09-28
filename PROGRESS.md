@@ -14,12 +14,51 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **3.1 and 3.2 done** — monitor 1 shows the challenge, the phone imports. Next is 3.3 (monitor 2, goals). See the 2026-09-28 entry | (shared — Phase 3 is one sequence) |
+| Phase 3 | **3.1–3.3 done** — monitor 1 shows the challenge, the phone imports, monitor 2 shows the goals. Next is 3.4 (notebook, journal). See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.3: monitor 2 and the goals panel
+
+**Done; the lighting test reads TRUE, effects on and off.**
+
+- **Screen** — `scene/screens/goalsScreen.ts`: up to four goals, a bar each,
+  "and N more" beneath; the fill is paper over a dark track, so progress is
+  light. Glow holds at 1.0 (spec/05 has no intensity row for monitor 2).
+  The shared canvas code moved to `scene/screens/canvasScreen.ts`.
+- **Panel** — `app/(app)/panels/GoalsPanel.tsx` renders `/text`'s `GoalsBody`
+  (timeline, milestones, new goal), so the two surfaces share one implementation.
+
+**Lighting, measured — and the 3.1 inference closed.**
+
+```
+rest, bloom on              pool 0.248 · monitors 0.081 / 0.057 · floor 0.025 · keyboard 20.4 %
+worst case, bloom on        pool 0.248 · monitors 0.096 / 0.057 · keyboard 20.5 %
+                            (monitor 1 done at 1.4, phone importing, five goals on monitor 2)
+reduced motion              all five TRUE
+```
+
+These frames come from a hardware-GL Playwright probe of the production
+build. **Why not `capture:states`:** it renders through SwiftShader (on the CPU,
+for GPU-less CI), and on a busy machine the adaptive-FPS guard trips during
+load and drops bloom — every `capture:states` frame today was bloom-off under
+the effects-on name. Bloom-on at monitor 1 = 1.4 is now measured rather than
+inferred (0.096 vs pool 0.248). `captures/` is still not refreshed; CI's
+`scene-capture` is the SwiftShader record.
+
+**AC-4.5, PROPOSED reading.** At the rest pose the four bars and their fill
+are clear; the titles (~8 px) are not. The bars are the summary; titles
+resolve at the focus pose, and the full detail is in the panel. A bigger
+summary would fight the 5 % rule (spec/05 §3). Raise if the owner wants the
+titles legible from the desk.
+
+**Not verified signed in** — the panel's timeline and check-off with real
+goals. Signed out: monitor 2 → "No goals yet" + sign in, no console errors.
 
 ---
 
@@ -47,8 +86,8 @@ The worst-case frame came out with **bloom off**: the adaptive-FPS guard tripped
 because the owner's own room tab was rendering at the same time, and a rebuilt
 normal frame then read identically (15.4 %), so the cause is load, not the
 change. Bloom barely moves monitor 1's region (0.081 on vs 0.080 off), so
-criterion 1 at 1.4 holds with a wide margin — but that bloom-on 1.4 number is
-inferred, not captured. For the same reason **`captures/` was not refreshed**:
+criterion 1 at 1.4 holds with a wide margin — measured with bloom on in the
+3.3 entry (0.096 vs 0.248). For the same reason **`captures/` was not refreshed**:
 a bloom-off frame under the effects-on name is the mislabel the capture script
 warns about. Re-capture on a quiet machine, or read CI's `scene-capture`.
 
