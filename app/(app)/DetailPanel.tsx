@@ -19,6 +19,7 @@ import { useEffect, useRef, type ComponentType } from 'react';
 import { useInteractionStore, type PanelId } from '../../lib/stores/interaction';
 import styles from './DetailPanel.module.css';
 import { ChallengePanel } from './panels/ChallengePanel';
+import { ImportPanel } from './panels/ImportPanel';
 
 const TITLES: Record<Exclude<PanelId, null>, string> = {
   challenge: 'Daily challenge',
@@ -30,6 +31,7 @@ const TITLES: Record<Exclude<PanelId, null>, string> = {
 
 const CONTENT: Partial<Record<Exclude<PanelId, null>, ComponentType>> = {
   challenge: ChallengePanel,
+  import: ImportPanel,
 };
 
 export function DetailPanel() {
