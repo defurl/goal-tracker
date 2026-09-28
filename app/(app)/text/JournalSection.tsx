@@ -102,6 +102,20 @@ function Calendar({ days }: { days: JournalDay[] }) {
 }
 
 export function JournalSection({ signedIn }: { signedIn: boolean }) {
+  return (
+    <section className={styles.section} aria-labelledby="journal-heading">
+      <h2 id="journal-heading" className={styles.heading}>Journal</h2>
+      <JournalBody signedIn={signedIn} />
+    </section>
+  );
+}
+
+/**
+ * Everything under the heading. The notebook's panel in the room renders this
+ * too, so the privacy copy, the reflect control and the AI Insight block are
+ * one implementation on both surfaces (D-07).
+ */
+export function JournalBody({ signedIn }: { signedIn: boolean }) {
   const journal = useAppStore((s) => s.journal);
   const [mood, setMood] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -150,8 +164,7 @@ export function JournalSection({ signedIn }: { signedIn: boolean }) {
   const noReflections = journal.reflectionsRemaining === 0;
 
   return (
-    <section className={styles.section} aria-labelledby="journal-heading">
-      <h2 id="journal-heading" className={styles.heading}>Journal</h2>
+    <>
       <p className={styles.quiet}>
         Your words are not kept. Only the mood, the tags and — if you ask for one — an AI reflection are saved, so you
         will not be able to read this entry again later.
@@ -265,6 +278,6 @@ export function JournalSection({ signedIn }: { signedIn: boolean }) {
           <Calendar days={days} />
         </>
       )}
-    </section>
+    </>
   );
 }
