@@ -21,6 +21,61 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
 
+**Everything through Phase 3 is pushed** (`f970ac4` and the docs after it,
+2026-09-28). `WORKLOG.md` is the feature-by-feature record of what the product
+does and looks like; this file stays the state.
+
+### Next session: Phase 4 — hardening
+
+Start fresh, on `spec/06-build-plan.md` Phase 4, one commit per mini-feature.
+
+| # | task | what to know going in |
+|---|---|---|
+| 4.1 | Lighthouse CI, performance ≥ 85 | Measure the production build. The shell is at 184.1 / 200 KB gz, most of it supabase-js. The scene is 236.1 / 320, lazy |
+| 4.2 | axe-core + Playwright smoke over `/`, `/text`, auth | The room's a11y surface is the hidden 48×48 buttons from `InteractiveObject`, the panel (focus lands on its heading) and the corner controls (`aria-pressed` on sound) |
+| 4.3 | Reduced-motion pass, every row of `03-motion.md` | Covered so far: ambient layers removed, every lerp snaps, bonsai droplet skipped, panel `animation: none`, window snaps. Walk the table row by row anyway |
+| 4.4 | Empty states for every widget and panel (X-1) | Monitor 1, monitor 2, the import panel and the signed-out panels already have them. Audit the bonsai at 0 points (8 base leaves), the wall with no days, and the goals, journal and habits panels when empty |
+| 4.5 | Offline: airplane mode, `/text` usable, room renders from cache | The service worker caches the `/text` shell only, by design (B2.9). "Room renders from cache" conflicts with that, so raise it rather than widen the cache on a guess |
+| 4.6 | Privacy Policy stating FR-3.6 plainly | The entry text is never stored or retrievable, and the free Gemini tier is why AI Reflect is off |
+| 4.7 | Provider spend cap (COST-1) | **Stale wording:** the plan says the OpenAI dashboard, but the provider is Gemini (D-19 amended). Owner action, in Google AI Studio or Cloud billing |
+
+**Small debt Phase 4 should close:**
+- `/favicon.ico` returns a 404 on first load
+- no PNG `apple-touch-icon` for iOS
+- `archive` on a habit has no confirmation
+- `captures/` has not been refreshed since 3.1: re-capture on a quiet machine
+- `actions/checkout@v4` and `pnpm/action-setup@v4` warn about Node 20
+
+**Open owner decisions**, detail in the entries below:
+1. **Bonsai:**
+   - its place in the lamp pool (D-11), with criterion 5 at 0.945 of < 1
+   - leaf tone 0.25
+   - the 8 base leaves
+   - the droplet playing only when a leaf is earned
+2. **Wall grid:** the 53 × 7 layout, the 0.1 filled glow and the day order.
+3. **Phone:** lying face up, and its emissive levels.
+4. **Import panel:** the 3 s dwell before it closes itself.
+5. **Monitor text:** dark ink, and the notebook bookmark in `SIGNAL`.
+6. **Audio:** the 100 KB budget. The spec/00 two-minute timer is not built, and
+   `/text` has no sound control.
+7. **Window:**
+   - it is glide-only in 08 §4 but not wired
+   - it sits outside the rest frame
+   - dusk blooms on ultrawide screens
+8. **Carried from Phase 2 track B:**
+   - owner-writable history (012)
+   - goal farming
+   - no record of the prompt version
+   - the model may quote the entry
+   - support resources not yet verified (D-13)
+
+**Owner actions:** walk the signed-in room once. The agent has never done it:
+- import from the phone
+- complete the challenge (monitor 1 goes to 1.4)
+- earn a leaf
+- save a journal entry (the bookmark warms)
+- check off a habit (today's cell lights)
+
 ---
 
 ## 2026-09-28 — Phase 3.8, and the Phase 3 gate
