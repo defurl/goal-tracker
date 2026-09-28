@@ -8,10 +8,10 @@
 
 import { useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Vector3 } from 'three';
+import { Vector3, type PerspectiveCamera } from 'three';
 import { useInteractionStore } from '../lib/stores/interaction';
 import { useSceneStore } from '../lib/stores/scene';
-import { REST_POSE, REST_POSE_MOBILE, FOCUS_POSES, type CameraPose } from './cameraPoses';
+import { REST_POSE, REST_POSE_MOBILE, FOCUS_POSES, isPortrait, portraitPose, type CameraPose } from './cameraPoses';
 
 /** Matches --dur-camera. Keep the two in sync by name if either changes. */
 const GLIDE_MS = 2200;
@@ -33,13 +33,27 @@ export function CameraRig() {
   const lookAt = useRef(new Vector3(...REST_POSE.target));
   const elapsed = useRef(GLIDE_MS); // start settled at rest
   const lastFocus = useRef<typeof focus>(null);
+  const lastPortrait = useRef<boolean | null>(null);
 
-  useFrame((_, dt) => {
-    if (focus !== lastFocus.current) {
+  useFrame(({ size }, dt) => {
+    // A frame taller than wide gets the portrait focus poses (cameraPoses.ts):
+    // the wide ones push the object off the left edge. Rotating a device while
+    // an object is focused re-aims the camera for the new shape.
+    const aspect = size.width / Math.max(size.height, 1);
+    const portrait = isPortrait(aspect);
+    const reshaped = focus !== null && lastPortrait.current !== null && portrait !== lastPortrait.current;
+    lastPortrait.current = portrait;
+
+    if (focus !== lastFocus.current || reshaped) {
       lastFocus.current = focus;
       const { isMobile, prefersReducedMotion } = useSceneStore.getState();
       const restPose: CameraPose = isMobile ? REST_POSE_MOBILE : REST_POSE;
-      const destination: CameraPose = focus ? FOCUS_POSES[focus] : restPose;
+      const fov = (camera as PerspectiveCamera).fov;
+      const destination: CameraPose = focus
+        ? portrait
+          ? portraitPose(focus, aspect, fov)
+          : FOCUS_POSES[focus]
+        : restPose;
 
       fromPosition.current.copy(camera.position);
       fromTarget.current.copy(lookAt.current);
