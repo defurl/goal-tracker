@@ -19,6 +19,7 @@ import { useEffect, useRef, type ComponentType } from 'react';
 import { useInteractionStore, type PanelId } from '../../lib/stores/interaction';
 import styles from './DetailPanel.module.css';
 import { ChallengePanel } from './panels/ChallengePanel';
+import { GoalsPanel } from './panels/GoalsPanel';
 import { ImportPanel } from './panels/ImportPanel';
 
 const TITLES: Record<Exclude<PanelId, null>, string> = {
@@ -31,6 +32,7 @@ const TITLES: Record<Exclude<PanelId, null>, string> = {
 
 const CONTENT: Partial<Record<Exclude<PanelId, null>, ComponentType>> = {
   challenge: ChallengePanel,
+  goals: GoalsPanel,
   import: ImportPanel,
 };
 
