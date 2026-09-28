@@ -4,7 +4,7 @@
 // surfaces after the lamp, so both tints are luminance-checked against the 0.1
 // bloom threshold (D-20, D-21):
 //
-//   monitor 1  SIGNAL_DIM       #8E4A5C  L 0.114 x 1.2 = 0.137  -> blooms
+//   monitor 1  SIGNAL_DIM       #8E4A5C  L 0.114 x 1.1 = 0.126  -> blooms
 //   monitor 2  GLOW_COOL_SOFT   #3F6B77  L 0.131 x 1.0 = 0.131  -> blooms
 //
 // Both clear it, but not by much, which is the point: a screen that sits just
@@ -16,8 +16,17 @@
 // glow. `toneMapped={false}` keeps the emissive value raw so bloom can catch
 // it. The GradientTexture on emissiveMap fades the glow toward the bottom of
 // the screen, which is what stops it reading as a flat coloured rectangle.
+// Monitor 1 passes its own map instead — today's challenge drawn over the same
+// gradient (scene/screens/challengeScreen.ts).
+//
+// Intensity is set in the frame loop, never as a JSX prop: a re-render would
+// otherwise reset it and pop the lerp. Monitor 1 lerps 1.1 -> 1.4 on
+// completion (spec/05 §3, D-20); monitor 2 holds 1.0 until Phase 3.3.
 
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { GradientTexture } from '@react-three/drei';
+import type { MeshStandardMaterial, Texture } from 'three';
 
 import {
   BG_PANEL_2,
@@ -29,7 +38,9 @@ import {
   INK_PAPER,
   SIGNAL_DIM,
 } from '../../lib/style/colors';
+import { lerpTo } from '../../lib/motion/lerp';
 import { useInteractionStore, type ObjectId } from '../../lib/stores/interaction';
+import { useSceneStore } from '../../lib/stores/scene';
 
 export type MonitorVariant = 'primary' | 'terminal';
 
@@ -42,11 +53,18 @@ interface MonitorProps {
   height?: number;
   /** When set, the screen lifts emissive on hover. */
   hoverId?: ObjectId;
+  /** Replaces the plain gradient as the screen's emissive map. */
+  emissiveMap?: Texture;
+  /** Read every frame; the screen lerps toward it. Defaults to the variant's base. */
+  intensityTarget?: () => number;
 }
 
 const BEZEL_THICKNESS = 0.012;
 const PANEL_DEPTH = 0.024;
 const HOVER_EMISSIVE_LIFT = 1.2;
+/** The top of the emissive band (06-materials.md). Hover never lifts past it (spec/02 F1). */
+const EMISSIVE_CEILING = 1.4;
+const EMISSIVE_LERP = 0.05;
 
 const DEFAULT_WIDTH = 0.62;
 const DEFAULT_HEIGHT = 0.36;
@@ -76,16 +94,31 @@ export function Monitor({
   width = DEFAULT_WIDTH,
   height = DEFAULT_HEIGHT,
   hoverId,
+  emissiveMap,
+  intensityTarget,
 }: MonitorProps) {
   const isPrimary = variant === 'primary';
   const emissiveTint = isPrimary ? SIGNAL_DIM : GLOW_COOL_SOFT;
-  const baseIntensity = isPrimary ? 1.2 : 1.0;
+  const baseIntensity = isPrimary ? 1.1 : 1.0;
 
-  // Hover is event-driven, not per-tick, so subscribing is within the scene
-  // state contract (spec/05 §3). The value swap is instant and therefore still
-  // legible under prefers-reduced-motion without a frame loop.
-  const hovered = useInteractionStore((s) => hoverId != null && s.hovered === hoverId);
-  const emissiveIntensity = hovered ? baseIntensity * HOVER_EMISSIVE_LIFT : baseIntensity;
+  const materialRef = useRef<MeshStandardMaterial>(null);
+  const level = useRef<number | null>(null);
+
+  // Imperative reads only — no subscription inside the frame loop (spec/05 §1).
+  // The state lerps; the hover lift stays instant on top of it, so hover is as
+  // legible under reduced motion as it was before, and a completed screen at
+  // the ceiling does not lift at all.
+  useFrame(() => {
+    const material = materialRef.current;
+    if (!material) return;
+    const target = intensityTarget ? intensityTarget() : baseIntensity;
+    const reduced = useSceneStore.getState().prefersReducedMotion;
+    level.current = level.current === null ? target : lerpTo(level.current, target, reduced ? 1 : EMISSIVE_LERP);
+    const hovered = hoverId != null && useInteractionStore.getState().hovered === hoverId;
+    material.emissiveIntensity = hovered
+      ? Math.min(level.current * HOVER_EMISSIVE_LIFT, EMISSIVE_CEILING)
+      : level.current;
+  });
 
   const tilt = isPrimary ? -0.06 : -0.04;
   const centreY = screenCentreY(height);
@@ -106,18 +139,21 @@ export function Monitor({
         <mesh position={[0, 0, PANEL_DEPTH / 2 + 0.001]}>
           <planeGeometry args={[width - BEZEL_THICKNESS * 2, height - BEZEL_THICKNESS * 2]} />
           <meshStandardMaterial
+            ref={materialRef}
             color={BG_VOID}
             emissive={emissiveTint}
-            emissiveIntensity={emissiveIntensity}
+            {...(emissiveMap ? { emissiveMap } : {})}
             roughness={0.9}
             metalness={0.05}
             toneMapped={false}
           >
-            <GradientTexture
-              attach="emissiveMap"
-              stops={[0, 0.5, 1]}
-              colors={[INK_PAPER, INK_MUTED, INK_FAINT]}
-            />
+            {!emissiveMap && (
+              <GradientTexture
+                attach="emissiveMap"
+                stops={[0, 0.5, 1]}
+                colors={[INK_PAPER, INK_MUTED, INK_FAINT]}
+              />
+            )}
           </meshStandardMaterial>
         </mesh>
       </group>
