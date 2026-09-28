@@ -146,14 +146,14 @@
     "dom_overlay_rules": [
       "Overlay UI lives in the screen corners — never centered, never full-bleed",
       "Use generous negative space; the 3D scene is the content",
-      "When a project detail opens, it slides in from the right at ~480px width, never modal-center",
+      "When a detail opens, it floats in the top-right corner at ~440px, inset from the edges, fading in as the camera lands; never modal-center (amended 2026-09-28)",
       "No card grids. No 'feature box' layouts. If you find yourself reaching for a grid, stop and rethink."
     ],
     "corner_allocation": {
       "bottom_left":  "navigation affordances — 'back to desk', scene breadcrumb. The feed-status badge ('· replay · YYYY-MM-DD') also lives here, stacked above the back-to-desk affordance, and fades to 0 when a panel is focused so it never competes for attention.",
       "bottom_right": "global controls — audio toggle, /text link, fidelity toggle",
       "top_left":     "scene title / eyebrow label (when shown at all)",
-      "top_right":    "transient panels — project detail slides in here at ~480px"
+      "top_right":    "transient panels — detail floats here at ~440px, inset from the edges"
     },
     "3d_scene_rules": [
       "The night desk: shallow depth of field, lamp as key light, monitors as secondary fills, window as cool rim light",

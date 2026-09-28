@@ -109,7 +109,7 @@ Every object does exactly one of these. Pick one per object; do not mix.
 
 | outcome | example | behaviour |
 |---|---|---|
-| **glide + panel** | monitor, notebook, phone | camera glides to focus pose, DOM panel slides in from the right |
+| **glide + panel** | monitor, notebook, phone | camera glides to focus pose, DOM panel fades in, floating top-right, as it lands |
 | **glide only** | window | camera glides, no panel — a scene transition lands afterwards |
 | **toggle** | headphones | no camera move, no panel, flips a global boolean |
 | **transition** | the door (invisible floor disc) | full scene change behind a fade |
@@ -123,13 +123,18 @@ The 3D scene is the content. The DOM is corner furniture.
 | corner | contents |
 |---|---|
 | top-left | scene title / eyebrow label, when shown at all |
-| top-right | transient panels — detail slides in here at **~480 px** |
+| top-right | transient panels — detail floats here at **~440 px**, inset from the edges |
 | bottom-left | navigation — "back", breadcrumb; status badge stacked above, fading to 0 when a panel is focused |
 | bottom-right | global controls — audio toggle, text-fallback link, fidelity toggle |
 
 Rules:
 - Overlay UI lives in the corners. **Never centred, never full-bleed.**
-- Detail opens as a **right-hand slide-in at ~480 px**, never a centred modal.
+- Detail opens as a **floating panel in the top-right corner, ~440 px**, inset
+  from the edges, never a centred modal. It **fades in as the camera lands**
+  on the object — the glide is the zoom and the panel follows it (600 ms fade
+  and 8 px rise after a 1200 ms wait). Solid, never glass. *Amended
+  2026-09-28 by owner decision; the portfolio's edge-to-edge slide-in is
+  retired. The focus poses already keep every object left of this panel.*
 - Generous negative space.
 - **No card grids.** No "feature box" layouts. If you reach for a grid, stop.
 

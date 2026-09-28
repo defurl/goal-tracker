@@ -46,6 +46,7 @@ the two in sync by name if you change either.
 | layer | normal | reduced |
 |---|---|---|
 | camera glide | 2200 ms eased lerp | completes on frame 1 |
+| detail panel | 600 ms fade + 8 px rise, after a 1200 ms wait | appears on frame 1 — no fade, no wait |
 | window state lerp | `k = 0.05`/frame toward target | snap to target |
 | dust motes | drift + sway | frozen in place |
 | window rain | 18 falling drops | **not rendered at all** |

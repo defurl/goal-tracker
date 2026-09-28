@@ -66,7 +66,7 @@ processed.
 
 **Monitor 2 (cyan, cool)** shows the **Goal Dashboard**: a compact list of
 active goals with progress bars. The cool emissive suits the analytical
-"overview" register. Clicking slides in the full goal detail panel.
+"overview" register. Clicking glides in and fades up the full goal detail panel.
 
 ### 3.2 The task tree, watered by completions
 
@@ -135,7 +135,7 @@ Proposal:
   legible version is the DOM panel when clicked. This is the same 5 % rule the
   window uses: state visible in the environment, readable only on approach.
 - Wrap it in an `InteractiveObject` with label `"tracker"` and a new focus pose
-  — camera glide toward the wall, panel slides in from the right with the real
+  — camera glide toward the wall, panel fades in top-right with the real
   numbers.
 
 ### 3.4 The phone as the article import portal

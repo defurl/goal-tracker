@@ -48,9 +48,9 @@ Focus poses, for reference (each object gets one):
 | door | `[-0.4, 0.7, 1.2]` | `[-1.4, -0.74, 0.3]` |
 
 **Composition rule baked into every focus pose: the focused object sits
-LEFT of centre**, because the DOM detail panel slides in from the right at
-~480 px and would otherwise occlude it. If your panel comes from a different
-edge, mirror the bias.
+LEFT of centre**, because the DOM detail panel floats in the top-right corner
+at ~440 px (08 §5) and would otherwise occlude it. If your panel sits on a
+different side, mirror the bias.
 
 ---
 
