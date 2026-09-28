@@ -11,6 +11,7 @@
 
 import dynamic from 'next/dynamic';
 
+import { AudioControl } from './AudioControl';
 import { DetailPanel } from './DetailPanel';
 import { SceneNav } from './SceneNav';
 
@@ -22,6 +23,7 @@ export default function RoomPage() {
       <RoomCanvas />
       <SceneNav />
       <DetailPanel />
+      <AudioControl />
     </main>
   );
 }
