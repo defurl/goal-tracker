@@ -23,12 +23,8 @@ import { loadJournal } from './journal';
 import { loadPoints } from './points';
 import { setSession } from './session';
 import { clearSnapshot, readSnapshot } from './snapshot';
-import { localDate, localHour } from './time';
+import { browserTimeZone, localDate, localHour } from './time';
 import { write } from './write';
-
-function browserTimeZone(): string {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-}
 
 /** The default room. The window still follows the visitor's real clock. */
 function writeDefaultRoom(): void {

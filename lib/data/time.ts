@@ -20,6 +20,11 @@ export function secondsIntoLocalDay(timeZone: string, now: Date = new Date()): n
   return get('hour') * 3600 + get('minute') * 60 + get('second');
 }
 
+/** The visitor's own zone, for the default room and anyone without a profile zone. */
+export function browserTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+}
+
 /** 0–23 in `timeZone`. Drives the window sky plane (spec/05 §5). */
 export function localHour(timeZone: string, now: Date = new Date()): number {
   const hour = new Intl.DateTimeFormat('en-GB', {
