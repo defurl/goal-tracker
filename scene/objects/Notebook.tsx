@@ -4,10 +4,21 @@
 // edge opposite the spine, and a thin bookmark strip says "in use" without
 // needing the book open.
 //
-// The bookmark is SIGNAL_DIM but has no emissive channel, so it carries no
-// bloom obligation — it is lit by the lamp like everything else on the desk.
+// The bookmark is SIGNAL_DIM, lit by the lamp like everything else on the
+// desk. It is also the notebook's one state-driven surface (spec/05 §3): on a
+// day with a journal entry it takes on a faint SIGNAL glow, lerping 0 -> 0.15.
+// SIGNAL L 0.474 x 0.15 = 0.071, under the 0.1 bloom threshold — "barely lit",
+// noticed after twenty minutes rather than at a glance. Which surface carries
+// the glow, and its colour, are PROPOSED; the spec gives only the intensity.
 
-import { BG_PANEL, INK_PAPER, SIGNAL_DIM } from '../../lib/style/colors';
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import type { MeshStandardMaterial } from 'three';
+
+import { lerpTo } from '../../lib/motion/lerp';
+import { useAppStore } from '../../lib/stores/app';
+import { useSceneStore } from '../../lib/stores/scene';
+import { BG_PANEL, INK_PAPER, SIGNAL, SIGNAL_DIM } from '../../lib/style/colors';
 
 interface NotebookProps {
   /** Group origin sits at the desk surface, so y = 0. */
@@ -18,7 +29,21 @@ const W = 0.18;
 const D = 0.245;
 const H = 0.014;
 
+const LOGGED_INTENSITY = 0.15;
+const LERP = 0.05; // spec/05 §3
+
 export function Notebook({ position }: NotebookProps) {
+  const bookmarkRef = useRef<MeshStandardMaterial>(null);
+
+  // Imperative reads only (spec/05 §1).
+  useFrame(() => {
+    const material = bookmarkRef.current;
+    if (!material) return;
+    const target = useAppStore.getState().journal.todayLogged ? LOGGED_INTENSITY : 0;
+    const reduced = useSceneStore.getState().prefersReducedMotion;
+    material.emissiveIntensity = lerpTo(material.emissiveIntensity, target, reduced ? 1 : LERP);
+  });
+
   return (
     <group position={position} rotation={[0, 0.18, 0]}>
       {/* Cover */}
@@ -36,7 +61,14 @@ export function Notebook({ position }: NotebookProps) {
       {/* Bookmark */}
       <mesh position={[W / 4, H + 0.0005, D / 4]}>
         <boxGeometry args={[0.006, 0.0008, 0.07]} />
-        <meshStandardMaterial color={SIGNAL_DIM} roughness={0.6} metalness={0.1} />
+        <meshStandardMaterial
+          ref={bookmarkRef}
+          color={SIGNAL_DIM}
+          emissive={SIGNAL}
+          emissiveIntensity={0}
+          roughness={0.6}
+          metalness={0.1}
+        />
       </mesh>
     </group>
   );
