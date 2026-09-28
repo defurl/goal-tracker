@@ -20,6 +20,7 @@ import { useInteractionStore, type PanelId } from '../../lib/stores/interaction'
 import styles from './DetailPanel.module.css';
 import { ChallengePanel } from './panels/ChallengePanel';
 import { GoalsPanel } from './panels/GoalsPanel';
+import { HabitsPanel } from './panels/HabitsPanel';
 import { ImportPanel } from './panels/ImportPanel';
 import { JournalPanel } from './panels/JournalPanel';
 
@@ -34,6 +35,7 @@ const TITLES: Record<Exclude<PanelId, null>, string> = {
 const CONTENT: Partial<Record<Exclude<PanelId, null>, ComponentType>> = {
   challenge: ChallengePanel,
   goals: GoalsPanel,
+  habits: HabitsPanel,
   import: ImportPanel,
   journal: JournalPanel,
 };
