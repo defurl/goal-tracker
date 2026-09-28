@@ -5,17 +5,15 @@
 // the planes' colour is meant to be driven by application state and lerped
 // every frame, never snapped.
 //
-// **The state source is not wired yet.** In the portfolio these tracked market
-// session and index direction; here the window is time of day
-// (12-habit-tracker-adaptation.md §2), which is a Phase 3 mechanic. The planes
-// hold a fixed night tint until then, and the refs are kept so rewiring is a
-// change of source rather than a rebuild.
+// The SKY follows the time of day (build plan 3.7): `localHour` picks a band
+// from spec/05 §5's table (lib/sky.ts) and the plane lerps its emissive colour
+// and intensity toward it at k = 0.05, snapping under reduced motion. The
+// room stays nocturnal at every hour — the plane is emissive only and lights
+// nothing, so the window brightens and the room does not.
 //
-// Both planes sit UNDER the 0.1 bloom threshold on purpose (D-20, D-21):
-//   sky   GLOW_COOL_SOFT x 0.35 -> L 0.046
-//   city  GLOW_COOL_SOFT x 0.55 -> L 0.072
-// A night sky that blooms is a lit sky. The city is the brighter of the two
-// because the light at night comes from below.
+// The CITY keeps its portfolio behaviour and is not driven by app state
+// (spec/05 §5): GLOW_COOL_SOFT x 0.55 -> L 0.072, under the 0.1 bloom
+// threshold. A second signal there would compete with the sky.
 //
 // The glass tint is INK_MUTED, not the BG_NIGHT that 04-room-spec.md §6 lists.
 // MeshPhysicalMaterial multiplies transmitted light by `color`, and BG_NIGHT is
@@ -30,8 +28,11 @@
 
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { type Group, type MeshStandardMaterial } from 'three';
+import { Color, type Group, type MeshStandardMaterial } from 'three';
 
+import { lerpTo } from '../../lib/motion/lerp';
+import { SKY_STATES, skyBand, type SkyBand } from '../../lib/sky';
+import { useAppStore } from '../../lib/stores/app';
 import { BG_PANEL, BG_VOID, GLOW_COOL_SOFT, INK_MUTED, RAIN_STREAK } from '../../lib/style/colors';
 import { useSceneStore } from '../../lib/stores/scene';
 
@@ -45,8 +46,8 @@ const H = 1.0;
 const FRAME_T = 0.04;
 const FRAME_DEPTH = 0.06;
 
-const SKY_INTENSITY = 0.35;
 const CITY_INTENSITY = 0.55;
+const SKY_LERP = 0.05; // spec/05 §3
 
 const DROP_COUNT = 18;
 const DROP_Z = 0.012;
@@ -116,6 +117,30 @@ export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
   const skyRef = useRef<MeshStandardMaterial>(null);
   const cityRef = useRef<MeshStandardMaterial>(null);
 
+  const bandColours = useMemo(
+    () =>
+      Object.fromEntries(
+        (Object.keys(SKY_STATES) as SkyBand[]).map((band) => [band, new Color(SKY_STATES[band].color)]),
+      ) as Record<SkyBand, Color>,
+    [],
+  );
+  const settled = useRef(false);
+
+  // Imperative reads only (spec/05 §1). The first hydrated frame snaps to the
+  // current band, so loading the page does not fade in from night.
+  useFrame(() => {
+    const sky = skyRef.current;
+    if (!sky) return;
+    const { hydrated, localHour } = useAppStore.getState();
+    if (!hydrated) return;
+    const band = skyBand(localHour);
+    const reduced = useSceneStore.getState().prefersReducedMotion;
+    const k = !settled.current || reduced ? 1 : SKY_LERP;
+    settled.current = true;
+    sky.emissive.lerp(bandColours[band], k);
+    sky.emissiveIntensity = lerpTo(sky.emissiveIntensity, SKY_STATES[band].intensity, k);
+  });
+
   return (
     <group position={position} rotation={rotation}>
       {/* Frame */}
@@ -163,8 +188,8 @@ export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
         <meshStandardMaterial
           ref={skyRef}
           color={BG_VOID}
-          emissive={GLOW_COOL_SOFT}
-          emissiveIntensity={SKY_INTENSITY}
+          emissive={SKY_STATES.night.color}
+          emissiveIntensity={SKY_STATES.night.intensity}
           roughness={1}
           metalness={0}
           toneMapped={false}
