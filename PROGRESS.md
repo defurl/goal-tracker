@@ -14,12 +14,44 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **3.1–3.4 done** — monitor 1 shows the challenge, the phone imports, monitor 2 shows the goals, the notebook keeps the journal. Next is 3.5 (wall tracker). See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
+| Phase 3 | **3.1–3.5 done** — monitor 1 shows the challenge, the phone imports, monitor 2 shows the goals, the notebook keeps the journal, the wall tracks the year. Next is 3.6, **the bonsai**. See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.5: the wall tracker
+
+**Done; the lighting test reads TRUE**, effects on (hardware-GL probe) and off
+(`capture:states` reduced-motion frame), with 70 % of a year filled.
+
+- **Scene** — `scene/objects/WallGrid.tsx`: 365 cells on the back-wall panel
+  centred at `[-0.75, 0.493]`, between its tie-rod rows. Two instanced layers
+  (two draw calls): a lit `INK_GHOST` base, and an additive glow layer the
+  frame loop fills from `dayGrid`, lerped per cell at k = 0.05 and idle once
+  settled. Only today (`SIGNAL` × 0.9, L 0.43) blooms. Hover lifts the glow
+  ×1.2; one invisible plane takes the pointer so the gaps do not flicker.
+- **Panel** — `app/(app)/panels/HabitsPanel.tsx`: `/text`'s `HabitsBody` under
+  one line of totals — days kept this year, glow points. No count of missed days.
+- **Focus pose** — the `wallGrid` pose, checked against a render with the panel
+  open: the whole band sits left of it. Two alternatives were tried and were
+  worse (see the comment in `scene/cameraPoses.ts`).
+
+**PROPOSED — raise with the owner:**
+1. **Layout: 53 columns × 7 rows at a 2.5 cm pitch (2.2 cm cells)**, not ~4 cm
+   cells "a week per row". 365 cells at 4 cm do not fit one 1.5 × 0.833 m panel
+   either way round (53 × 4 cm = 2.1 m); spilling onto a second panel would
+   straddle a joint, which the spec forbids.
+2. **Filled glow 0.1, not ~0.5.** Measured at the rest pose with 70 % of a year
+   filled: at 0.5 every kept day was countable (spec/05 §3's own failure
+   test), at 0.2 still mottled; at 0.1 the band reads as a panel texture and
+   the days resolve at the focus pose. Today stays at 0.9.
+3. **Day order:** oldest first, column by column; today is the last cell. Rows
+   are not aligned to weekdays — at rest it is texture, and the panel carries
+   the numbers.
 
 ---
 
