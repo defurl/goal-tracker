@@ -16,12 +16,12 @@
 // glow. `toneMapped={false}` keeps the emissive value raw so bloom can catch
 // it. The GradientTexture on emissiveMap fades the glow toward the bottom of
 // the screen, which is what stops it reading as a flat coloured rectangle.
-// Monitor 1 passes its own map instead — today's challenge drawn over the same
-// gradient (scene/screens/challengeScreen.ts).
+// Both desk monitors pass their own map instead — today's challenge and the
+// goals, drawn over the same gradient (scene/screens/).
 //
 // Intensity is set in the frame loop, never as a JSX prop: a re-render would
 // otherwise reset it and pop the lerp. Monitor 1 lerps 1.1 -> 1.4 on
-// completion (spec/05 §3, D-20); monitor 2 holds 1.0 until Phase 3.3.
+// completion (spec/05 §3, D-20); monitor 2 holds 1.0.
 
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';

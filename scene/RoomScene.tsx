@@ -40,7 +40,7 @@ import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
 import { KEYBOARD_DROP, Keyboard } from './objects/Keyboard';
 import { ChallengeMonitor } from './objects/ChallengeMonitor';
-import { Monitor } from './objects/Monitor';
+import { GoalsMonitor } from './objects/GoalsMonitor';
 import { Mug } from './objects/Mug';
 import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
@@ -159,9 +159,8 @@ export function RoomScene() {
         labelPosition={[MONITOR_FILL_POSITIONS[1][0], 0.64, MONITOR_FILL_POSITIONS[1][2]]}
         onActivate={() => focusObject('monitor2', 'goals')}
       >
-        <Monitor
+        <GoalsMonitor
           position={[MONITOR_FILL_POSITIONS[1][0], 0, MONITOR_FILL_POSITIONS[1][2]]}
-          variant="terminal"
           hoverId="monitor2"
         />
       </InteractiveObject>
