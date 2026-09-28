@@ -14,12 +14,63 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | blocked: it is sequential and starts at 3.1, which needs track B's data. 3.7 and 3.8 need no data, but the order is LOCKED | |
+| Phase 3 | **3.1 and 3.2 done** — monitor 1 shows the challenge, the phone imports. Next is 3.3 (monitor 2, goals). See the 2026-09-28 entry | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.1 and 3.2: monitor 1 and the phone
+
+**Both done; the lighting test reads TRUE after each, effects on and off.**
+
+| task | state | where |
+|---|---|---|
+| 3.1 monitor 1 | canvas texture (title, action, source host) redrawn on change; glow lerps 1.1 → 1.4 on completion, hover clamped at 1.4; room panel with do-it-now, roll, and an empty state that glides to the phone | `scene/screens/challengeScreen.ts`, `scene/objects/ChallengeMonitor.tsx`, `Monitor.tsx`, `app/(app)/panels/ChallengePanel.tsx` |
+| 3.2 phone | screen lerps `GLOW_COOL_SOFT` @ 0.35 → `SIGNAL_DIM` @ 1.1 while `importing`; room panel with link/text, status line, preview, self-close | `scene/objects/Phone.tsx`, `app/(app)/panels/ImportPanel.tsx` |
+
+Both panels share `lib/challenge/copy.ts` with `/text`, so the two surfaces say
+the same things. `lib/motion/lerp.ts` is the one lerp for state-driven surfaces.
+
+**Lighting, measured** (`pnpm lighting:test`, production build):
+
+```
+rest, bloom on     pool 0.249 · monitors 0.081 / 0.058 · floor 0.025 · keyboard 20.4 %   (was 0.088 at 1.2)
+worst case         pool 0.254 · monitors 0.094 / 0.058 · keyboard 15.4 %   monitor 1 @ 1.4 + phone importing
+reduced motion     all five TRUE
+```
+
+The worst-case frame came out with **bloom off**: the adaptive-FPS guard tripped
+because the owner's own room tab was rendering at the same time, and a rebuilt
+normal frame then read identically (15.4 %), so the cause is load, not the
+change. Bloom barely moves monitor 1's region (0.081 on vs 0.080 off), so
+criterion 1 at 1.4 holds with a wide margin — but that bloom-on 1.4 number is
+inferred, not captured. For the same reason **`captures/` was not refreshed**:
+a bloom-off frame under the effects-on name is the mislabel the capture script
+warns about. Re-capture on a quiet machine, or read CI's `scene-capture`.
+
+**Verified in the browser (production build, signed out):** monitor 1 → panel
+empty state → "pick up the phone" glides to the phone → "sign in to import". No
+console errors. **Not verified:** the signed-in import in the room, the phone
+warming during a real extraction, and monitor 1 at 1.4 after a real completion
+— I do not sign in. The owner's dev server has all of it.
+
+**PROPOSED — raise with the owner:**
+1. **The phone lies face up.** It was face down (portfolio), but spec/05's
+   phone-screen row cannot be seen against the desk.
+2. **Phone emissive levels.** Rest 0.35 (L 0.046, under the bloom threshold —
+   a phone left on, not a light), importing 1.1 (L 0.126, the level of monitor
+   1 on an ordinary day). The spec gives the colours, not the intensities.
+3. **Import panel self-close dwell: 3 s**, cancelled by any touch or key in
+   the panel; an unreadable page keeps it open because its message says what
+   to do next.
+4. **Monitor 1 text is dark ink on the glow.** Light text on a dark screen
+   would drop most of the screen under the 0.1 threshold (D-20's regression).
+
+**Carried:** shell now 185.4 of 200 KB (panels + `/text`'s type styles).
 
 ---
 
