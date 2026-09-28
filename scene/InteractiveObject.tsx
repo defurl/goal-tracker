@@ -30,6 +30,8 @@ interface InteractiveObjectProps {
   label?: string;
   labelPosition?: [number, number, number];
   onActivate?: () => void;
+  /** For a TOGGLE object (08 §4): its state, exposed on the keyboard button. */
+  pressed?: boolean;
   children: ReactNode;
 }
 
@@ -40,6 +42,7 @@ export function InteractiveObject({
   label,
   labelPosition = [0, 0.6, 0],
   onActivate,
+  pressed,
   children,
 }: InteractiveObjectProps) {
   const [hovered, setHovered] = useState(false);
@@ -131,6 +134,7 @@ export function InteractiveObject({
             onBlur={blur}
             onKeyDown={keyDown}
             aria-label={label ?? id}
+            aria-pressed={pressed}
             style={{ pointerEvents: 'auto' }}
           />
         </Html>

@@ -44,7 +44,7 @@ import { GoalsMonitor } from './objects/GoalsMonitor';
 import { Mug } from './objects/Mug';
 import { Notebook } from './objects/Notebook';
 import { Phone } from './objects/Phone';
-import { Headphones } from './objects/Headphones';
+import { FocusHeadphones } from './objects/FocusHeadphones';
 import { Window } from './objects/Window';
 import { GRID_CENTRE, GRID_HEIGHT, WallGrid } from './objects/WallGrid';
 import { BONSAI_POSITION, Bonsai } from './objects/Bonsai';
@@ -140,10 +140,9 @@ export function RoomScene() {
       />
       {/* x and z track MONITOR_FILL_POSITIONS so the cool fill appears to come
           off the screens. y puts the stand feet on the desk. */}
-      {/* Every panel-opening object carries the same wrapper. The headphones
-          are a TOGGLE, not a panel (08-interaction-grammar.md §4), and the
-          focus mode they toggle does not exist yet, so they stay unwrapped
-          rather than getting a wrapper that leads nowhere. */}
+      {/* Every interactive object carries the same wrapper. The headphones are
+          a TOGGLE, not a panel (08-interaction-grammar.md §4): see
+          FocusHeadphones. */}
       <InteractiveObject
         id="monitor1"
         label="daily challenge"
@@ -196,7 +195,7 @@ export function RoomScene() {
       >
         <Phone position={[0.45, 0, 0.2]} />
       </InteractiveObject>
-      <Headphones position={[-0.42, 0, 0.14]} />
+      <FocusHeadphones position={[-0.42, 0, 0.14]} />
       {/* The 365-day tracker on the back-wall panel behind the monitors
           (design-system/12 §3.3). Texture at rest; the numbers are in the panel. */}
       <InteractiveObject
