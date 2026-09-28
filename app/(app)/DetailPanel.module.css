@@ -13,6 +13,7 @@
   width: 480px;
   max-width: calc(100vw - var(--step-4));
   height: 100vh;
+  overflow-y: auto;
   padding: var(--step-4) var(--step-3);
 
   background: color-mix(in srgb, var(--bg-night) 92%, transparent);

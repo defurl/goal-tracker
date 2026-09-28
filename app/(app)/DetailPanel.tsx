@@ -11,14 +11,14 @@
 // pose, and the panel is a complementary region rather than a dialog. Escape
 // and the back control both close it (see SceneNav).
 //
-// This is the shell only. Each feature fills its own panel in the phase that
-// builds it — the panel exists now because the camera work depends on its
-// width, not because any feature is ready.
+// Each feature fills its own panel in the Phase 3 step that builds it
+// (spec/06 §Phase 3); a panel with no content yet is the shell alone.
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ComponentType } from 'react';
 
 import { useInteractionStore, type PanelId } from '../../lib/stores/interaction';
 import styles from './DetailPanel.module.css';
+import { ChallengePanel } from './panels/ChallengePanel';
 
 const TITLES: Record<Exclude<PanelId, null>, string> = {
   challenge: 'Daily challenge',
@@ -26,6 +26,10 @@ const TITLES: Record<Exclude<PanelId, null>, string> = {
   journal: 'Journal',
   import: 'Article import',
   habits: 'Habits',
+};
+
+const CONTENT: Partial<Record<Exclude<PanelId, null>, ComponentType>> = {
+  challenge: ChallengePanel,
 };
 
 export function DetailPanel() {
@@ -41,6 +45,7 @@ export function DetailPanel() {
   }, [panel]);
 
   if (panel === null) return null;
+  const Content = CONTENT[panel];
 
   return (
     <aside className={styles.panel} role="region" aria-label={TITLES[panel]}>
@@ -50,6 +55,7 @@ export function DetailPanel() {
       <button type="button" className={styles.close} onClick={returnToDesk}>
         close
       </button>
+      {Content && <Content />}
     </aside>
   );
 }
