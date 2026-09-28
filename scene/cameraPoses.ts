@@ -87,8 +87,8 @@ export const FOCUS_SUBJECTS: Partial<Record<ObjectId, FocusSubject>> = {
   phone: { centre: [0.45, 0.004, 0.2], width: 0.16 },
   // GRID_CENTRE, a 1.33 m band (WallGrid.tsx).
   wallGrid: { centre: [-0.75, 0.493, -1.2], width: 1.36 },
-  // PROPOSED with its pose above — re-check when the bonsai exists.
-  bonsai: { centre: [-0.8, 0.15, 0.1], width: 0.35 },
+  // BONSAI_POSITION; at TREE_SCALE the pads span ~0.2 m, centred ~0.16 m up.
+  bonsai: { centre: [-0.8, 0.16, 0.1], width: 0.22 },
 };
 
 const FILL = 0.8;

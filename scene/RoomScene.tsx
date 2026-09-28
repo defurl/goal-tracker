@@ -47,6 +47,7 @@ import { Phone } from './objects/Phone';
 import { Headphones } from './objects/Headphones';
 import { Window } from './objects/Window';
 import { GRID_CENTRE, GRID_HEIGHT, WallGrid } from './objects/WallGrid';
+import { BONSAI_POSITION, Bonsai } from './objects/Bonsai';
 import { DustMotes } from './objects/DustMotes';
 
 export function RoomScene() {
@@ -169,6 +170,16 @@ export function RoomScene() {
           between them and forward of the screens. */}
       <Keyboard position={[0.1, KEYBOARD_DROP, 0.1]} />
       <Mug position={[-0.62, 0, 0.06]} />
+      {/* D-11: the bonsai, on the desk left of the monitors. It grows a leaf per
+          threshold of lifetime points; its numbers are in the habits panel. */}
+      <InteractiveObject
+        id="bonsai"
+        label="bonsai"
+        labelPosition={[BONSAI_POSITION[0], 0.42, BONSAI_POSITION[2]]}
+        onActivate={() => focusObject('bonsai', 'habits')}
+      >
+        <Bonsai />
+      </InteractiveObject>
       <InteractiveObject
         id="notebook"
         label="journal"
