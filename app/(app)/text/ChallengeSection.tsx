@@ -4,27 +4,11 @@
 
 import { useState, type FormEvent } from 'react';
 
-import { completeChallenge, importAction, rollChallenge, type ImportOutcome } from '../../../lib/data/challenge';
+import { importMessage, rollReason as rollReasonFor } from '../../../lib/challenge/copy';
+import { completeChallenge, importAction, rollChallenge } from '../../../lib/data/challenge';
 import { useAppStore } from '../../../lib/stores/app';
 
 import styles from './text.module.css';
-
-function importMessage(outcome: ImportOutcome): string {
-  switch (outcome.kind) {
-    case 'imported':
-      return outcome.sourceUnreadable
-        ? 'That page could not be read, so this one is a starter action. Paste the article’s text for one drawn from it.'
-        : 'Saved to your actions.';
-    case 'limited':
-      return 'Twenty imports today. The rest can wait for tomorrow.';
-    case 'invalid':
-      return 'That does not look like a link or any text.';
-    case 'signed_out':
-      return 'Sign in to save actions.';
-    case 'unavailable':
-      return 'Not saved — the connection dropped. Try again in a moment.';
-  }
-}
 
 export function ChallengeSection({ signedIn }: { signedIn: boolean }) {
   const challenge = useAppStore((s) => s.challenge);
@@ -37,12 +21,7 @@ export function ChallengeSection({ signedIn }: { signedIn: boolean }) {
     setBusy(false);
   }
 
-  const rollReason =
-    challenge && !challenge.complete && challenge.rollsRemaining === 0
-      ? challenge.rollCount >= 3
-        ? 'Three rolls a day — this one is today’s.'
-        : 'Import another action to have something to roll to.'
-      : null;
+  const rollReason = rollReasonFor(challenge);
 
   return (
     <>
