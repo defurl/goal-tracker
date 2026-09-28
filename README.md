@@ -12,10 +12,12 @@ becomes the record of having done them.
 > *"The same 3 a.m. desk — but every object on it is evidence that you acted on
 > something you saved."*
 
-**Status:** Phases 1 and 2 done on both tracks. The room is lit and furnished;
-behind it are auth, the schema and RLS, the two AI agents, and `/text` — every
-feature, usable without WebGL and offline. The room's own mechanics arrive in
-Phase 3. See `PROGRESS.md` for where things stand.
+**Status:** Phases 1–3 done. Every object on the desk works: the monitors show
+today's challenge and the goals, the phone imports, the notebook keeps the
+journal, the wall tracks the year, the bonsai grows, the window follows the
+clock and the headphones turn on a quiet ambient bed (off by default). `/text`
+has every feature without WebGL, and offline. Phase 4 is hardening. See
+`PROGRESS.md` for where things stand.
 
 ---
 
