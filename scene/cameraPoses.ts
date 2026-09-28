@@ -23,9 +23,9 @@ export const REST_POSE_MOBILE: CameraPose = {
 
 /**
  * Focus poses. **Composition rule baked into every one: the focused object sits
- * LEFT of centre**, because the DOM detail panel slides in from the right at
- * ~480 px and would otherwise occlude it. If a panel ever comes from a different
- * edge, mirror the bias.
+ * LEFT of centre**, because the DOM detail panel floats in the top-right corner
+ * at ~440 px and would otherwise occlude it. If a panel ever sits on a different
+ * side, mirror the bias.
  *
  * The poses ported from the portfolio did NOT satisfy that rule here — the
  * objects sit at different places on a wider desk, and monitor 1 filled the

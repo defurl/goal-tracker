@@ -2,9 +2,11 @@
 
 // The detail panel. design-system/08-interaction-grammar.md §5, build plan A2.5.
 //
-// A right-hand slide-in at ~480 px. Never a centred modal, never full-bleed:
-// the 3D scene is the content and the DOM is corner furniture. The focus poses
-// in `scene/cameraPoses.ts` are composed around this width — every one of them
+// A floating panel in the top-right corner, ~440 px, that fades in as the
+// camera lands on the object (owner decision 2026-09-28; it replaced the
+// edge-to-edge slide-in). Never a centred modal, never full-bleed: the 3D
+// scene is the content and the DOM is corner furniture. The focus poses in
+// `scene/cameraPoses.ts` are composed around this width — every one of them
 // puts its object left of centre so this panel does not occlude it.
 //
 // It is NOT modal. The room stays live behind it, the camera holds its focus
@@ -56,7 +58,9 @@ export function DetailPanel() {
   const Content = CONTENT[panel];
 
   return (
-    <aside className={styles.panel} role="region" aria-label={TITLES[panel]}>
+    // Keyed by panel so a glide from one object to another (the challenge's
+    // "pick up the phone") fades the new content in, not swaps it in place.
+    <aside key={panel} className={styles.panel} role="region" aria-label={TITLES[panel]}>
       <h2 className={styles.title} tabIndex={-1} ref={headingRef}>
         {TITLES[panel]}
       </h2>

@@ -1,42 +1,62 @@
-/* Right-hand slide-in, ~480 px. design-system/08-interaction-grammar.md §5. */
+/* The floating detail panel. design-system/08-interaction-grammar.md §5.
+
+   It floats in the top-right corner, inset from the edges, and fades in as the
+   camera lands on the object — the glide is the zoom, the panel follows it.
+   Owner decision 2026-09-28, replacing the edge-to-edge slide-in. It is still
+   corner furniture: never centred, never full-bleed, never over the object
+   (every focus pose keeps the object left of this panel, scene/cameraPoses.ts).
+
+   Solid, not glass: no backdrop blur (11-anti-patterns.md). */
 
 .panel {
+  --inset: var(--step-4);
+
   position: fixed;
-  top: 0;
-  right: 0;
+  top: var(--inset);
+  right: var(--inset);
   z-index: 20;
 
   display: flex;
   flex-direction: column;
   gap: var(--step-2);
 
-  width: 480px;
-  max-width: calc(100vw - var(--step-4));
-  height: 100vh;
+  width: 440px;
+  max-width: calc(100vw - var(--inset) * 2);
+  max-height: calc(100vh - var(--inset) * 2);
   overflow-y: auto;
   padding: var(--step-4) var(--step-3);
 
-  background: color-mix(in srgb, var(--bg-night) 92%, transparent);
-  border-left: 1px solid var(--ink-ghost);
+  background: color-mix(in srgb, var(--bg-night) 94%, transparent);
+  border: 1px solid var(--ink-ghost);
 
-  animation: slide-in var(--dur-ui) var(--ease-ui);
+  /* Waits for most of the 2200 ms glide, then fades up over --dur-ui, so the
+     content arrives as the camera settles rather than racing it. */
+  animation: float-in var(--dur-ui) var(--ease-ui) 1200ms both;
 }
 
-/* Motion is removed, not reduced (03-motion.md principle 5). globals.css
-   collapses durations globally; this also drops the offset so the panel does
-   not flash in from the edge at 0.001 ms. */
+@media (max-width: 480px) {
+  .panel {
+    --inset: var(--step-2);
+  }
+}
+
+/* Motion is removed, not reduced (03-motion.md principle 5). The global rule
+   collapses durations but not DELAYS, so without this the panel would still
+   wait 1200 ms to appear; the glide itself completes on frame 1. */
 @media (prefers-reduced-motion: reduce) {
   .panel {
     animation: none;
   }
 }
 
-@keyframes slide-in {
+@keyframes float-in {
   from {
-    transform: translateX(100%);
+    opacity: 0;
+    transform: translateY(8px);
   }
   to {
-    transform: translateX(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
