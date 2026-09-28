@@ -23,6 +23,32 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 
 ---
 
+## 2026-09-28 — the detail panel floats and fades in (owner decision)
+
+**Owner decision:** clicking an object zooms the camera in, then its content
+fades up in a floating panel — replacing the portfolio's edge-to-edge
+slide-in. Amended in `design-system/08-interaction-grammar.md` §5 (and its
+mirrors in `design-spec.jsonc`, 03 reduced-motion table, 07, 12). The
+anti-pattern list is unchanged: the panel is still corner furniture, never
+centred, never glass, never over the object.
+
+- `app/(app)/DetailPanel.module.css`: 440 px, inset `--step-4` (16 px under
+  480 px wide), height fits its content up to the viewport. 600 ms fade and
+  8 px rise after a 1200 ms wait, so it arrives as the 2200 ms glide settles.
+  Keyed by panel, so gliding between objects fades the new content in.
+- Measured: normal motion, opacity 0 at 150 ms and 1 by 2.15 s; reduced motion,
+  1 at 150 ms (the global rule shortens durations, not delays, so the panel
+  sets `animation: none`); focus lands on the heading in every case.
+
+**Gap found, not fixed — portrait framing.** On a phone held upright, the
+focus poses (composed for 16:10, object left of centre) put the object off
+the left edge. It was always so; the old full-height panel hid it by covering
+the whole screen. Fixing it means portrait focus poses — the object centred
+below the panel — each checked against a render. Most phones land on `/text`
+(middleware), so it is not urgent. Raise before Phase 4's a11y pass.
+
+---
+
 ## 2026-09-28 — Phase 3.5: the wall tracker
 
 **Done; the lighting test reads TRUE**, effects on (hardware-GL probe) and off
