@@ -25,6 +25,15 @@ const SCENE_BUDGET_KB = 320;
 /** Routes that make up the shell. None of these may contain three.js. */
 const SHELL_ROUTES = ['/text', '/'];
 
+/**
+ * The ambient engine (build plan 3.8), loaded on the first "sound on".
+ * PROPOSED — not one of D-10's two budgets; D-10 caps what it costs to see
+ * the room, and this is not that.
+ */
+const AUDIO_BUDGET_KB = 100;
+/** Tone.js names itself in its bundle; nothing else here does. */
+const AUDIO_MARKERS = ['Tone.js'];
+
 /** Substrings that only appear in a chunk that has bundled three.js. */
 const THREE_MARKERS = ['WebGLRenderer', 'THREE.WebGLRenderer', 'three/build/three'];
 
@@ -102,6 +111,13 @@ function containsThree(file: string): boolean {
   return THREE_MARKERS.some((m) => source.includes(m));
 }
 
+function containsAudio(file: string): boolean {
+  const full = join(NEXT_DIR, file);
+  if (!existsSync(full)) return false;
+  const source = readFileSync(full, 'utf8');
+  return AUDIO_MARKERS.some((m) => source.includes(m));
+}
+
 /**
  * Manifest keys carry the route groups the URL does not: "/(app)/text/page" is
  * served at /text. Strip "(group)/" segments and the trailing "/page" to get the
@@ -162,9 +178,19 @@ function main(): void {
   // chunks that CONTAIN three.js instead — the previous rule — quietly left out
   // every scene dependency that is not three itself. Post-processing was 14 KB
   // of exactly that: real scene weight, outside the budget meant to cap it.
+  //
+  // One lazy payload is NOT the room: Tone.js, which loads on the first "sound
+  // on" and never to render the scene (build plan 3.8). Counting it as scene
+  // spent 77 of the scene budget's last 84 KB on something no visitor needs
+  // to see the room, so it gets its own line and its own cap instead of being
+  // dropped — a chunk outside every budget is the failure this rule exists
+  // to prevent.
   const referenced = eagerlyReferencedChunks();
-  const sceneChunks = allBuiltChunks().filter((c) => !referenced.has(c));
+  const lazyChunks = allBuiltChunks().filter((c) => !referenced.has(c));
+  const audioChunks = lazyChunks.filter(containsAudio);
+  const sceneChunks = lazyChunks.filter((c) => !containsAudio(c));
   const sceneKb = sceneChunks.reduce((sum, c) => sum + gzKb(c), 0);
+  const audioKb = audioChunks.reduce((sum, c) => sum + gzKb(c), 0);
 
   if (sceneChunks.length === 0) {
     console.log('scene   no chunk contains three.js — the scene is not built yet');
@@ -175,6 +201,18 @@ function main(): void {
     if (sceneKb > SCENE_BUDGET_KB) {
       failures.push(`scene chunk is ${sceneKb.toFixed(1)} KB gz, over the ${SCENE_BUDGET_KB} KB budget`);
     }
+  }
+
+  if (audioChunks.length > 0) {
+    console.log(`audio   ${audioKb.toFixed(1)} KB gz / ${AUDIO_BUDGET_KB} KB  (${audioChunks.length} chunks, on first "sound on")`);
+    if (audioKb > AUDIO_BUDGET_KB) {
+      failures.push(`audio chunk is ${audioKb.toFixed(1)} KB gz, over the ${AUDIO_BUDGET_KB} KB budget`);
+    }
+  }
+  // The engine must stay lazy: in the shell it would load on every visit.
+  const eagerAudio = [...shellChunks].filter(containsAudio);
+  if (eagerAudio.length > 0) {
+    failures.push(`Tone.js is in the route shell via: ${eagerAudio.join(', ')} — import it dynamically`);
   }
 
   // ── 3. The shell must never transitively import three.js (D-10) ───────────
@@ -196,7 +234,7 @@ function main(): void {
     process.exit(1);
   }
 
-  console.log('\nbundle:check: both budgets green.');
+  console.log('\nbundle:check: every budget green.');
 }
 
 main();
