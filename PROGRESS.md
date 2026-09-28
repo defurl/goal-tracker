@@ -40,12 +40,18 @@ centred, never glass, never over the object.
   1 at 150 ms (the global rule shortens durations, not delays, so the panel
   sets `animation: none`); focus lands on the heading in every case.
 
-**Gap found, not fixed — portrait framing.** On a phone held upright, the
-focus poses (composed for 16:10, object left of centre) put the object off
-the left edge. It was always so; the old full-height panel hid it by covering
-the whole screen. Fixing it means portrait focus poses — the object centred
-below the panel — each checked against a render. Most phones land on `/text`
-(middleware), so it is not urgent. Raise before Phase 4's a11y pass.
+**Portrait framing — found, then fixed the same day.** On a phone held
+upright the wide focus poses put the object off the left edge (always so; the
+old full-height panel hid it). `portraitPose()` in `scene/cameraPoses.ts` now
+derives a pose for any frame taller than wide: same viewing angle, backed off
+until the object fills 80 % of the width, aimed so it sits about a third
+below the middle, clear of the panel. The camera is capped at 3 m, so the wall
+band is cropped at the sides in portrait (the panel has its numbers).
+`CameraRig` picks it by aspect, not by the phone media query, so an upright
+tablet gets it too, and re-aims on rotation. 38 unit tests project every
+object through a three.js camera at 375×812 and 768×1024; returning the wide
+pose instead fails 23 of them. Checked by eye on all five objects at phone
+size and the phone at tablet size: each is centred under the panel.
 
 ---
 
