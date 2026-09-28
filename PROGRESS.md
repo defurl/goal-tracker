@@ -14,12 +14,60 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **3.1–3.5 done** — monitor 1 shows the challenge, the phone imports, monitor 2 shows the goals, the notebook keeps the journal, the wall tracks the year. Next is 3.6, **the bonsai**. See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
+| Phase 3 | **3.1–3.6 done** — challenge, import, goals, journal, wall tracker, and the bonsai. Next is 3.7 (window sky by hour), then 3.8 (headphones, audio off by default). See the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 
 **CI is green, for the first time.** All three jobs pass on a real runner:
 `verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
 `colour-lint-self-test` (all three failure modes still fail). Until
 2026-09-24 every run had failed before any project code executed.
+
+---
+
+## 2026-09-28 — Phase 3.6: the bonsai
+
+**Done; the lighting test reads TRUE** with the tree bare and fully grown,
+effects on (hardware-GL probe) and off (`capture:states`, reduced motion).
+
+- `scene/objects/Bonsai.tsx`, on the desk at `[-0.8, 0, 0.1]` (D-11), top pad
+  ≈ 0.29 m. Primitives: matte pot, tapered S-trunk with knuckles, four pads.
+  Leaves: one `InstancedMesh` of 8 + `MAX_LEAVES`, flattened so they read as
+  pads. Frame loop reads `points.leafCount` and idles once settled.
+- **Growth:** a new leaf is announced by a `GLOW_COOL` droplet (180 ms, the
+  room's one sharp motion) and grows over 900 ms; seen mid-fall in a burst
+  capture. Leaves already earned on load are simply there. Reduced motion:
+  no droplet, instant. A reset to the default room (sign-out) snaps — it is
+  not a loss of growth. No leaf is ever animated away.
+- Opens the habits panel. Focus pose checked against a render (left of the
+  panel); portrait subject updated to the real geometry.
+
+```
+                     pool    keyboard  pool peak
+before the bonsai    0.248   20.4 %    0.437
+bare (8 base)        0.197   25.6 %    0.941   first build, before the fixes below
+full, 64 leaves      0.218   23.2 %    0.945
+full, effects off    0.207   17.8 %    0.802
+```
+
+**Raise with the owner:**
+1. **It sits in the lamp pool.** D-11 locks this position; doc 12 §3.2 warned
+   that the pool is where the tree must not go. The test still passes with
+   margin (pool 0.218 vs monitors 0.081), but the pot covers part of the
+   pool's probe box — the pool figure fell 12 % for that reason, not because
+   the pool dimmed — and the lamp's pole now runs behind the canopy at rest.
+   The probe was not moved: that would be tuning the test to the tree.
+2. **Pool peak 0.945 against criterion 5's < 1.** The hottest pixels are the
+   top leaves, ~12 cm from the bulb, clipping toward chartreuse. Passing, but
+   by the thinnest margin in the rig. Moving the tree right, or lowering it,
+   is the real fix and needs D-11 amended.
+3. **PROPOSED:** leaf tone `DATA_GREEN × 0.25`, not the spec's 0.35 (the
+   portfolio plant never sat under a bulb; at 0.35 the leaves clipped to
+   lime-white); tree scaled 0.88 to lower the canopy; **eight base leaves
+   always present**, because a new user's bare tree read as dead — the
+   wilting plant the anti-patterns forbid. Earned leaves are unchanged.
+4. **PROPOSED:** the droplet plays when a LEAF is earned, not on every
+   completion — spec/05's table maps only `leafCount` to the bonsai.
+
+**Not verified signed in:** a real completion crossing a threshold.
 
 ---
 
