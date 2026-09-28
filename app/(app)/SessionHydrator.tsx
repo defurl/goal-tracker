@@ -5,12 +5,19 @@
 
 import { useEffect } from 'react';
 
+import { watchClock } from '@/lib/data/clock';
 import { hydrate, watchSession } from '@/lib/data/hydrate';
 
 export function SessionHydrator() {
   useEffect(() => {
     void hydrate();
-    return watchSession();
+    const stopSession = watchSession();
+    // The window follows the clock while the room is open (spec/05 §5).
+    const stopClock = watchClock();
+    return () => {
+      stopSession();
+      stopClock();
+    };
   }, []);
   return null;
 }
