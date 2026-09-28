@@ -178,6 +178,19 @@ function NewGoal({ onCreated }: { onCreated: () => void }) {
 }
 
 export function GoalsSection({ signedIn }: { signedIn: boolean }) {
+  return (
+    <section className={styles.section} aria-labelledby="goals-heading">
+      <h2 id="goals-heading" className={styles.heading}>Goals</h2>
+      <GoalsBody signedIn={signedIn} />
+    </section>
+  );
+}
+
+/**
+ * Everything under the heading. Monitor 2's panel in the room renders this
+ * too, so the two surfaces share one implementation (D-07).
+ */
+export function GoalsBody({ signedIn }: { signedIn: boolean }) {
   // The store's summaries change when a milestone does; re-read the detail then.
   const summaries = useAppStore((s) => s.goals);
   const [goals, setGoals] = useState<GoalDetail[]>([]);
@@ -191,9 +204,7 @@ export function GoalsSection({ signedIn }: { signedIn: boolean }) {
   }, [signedIn, summaries, reload]);
 
   return (
-    <section className={styles.section} aria-labelledby="goals-heading">
-      <h2 id="goals-heading" className={styles.heading}>Goals</h2>
-
+    <>
       {goals.length === 0 ? (
         <p className={styles.quiet}>
           No goals yet. Name one thing you want by a date, and break it into a few steps you can tick off.
@@ -240,6 +251,6 @@ export function GoalsSection({ signedIn }: { signedIn: boolean }) {
           <a href="/login" className={styles.label}>sign in</a> to set goals.
         </p>
       )}
-    </section>
+    </>
   );
 }
