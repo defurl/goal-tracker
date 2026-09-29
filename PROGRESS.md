@@ -14,39 +14,49 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 0 | done | done (shared) |
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
-| Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries. Next is Phase 4, hardening | (shared — Phase 3 is one sequence) |
+| Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
+| Phase 4 | **done locally — 4.1–4.6, every gate green on this machine; 4.7 is an owner action.** Not yet pushed, so the new CI job and steps have not run on a runner. See the 2026-09-29 entry | (shared) |
 
-**CI is green, for the first time.** All three jobs pass on a real runner:
-`verify`, `scene-capture` (lighting gate TRUE with effects on and off), and
-`colour-lint-self-test` (all three failure modes still fail). Until
-2026-09-24 every run had failed before any project code executed.
+**CI was green through Phase 3** on a real runner: `verify`, `scene-capture`
+(lighting gate TRUE with effects on and off) and `colour-lint-self-test`. Phase
+4 adds a fifth job, `lighthouse`, and three steps to `scene-capture`
+(`a11y:check`, `motion:check`, `offline:check`), and moves every action to a
+Node 24 release. None of that has run on a runner yet.
 
-**Everything through Phase 3 is pushed** (`f970ac4` and the docs after it,
-2026-09-28). `WORKLOG.md` is the feature-by-feature record of what the product
-does and looks like; this file stays the state.
+`WORKLOG.md` is the feature-by-feature record of what the product does and
+looks like; this file stays the state.
 
-### Next session: Phase 4 — hardening
+### Next session
 
-Start fresh, on `spec/06-build-plan.md` Phase 4, one commit per mini-feature.
+1. **Push, then watch the first CI run.** Five jobs now. The likeliest failures
+   are the new ones: `lighthouse` (Chrome launched by `scripts/lh-check.ts` with
+   `--no-sandbox` on Linux), and the action major bumps (checkout v5,
+   setup-node v5, pnpm/action-setup v5, upload-artifact v6).
+2. **Owner answers** to the Phase 4 questions below, then amend the spec where
+   they settle something.
+3. **The signed-in walk** (owner action, below). Phase 4's empty-state and
+   sign-out fixes were verified signed out only.
 
-| # | task | what to know going in |
-|---|---|---|
-| 4.1 | Lighthouse CI, performance ≥ 85 | Measure the production build. The shell is at 184.1 / 200 KB gz, most of it supabase-js. The scene is 236.1 / 320, lazy |
-| 4.2 | axe-core + Playwright smoke over `/`, `/text`, auth | The room's a11y surface is the hidden 48×48 buttons from `InteractiveObject`, the panel (focus lands on its heading) and the corner controls (`aria-pressed` on sound) |
-| 4.3 | Reduced-motion pass, every row of `03-motion.md` | Covered so far: ambient layers removed, every lerp snaps, bonsai droplet skipped, panel `animation: none`, window snaps. Walk the table row by row anyway |
-| 4.4 | Empty states for every widget and panel (X-1) | Monitor 1, monitor 2, the import panel and the signed-out panels already have them. Audit the bonsai at 0 points (8 base leaves), the wall with no days, and the goals, journal and habits panels when empty |
-| 4.5 | Offline: airplane mode, `/text` usable, room renders from cache | The service worker caches the `/text` shell only, by design (B2.9). "Room renders from cache" conflicts with that, so raise it rather than widen the cache on a guess |
-| 4.6 | Privacy Policy stating FR-3.6 plainly | The entry text is never stored or retrievable, and the free Gemini tier is why AI Reflect is off |
-| 4.7 | Provider spend cap (COST-1) | **Stale wording:** the plan says the OpenAI dashboard, but the provider is Gemini (D-19 amended). Owner action, in Google AI Studio or Cloud billing |
+**Phase 4 questions for the owner** (detail in the 2026-09-29 entry):
+1. **4.5, "room renders from cache".** Read as: a room already open keeps
+   working when the network drops (verified). A cold offline `/` lands on the
+   `/text` shell, because the 3D bundle is not cached (B2.9). Confirm, or say
+   the room itself must cold-load offline, which widens the cache by ~240 KB.
+2. **4.7, spend cap.** Owner action in Google AI Studio / Cloud billing. The
+   build plan still says "OpenAI dashboard"; D-19 amended the provider.
+3. **The room's Lighthouse score is a CI warning** (PROPOSED): runners have no
+   GPU. 0.96 median here on a GPU, 0.76 on SwiftShader.
+4. **Mobile LCP ≤ 2.5 s is a CI warning** (PROPOSED): simulated slow 4G.
+   Median 1.96 s now, so it could become an error.
+5. **`--ink-faint` on informative text** failed AA (3.3:1). Moved to
+   `--ink-muted` on /text; `--ink-faint` kept for disabled controls. PROPOSED.
+6. **Auth labels at 11.2 px** fail Lighthouse's legible-font-size audit on a
+   phone (best-practices 0.96). A typography call, not changed.
+7. **The Privacy Policy** needs an owner read. It has no contact line, and there
+   is no way to delete an account from the app; a policy usually offers both.
+8. **Archive takes two presses** within 3 s, the room's arm grammar. PROPOSED.
 
-**Small debt Phase 4 should close:**
-- `/favicon.ico` returns a 404 on first load
-- no PNG `apple-touch-icon` for iOS
-- `archive` on a habit has no confirmation
-- `captures/` has not been refreshed since 3.1: re-capture on a quiet machine
-- `actions/checkout@v4` and `pnpm/action-setup@v4` warn about Node 20
-
-**Open owner decisions**, detail in the entries below:
+**Open owner decisions carried from Phase 3**, detail in the entries below:
 1. **Bonsai:**
    - its place in the lamp pool (D-11), with criterion 5 at 0.945 of < 1
    - leaf tone 0.25
@@ -75,8 +85,99 @@ Start fresh, on `spec/06-build-plan.md` Phase 4, one commit per mini-feature.
 - earn a leaf
 - save a journal entry (the bookmark warms)
 - check off a habit (today's cell lights)
+- sign out, and check that /text shows no row of zeros and no flash of "sign in"
 
 ---
+
+## 2026-09-29 — Phase 4, hardening
+
+Commits `700f1b4`..`1118729` plus this one, not pushed. Every gate passes on a
+fresh production build on this machine: lint, colours, types, unit tests,
+build, bundle budgets, `lh:check`, capture + lighting test (effects on and
+off), `a11y:check`, `motion:check`, `offline:check`.
+
+**4.1 Lighthouse.** Baseline: the room scored 0.66 on desktop (TBT 970 ms) and
+0.52 as a phone. A CPU profile put all of it in `WebGLProgram.getUniforms`:
+the first frame linked every shader synchronously, a 1.4–1.6 s long task on an
+RTX 2060. `scene/ShaderWarmup.tsx` compiles each program in its own task
+before the frame loop starts (`frameloop="never"` until then). The first
+attempt made it worse: the composer draws into a render target, and three
+builds different programs for one, so the warm-up now compiles against a
+render target whenever bloom is on. After: the long task is 130 ms, and the
+room scores 0.96 median. `data-room-ready` marks the first frame; capture, axe
+and the motion check wait for it.
+
+`pnpm lh:check` runs Lighthouse CI (`lighthouse/mobile.json` for /text and
+auth as a phone, `lighthouse/desktop.json` for the room). Medians of three on
+the final build:
+
+| route | perf | LCP | TBT | CLS |
+|---|---|---|---|---|
+| `/` desktop | 0.96 | 479 ms | 152 ms | 0 |
+| `/text` phone | 0.99 | 1960 ms | 55 ms | 0 |
+| `/login` phone | 0.99 | 1808 ms | 14 ms | 0 |
+| `/signup` phone | 0.99 | 1807 ms | 30 ms | 0 |
+
+Errors: performance ≥ 0.85 on the DOM routes, CLS ≤ 0.1, no console errors,
+script transfer ≤ 200 KB (shell) and ≤ 520 KB (room). Warnings: the room's
+score, because a runner draws it on SwiftShader (0.76 there), and mobile LCP.
+The script owns the Chrome that Lighthouse connects to: on Windows
+chrome-launcher deletes its profile before Chrome has exited and every run
+fails with EPERM, and a browser launched through Playwright times Lighthouse
+out.
+
+The 404 was `/favicon.ico` (no icon link). The icons are now in `metadata`,
+plus a 180 px PNG apple-touch-icon rendered from `icon-maskable.svg`.
+
+**4.2 axe.** `pnpm a11y:check`: WCAG 2.1 AA over /text, auth and /privacy at
+two sizes, and over the room at rest and with each of the six panels opened
+from the keyboard. One real failure, fixed: `.faint` and the journal counter on
+/text were `--ink-faint`, 3.3:1 on the void.
+
+**4.3 Reduced motion.** Every row of the 03-motion table already had a code
+path. `pnpm motion:check` proves it: under reduced motion two frames a second
+apart must be pixel-identical, at rest and straight after opening a panel;
+grain, transitions and the panel animation are read from the DOM; and a
+control run with motion allowed must differ.
+
+**4.4 Empty states.** A read-only audit of every panel, section and widget.
+Nothing crashed on empty data and nothing was punitive. What was wrong:
+- /text and the panels rendered before the first load and before auth was
+  known, so users saw "No habits yet" or "sign in" for a moment. They now wait
+  on `useSurfaceState`. Panels show the skeleton; /text renders its default
+  state invisibly (`Pending`), which keeps the layout. A skeleton there cost
+  CLS 0.19 and dropped /text to 0.86.
+- a new visitor saw a row of zeros. The counters now appear with the first
+  point, and "leaves on the bonsai" is "leaves grown" (it counts earned ones)
+- goal details had no loading state and no catch, so a failed read meant "No
+  goals yet" for good. The store's summaries now stand in
+- no line when nothing is due today
+- a rejected `getUser()` left `hydrated` false forever; it now settles
+- the journal kept the last user's insight after a session ended in another tab
+- found on the way: the sign-out form navigated away before `SIGNED_OUT`, so the
+  offline snapshot was never cleared. The form clears it now.
+
+Left as they are: the bonsai's 8 base leaves (owner decision), the wall with no
+lit cell when signed out (intended), and a signed-in journal with no entries
+showing 35 empty cells and no "no entries yet" line.
+
+**4.5 Offline.** `pnpm offline:check`: /text reloads from the service worker
+with the network off and shows every section; a cold offline `/` lands on the
+/text shell; a room already open keeps rendering and opens panels when the
+network drops. The signed-in snapshot is not covered. See question 1 above.
+
+**4.6 Privacy.** `/privacy`, linked from the journal on both surfaces and from
+auth. It leads with FR-3.6 (entries are never stored, so nobody can read one
+back) and states that with AI Reflect off the words never leave the device.
+The AI paragraph follows the same flag as the button. Every claim is traced to
+code in the page's header comment.
+
+**Debt closed:** the favicon 404, the apple-touch-icon, archive confirmation,
+refreshed captures, and the Node 20 actions. The captures were taken on an idle
+machine. One taken straight after `lh:check` read keyboard 18.8% / peak 0.81
+as "effects on", because the adaptive-FPS detector had dropped bloom. Idle, it
+reads 24.5% / 0.978, the same as before the warm-up. CI captures have the same
+exposure if a runner is ever slow.
 
 ## 2026-09-28 — Phase 3.8, and the Phase 3 gate
 
