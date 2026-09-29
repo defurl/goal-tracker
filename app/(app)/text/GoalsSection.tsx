@@ -197,10 +197,13 @@ export function GoalsSection({ signedIn, ready }: { signedIn: boolean; ready: bo
 export function GoalsBody({ signedIn }: { signedIn: boolean }) {
   // The store's summaries change when a milestone does; re-read the detail then.
   const summaries = useAppStore((s) => s.goals);
-  const [goals, setGoals] = useState<GoalDetail[]>([]);
+  // null until the first detail read answers.
+  const [goals, setGoals] = useState<GoalDetail[] | null>(null);
 
   const reload = useCallback(() => {
-    void loadGoalDetails().then(setGoals);
+    // A failed read keeps what is already on screen. Before any detail has
+    // arrived that is the store's summaries (below), never "No goals yet".
+    loadGoalDetails().then(setGoals, () => undefined);
   }, []);
   useEffect(() => {
     if (signedIn) reload();
@@ -209,7 +212,18 @@ export function GoalsBody({ signedIn }: { signedIn: boolean }) {
 
   return (
     <>
-      {goals.length === 0 ? (
+      {goals === null && summaries.length > 0 ? (
+        <ul className={styles.list}>
+          {summaries.map((g) => (
+            <li key={g.id} className={styles.goal}>
+              <span className={styles.prose}>{g.title}</span>
+              <span className={styles.faint}>
+                {g.category} · {g.startDate} → {g.targetDate}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : !goals || goals.length === 0 ? (
         <p className={styles.quiet}>
           No goals yet. Name one thing you want by a date, and break it into a few steps you can tick off.
         </p>
