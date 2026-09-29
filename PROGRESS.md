@@ -15,26 +15,24 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
-| Phase 4 | **done locally — 4.1–4.6, every gate green on this machine; 4.7 is an owner action.** Not yet pushed, so the new CI job and steps have not run on a runner. See the 2026-09-29 entry | (shared) |
+| Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs). 4.7 is an owner action. See the 2026-09-29 entry | (shared) |
 
-**CI was green through Phase 3** on a real runner: `verify`, `scene-capture`
-(lighting gate TRUE with effects on and off) and `colour-lint-self-test`. Phase
-4 adds a fifth job, `lighthouse`, and three steps to `scene-capture`
-(`a11y:check`, `motion:check`, `offline:check`), and moves every action to a
-Node 24 release. None of that has run on a runner yet.
+**CI is green with five jobs** (run 36564302228): `verify`, `database`,
+`colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
+off, then `a11y:check`, `motion:check`, `offline:check`) and `lighthouse`
+(`lh:check mobile`: /text and auth, no warnings). Every action is on a Node 24
+release. The room's Lighthouse run is local only: on the first CI run it never
+finished on SwiftShader (`Network.getResponseBody` timed out). A failed
+Lighthouse assertion shows as an annotation, readable without admin rights.
 
 `WORKLOG.md` is the feature-by-feature record of what the product does and
 looks like; this file stays the state.
 
 ### Next session
 
-1. **Push, then watch the first CI run.** Five jobs now. The likeliest failures
-   are the new ones: `lighthouse` (Chrome launched by `scripts/lh-check.ts` with
-   `--no-sandbox` on Linux), and the action major bumps (checkout v5,
-   setup-node v5, pnpm/action-setup v5, upload-artifact v6).
-2. **Owner answers** to the Phase 4 questions below, then amend the spec where
+1. **Owner answers** to the Phase 4 questions below, then amend the spec where
    they settle something.
-3. **The signed-in walk** (owner action, below). Phase 4's empty-state and
+2. **The signed-in walk** (owner action, below). Phase 4's empty-state and
    sign-out fixes were verified signed out only.
 
 **Phase 4 questions for the owner** (detail in the 2026-09-29 entry):
@@ -44,8 +42,9 @@ looks like; this file stays the state.
    the room itself must cold-load offline, which widens the cache by ~240 KB.
 2. **4.7, spend cap.** Owner action in Google AI Studio / Cloud billing. The
    build plan still says "OpenAI dashboard"; D-19 amended the provider.
-3. **The room's Lighthouse score is a CI warning** (PROPOSED): runners have no
-   GPU. 0.96 median here on a GPU, 0.76 on SwiftShader.
+3. **The room's Lighthouse run is local only** (PROPOSED): a runner has no GPU
+   and Lighthouse cannot finish there. 0.96 median on a GPU, 0.75 on
+   SwiftShader locally; its score only warns even locally.
 4. **Mobile LCP ≤ 2.5 s is a CI warning** (PROPOSED): simulated slow 4G.
    Median 1.96 s now, so it could become an error.
 5. **`--ink-faint` on informative text** failed AA (3.3:1). Moved to
