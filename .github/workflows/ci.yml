@@ -206,6 +206,8 @@ jobs:
         with:
           name: lighthouse-reports
           path: .lighthouseci/
+          # The directory is hidden, and hidden files are skipped by default.
+          include-hidden-files: true
           if-no-files-found: warn
 
       - name: Server log
