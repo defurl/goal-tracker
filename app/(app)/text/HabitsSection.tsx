@@ -6,7 +6,7 @@
 // it, with no treatment of any kind when it resets (D-09). A missed day has
 // one signal in this product — nothing grows — and this list adds none.
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 import { HABIT_CAP, archiveHabit, checkHabit, createHabit, type CreateHabitOutcome } from '../../../lib/data/habits';
 import { useAppStore, type HabitSummary } from '../../../lib/stores/app';
@@ -15,6 +15,44 @@ import { Pending } from './Skeleton';
 import styles from './text.module.css';
 
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+/** The room's arm window (08-interaction-grammar.md, InteractiveObject). */
+const ARM_WINDOW_MS = 3000;
+
+/**
+ * Archive takes two presses, the way an object on a phone takes two taps: the
+ * first arms it and says what the second will do, and the arm lapses on its
+ * own. A habit and its history leave the list, so one stray press should not
+ * be enough — and a dialog would be a modal (11-anti-patterns).
+ */
+function ArchiveButton({ habitId }: { habitId: string }) {
+  const [armed, setArmed] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  function press() {
+    if (timer.current) clearTimeout(timer.current);
+    if (armed) {
+      setArmed(false);
+      void archiveHabit(habitId);
+      return;
+    }
+    setArmed(true);
+    timer.current = setTimeout(() => setArmed(false), ARM_WINDOW_MS);
+  }
+
+  return (
+    <button type="button" className={styles.action} onClick={press}>
+      {armed ? 'press again to archive' : 'archive'}
+    </button>
+  );
+}
 
 function HabitRow({ habit, signedIn }: { habit: HabitSummary; signedIn: boolean }) {
   return (
@@ -35,9 +73,7 @@ function HabitRow({ habit, signedIn }: { habit: HabitSummary; signedIn: boolean 
           <span className={styles.number}>{habit.longestStreak}</span> · now {habit.streak}
         </span>
       </div>
-      <button type="button" className={styles.action} onClick={() => void archiveHabit(habit.id)}>
-        archive
-      </button>
+      {signedIn && <ArchiveButton habitId={habit.id} />}
     </li>
   );
 }
