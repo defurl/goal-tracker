@@ -16,7 +16,12 @@ export function useSignedIn(): boolean | null {
   useEffect(() => {
     if (!supabaseConfigured) return;
     const supabase = createClient();
-    void supabase.auth.getUser().then(({ data }) => setSignedIn(data.user !== null));
+    // A throw counts as signed out, never as "still unknown": callers wait on
+    // null, so a null that never resolves would hold them forever.
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => setSignedIn(data.user !== null))
+      .catch(() => setSignedIn(false));
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setSignedIn(session !== null);
     });

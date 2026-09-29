@@ -56,9 +56,13 @@ export async function hydrate(): Promise<void> {
   }
 
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // A throw here (a network failure the client did not turn into an error)
+  // must not leave `hydrated` false: everything that waits on it would wait
+  // for good. Treat it as nobody found, which is what offline looks like.
+  const user = await supabase.auth
+    .getUser()
+    .then(({ data }) => data.user)
+    .catch(() => null);
   if (!user) {
     // getUser() asks the auth server, so offline it finds nobody. The session
     // held on this device still says who was here: show their last snapshot.
