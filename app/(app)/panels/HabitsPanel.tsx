@@ -7,15 +7,14 @@
 // Nothing here counts what was missed — only what was kept (D-08, D-09).
 
 import { useAppStore } from '../../../lib/stores/app';
-import { supabaseConfigured } from '../../../lib/supabase/env';
-import { useSignedIn } from '../../../lib/supabase/useSignedIn';
 import { HabitsBody } from '../text/HabitsSection';
+import { Skeleton } from '../text/Skeleton';
+import { useSurfaceState } from '../useSurfaceState';
 
 import voice from '../text/text.module.css';
 
 export function HabitsPanel() {
-  const signedInState = useSignedIn();
-  const signedIn = supabaseConfigured && signedInState === true;
+  const { ready, signedIn } = useSurfaceState();
   const points = useAppStore((s) => s.points);
   const dayGrid = useAppStore((s) => s.dayGrid);
   const habits = useAppStore((s) => s.habits);
@@ -23,6 +22,8 @@ export function HabitsPanel() {
   // The grid marks today as "today" whether or not it is kept yet, so today
   // counts only once a habit is done.
   const kept = dayGrid.filter((d) => d === 1).length + (habits.some((h) => h.completedToday) ? 1 : 0);
+
+  if (!ready) return <Skeleton />;
 
   return (
     <>

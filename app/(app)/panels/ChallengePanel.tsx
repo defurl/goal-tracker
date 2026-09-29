@@ -13,6 +13,7 @@ import { completeChallenge, rollChallenge } from '../../../lib/data/challenge';
 import { useAppStore } from '../../../lib/stores/app';
 import { useInteractionStore } from '../../../lib/stores/interaction';
 
+import { Skeleton } from '../text/Skeleton';
 import voice from '../text/text.module.css';
 
 export function ChallengePanel() {
@@ -28,15 +29,7 @@ export function ChallengePanel() {
   }
 
   // X-2: a skeleton while the store fills, never a bare spinner.
-  if (!hydrated) {
-    return (
-      <div className={voice.skeleton} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-    );
-  }
+  if (!hydrated) return <Skeleton />;
 
   // FR-1.7: a welcome that routes to import. The phone is the import, so the
   // route is a glide to it rather than a form here.

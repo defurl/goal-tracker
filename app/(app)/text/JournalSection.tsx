@@ -19,6 +19,7 @@ import type { JournalReflection } from '../../../lib/prompts/journalAnalysis';
 import { useAppStore } from '../../../lib/stores/app';
 import { supportResourcesFor } from '../../../lib/support/resources';
 
+import { Pending } from './Skeleton';
 import styles from './text.module.css';
 
 /** The AI Insight block — delineated from the user's own words (FR-3.3, AC-3.3). */
@@ -101,11 +102,12 @@ function Calendar({ days }: { days: JournalDay[] }) {
   );
 }
 
-export function JournalSection({ signedIn }: { signedIn: boolean }) {
+/** `ready`: the store has loaded and auth is known (useSurfaceState). */
+export function JournalSection({ signedIn, ready }: { signedIn: boolean; ready: boolean }) {
   return (
     <section className={styles.section} aria-labelledby="journal-heading">
       <h2 id="journal-heading" className={styles.heading}>Journal</h2>
-      <JournalBody signedIn={signedIn} />
+      <JournalBody signedIn={signedIn} ready={ready} />
     </section>
   );
 }
@@ -115,7 +117,7 @@ export function JournalSection({ signedIn }: { signedIn: boolean }) {
  * too, so the privacy copy, the reflect control and the AI Insight block are
  * one implementation on both surfaces (D-07).
  */
-export function JournalBody({ signedIn }: { signedIn: boolean }) {
+export function JournalBody({ signedIn, ready = true }: { signedIn: boolean; ready?: boolean }) {
   const journal = useAppStore((s) => s.journal);
   const [mood, setMood] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -170,114 +172,116 @@ export function JournalBody({ signedIn }: { signedIn: boolean }) {
         will not be able to read this entry again later.
       </p>
 
-      {!signedIn ? (
-        <p className={styles.faint}>
-          <a href="/login" className={styles.label}>sign in</a> to keep a journal.
-        </p>
-      ) : (
-        <div className={styles.form}>
-          <div className={styles.toggles} role="radiogroup" aria-label="mood">
-            {MOODS.map((m) => (
-              <button
-                key={m.key}
-                type="button"
-                role="radio"
-                aria-checked={mood === m.key}
-                aria-label={m.label}
-                title={m.label}
-                className={`${styles.toggle} ${styles.mood}`}
-                onClick={() => setMood(m.key)}
-              >
-                {m.emoji}
-              </button>
-            ))}
-          </div>
-
-          <div className={styles.toggles} role="group" aria-label="topics">
-            {TOPIC_TAGS.map((t) => (
-              <button
-                key={t}
-                type="button"
-                aria-pressed={tags.includes(t)}
-                className={styles.toggle}
-                onClick={() => setTags((x) => (x.includes(t) ? x.filter((y) => y !== t) : [...x, t]))}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          <label className={styles.field}>
-            <span className={styles.label}>what is on your mind</span>
-            {/* AC-3.4: prevented at input with a visible counter, never truncated on save. */}
-            <textarea
-              className={styles.textarea}
-              maxLength={MAX_ENTRY_CHARS}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              aria-describedby="entry-count"
-            />
-            <span id="entry-count" className={styles.counter}>
-              {text.length} / {MAX_ENTRY_CHARS}
-            </span>
-          </label>
-
-          <div className={styles.row}>
-            <button type="button" className={styles.action} disabled={!mood || busy !== null} onClick={onSave}>
-              save
-            </button>
-            {aiReflectEnabled && (
-              <button
-                type="button"
-                className={styles.primary}
-                disabled={!mood || !text.trim() || busy !== null || noReflections}
-                aria-describedby="reflect-note"
-                onClick={onReflect}
-              >
-                save &amp; ai reflect
-              </button>
-            )}
-          </div>
-          <p id="reflect-note" className={styles.faint}>
-            {!aiReflectEnabled
-              ? 'AI reflection is switched off for now, so what you write stays on this page and is gone when you save.'
-              : noReflections
-                ? 'Three reflections a day — the next one is available tomorrow.'
-                : `${journal.reflectionsRemaining} reflection${journal.reflectionsRemaining === 1 ? '' : 's'} left today. Reflect sends this entry to an AI once, to write the insight.`}
+      <Pending ready={ready}>
+        {!signedIn ? (
+          <p className={styles.faint}>
+            <a href="/login" className={styles.label}>sign in</a> to keep a journal.
           </p>
-        </div>
-      )}
+        ) : (
+          <div className={styles.form}>
+            <div className={styles.toggles} role="radiogroup" aria-label="mood">
+              {MOODS.map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  role="radio"
+                  aria-checked={mood === m.key}
+                  aria-label={m.label}
+                  title={m.label}
+                  className={`${styles.toggle} ${styles.mood}`}
+                  onClick={() => setMood(m.key)}
+                >
+                  {m.emoji}
+                </button>
+              ))}
+            </div>
 
-      {busy === 'reflect' && (
-        <div className={styles.skeleton} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-      )}
-      {reflection && <Insight reflection={reflection} />}
-      {!reflection && todayInsight && (
-        <Insight
-          reflection={{
-            summary: todayInsight.summary,
-            strength: todayInsight.strength,
-            next_action: todayInsight.nextAction,
-            support_response: false,
-          }}
-        />
-      )}
-      {message && (
-        <p className={styles.quiet} role="status">
-          {message}
-        </p>
-      )}
+            <div className={styles.toggles} role="group" aria-label="topics">
+              {TOPIC_TAGS.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  aria-pressed={tags.includes(t)}
+                  className={styles.toggle}
+                  onClick={() => setTags((x) => (x.includes(t) ? x.filter((y) => y !== t) : [...x, t]))}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
 
-      {signedIn && (
-        <>
-          <p className={styles.label}>the last five weeks</p>
-          <Calendar days={days} />
-        </>
-      )}
+            <label className={styles.field}>
+              <span className={styles.label}>what is on your mind</span>
+              {/* AC-3.4: prevented at input with a visible counter, never truncated on save. */}
+              <textarea
+                className={styles.textarea}
+                maxLength={MAX_ENTRY_CHARS}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                aria-describedby="entry-count"
+              />
+              <span id="entry-count" className={styles.counter}>
+                {text.length} / {MAX_ENTRY_CHARS}
+              </span>
+            </label>
+
+            <div className={styles.row}>
+              <button type="button" className={styles.action} disabled={!mood || busy !== null} onClick={onSave}>
+                save
+              </button>
+              {aiReflectEnabled && (
+                <button
+                  type="button"
+                  className={styles.primary}
+                  disabled={!mood || !text.trim() || busy !== null || noReflections}
+                  aria-describedby="reflect-note"
+                  onClick={onReflect}
+                >
+                  save &amp; ai reflect
+                </button>
+              )}
+            </div>
+            <p id="reflect-note" className={styles.faint}>
+              {!aiReflectEnabled
+                ? 'AI reflection is switched off for now, so what you write stays on this page and is gone when you save.'
+                : noReflections
+                  ? 'Three reflections a day — the next one is available tomorrow.'
+                  : `${journal.reflectionsRemaining} reflection${journal.reflectionsRemaining === 1 ? '' : 's'} left today. Reflect sends this entry to an AI once, to write the insight.`}
+            </p>
+          </div>
+        )}
+
+        {busy === 'reflect' && (
+          <div className={styles.skeleton} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        )}
+        {reflection && <Insight reflection={reflection} />}
+        {!reflection && todayInsight && (
+          <Insight
+            reflection={{
+              summary: todayInsight.summary,
+              strength: todayInsight.strength,
+              next_action: todayInsight.nextAction,
+              support_response: false,
+            }}
+          />
+        )}
+        {message && (
+          <p className={styles.quiet} role="status">
+            {message}
+          </p>
+        )}
+
+        {signedIn && (
+          <>
+            <p className={styles.label}>the last five weeks</p>
+            <Calendar days={days} />
+          </>
+        )}
+      </Pending>
     </>
   );
 }

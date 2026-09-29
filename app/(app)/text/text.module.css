@@ -290,6 +290,18 @@
   border-left-color: var(--ink-ghost);
 }
 
+/* Pending (Skeleton.tsx): no box of its own, so the section's layout is the
+   same with or without it; hidden is inherited, so the content takes its space
+   without being seen or read. */
+.settled,
+.pending {
+  display: contents;
+}
+
+.pending {
+  visibility: hidden;
+}
+
 .skeleton {
   display: flex;
   flex-direction: column;

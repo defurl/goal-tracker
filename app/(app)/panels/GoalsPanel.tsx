@@ -6,11 +6,12 @@
 // goal live here (AC-4.5). It is /text's goals body, not a second copy of it,
 // so the two surfaces cannot drift apart (D-07).
 
-import { supabaseConfigured } from '../../../lib/supabase/env';
-import { useSignedIn } from '../../../lib/supabase/useSignedIn';
 import { GoalsBody } from '../text/GoalsSection';
+import { Skeleton } from '../text/Skeleton';
+import { useSurfaceState } from '../useSurfaceState';
 
 export function GoalsPanel() {
-  const signedIn = useSignedIn();
-  return <GoalsBody signedIn={supabaseConfigured && signedIn === true} />;
+  const { ready, signedIn } = useSurfaceState();
+  if (!ready) return <Skeleton />;
+  return <GoalsBody signedIn={signedIn} />;
 }

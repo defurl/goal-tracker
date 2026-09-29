@@ -10,11 +10,12 @@
 // The entry lives only in component state. Closing the panel unmounts it, and
 // the words go with it.
 
-import { supabaseConfigured } from '../../../lib/supabase/env';
-import { useSignedIn } from '../../../lib/supabase/useSignedIn';
 import { JournalBody } from '../text/JournalSection';
+import { Skeleton } from '../text/Skeleton';
+import { useSurfaceState } from '../useSurfaceState';
 
 export function JournalPanel() {
-  const signedIn = useSignedIn();
-  return <JournalBody signedIn={supabaseConfigured && signedIn === true} />;
+  const { ready, signedIn } = useSurfaceState();
+  if (!ready) return <Skeleton />;
+  return <JournalBody signedIn={signedIn} />;
 }

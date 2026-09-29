@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { MILESTONE_CAP, createGoal, loadGoalDetails, setMilestone, type CreateGoalOutcome, type GoalDetail } from '../../../lib/data/goals';
 import { useAppStore, type GoalCategory } from '../../../lib/stores/app';
 
+import { Pending } from './Skeleton';
 import styles from './text.module.css';
 
 const CATEGORIES: GoalCategory[] = ['health', 'career', 'learning', 'relationships', 'finance', 'other'];
@@ -177,11 +178,14 @@ function NewGoal({ onCreated }: { onCreated: () => void }) {
   );
 }
 
-export function GoalsSection({ signedIn }: { signedIn: boolean }) {
+/** `ready`: the store has loaded and auth is known (useSurfaceState). */
+export function GoalsSection({ signedIn, ready }: { signedIn: boolean; ready: boolean }) {
   return (
     <section className={styles.section} aria-labelledby="goals-heading">
       <h2 id="goals-heading" className={styles.heading}>Goals</h2>
-      <GoalsBody signedIn={signedIn} />
+      <Pending ready={ready}>
+        <GoalsBody signedIn={signedIn} />
+      </Pending>
     </section>
   );
 }

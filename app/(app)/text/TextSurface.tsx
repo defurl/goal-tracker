@@ -12,16 +12,18 @@ import { ChallengeSection } from './ChallengeSection';
 import { GoalsSection } from './GoalsSection';
 import { HabitsSection } from './HabitsSection';
 import { JournalSection } from './JournalSection';
+import { Pending } from './Skeleton';
+
+import { useSurfaceState } from '../useSurfaceState';
 
 import { useAppStore } from '../../../lib/stores/app';
-import { supabaseConfigured } from '../../../lib/supabase/env';
-import { useSignedIn } from '../../../lib/supabase/useSignedIn';
 
 import styles from './text.module.css';
 
 export function TextSurface() {
-  const signedInState = useSignedIn();
-  const signedIn = supabaseConfigured && signedInState === true;
+  // Headings and fixed copy render at once; what depends on the store or on
+  // who is signed in waits for `ready`, so nothing flashes the wrong state.
+  const { ready, signedIn } = useSurfaceState();
   const points = useAppStore((s) => s.points);
   const offline = useAppStore((s) => s.offline);
 
@@ -30,15 +32,17 @@ export function TextSurface() {
       <header className={styles.header}>
         <h1 className={styles.title}>Be Better Everyday</h1>
         <div className={styles.meta}>
-          <span className={styles.label}>
-            <span className={styles.number}>{points.total}</span> glow points
-          </span>
-          <span className={styles.label}>
-            <span className={styles.number}>{points.today}</span> today
-          </span>
-          <span className={styles.label}>
-            <span className={styles.number}>{points.leafCount}</span> leaves on the bonsai
-          </span>
+          <Pending ready={ready}>
+            <span className={styles.label}>
+              <span className={styles.number}>{points.total}</span> glow points
+            </span>
+            <span className={styles.label}>
+              <span className={styles.number}>{points.today}</span> today
+            </span>
+            <span className={styles.label}>
+              <span className={styles.number}>{points.leafCount}</span> leaves on the bonsai
+            </span>
+          </Pending>
           {/* A plain link: /?room=1 also tells a phone to stop sending it here (middleware). */}
           <Link className={styles.label} href="/?room=1">
             enter the room
@@ -47,10 +51,10 @@ export function TextSurface() {
         {offline && <p className={styles.faint}>offline — showing what was last loaded</p>}
       </header>
 
-      <ChallengeSection signedIn={signedIn} />
-      <HabitsSection signedIn={signedIn} />
-      <JournalSection signedIn={signedIn} />
-      <GoalsSection signedIn={signedIn} />
+      <ChallengeSection signedIn={signedIn} ready={ready} />
+      <HabitsSection signedIn={signedIn} ready={ready} />
+      <JournalSection signedIn={signedIn} ready={ready} />
+      <GoalsSection signedIn={signedIn} ready={ready} />
     </main>
   );
 }

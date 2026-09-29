@@ -11,6 +11,7 @@ import { useState, type FormEvent } from 'react';
 import { HABIT_CAP, archiveHabit, checkHabit, createHabit, type CreateHabitOutcome } from '../../../lib/data/habits';
 import { useAppStore, type HabitSummary } from '../../../lib/stores/app';
 
+import { Pending } from './Skeleton';
 import styles from './text.module.css';
 
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -121,11 +122,14 @@ function NewHabit({ atCap }: { atCap: boolean }) {
   );
 }
 
-export function HabitsSection({ signedIn }: { signedIn: boolean }) {
+/** `ready`: the store has loaded and auth is known (useSurfaceState). */
+export function HabitsSection({ signedIn, ready }: { signedIn: boolean; ready: boolean }) {
   return (
     <section className={styles.section} aria-labelledby="habits-heading">
       <h2 id="habits-heading" className={styles.heading}>Habits</h2>
-      <HabitsBody signedIn={signedIn} />
+      <Pending ready={ready}>
+        <HabitsBody signedIn={signedIn} />
+      </Pending>
     </section>
   );
 }
