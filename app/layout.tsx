@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   title: 'Be Better Everyday',
   description:
     'The same 3 a.m. desk — but every object on it is evidence that you acted on something you saved.',
+  // Declared so the browser has an icon link and never falls back to asking for
+  // /favicon.ico, which does not exist.
+  icons: {
+    icon: { url: '/icon.svg', type: 'image/svg+xml' },
+  },
 };
 
 export const viewport: Viewport = {
