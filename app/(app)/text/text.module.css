@@ -224,6 +224,11 @@
   flex-direction: column;
 }
 
+/* A list of sentences rather than rows (the privacy page): spaced like prose. */
+.sentences {
+  gap: var(--step-1);
+}
+
 .item {
   display: flex;
   align-items: flex-start;

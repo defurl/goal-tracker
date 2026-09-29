@@ -177,7 +177,10 @@ export function JournalBody({ signedIn, ready = true }: { signedIn: boolean; rea
     <>
       <p className={styles.quiet}>
         Your words are not kept. Only the mood, the tags and — if you ask for one — an AI reflection are saved, so you
-        will not be able to read this entry again later.
+        will not be able to read this entry again later.{' '}
+        <a href="/privacy" className={styles.label}>
+          privacy
+        </a>
       </p>
 
       <Pending ready={ready}>

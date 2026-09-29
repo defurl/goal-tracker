@@ -150,6 +150,9 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
       <Link className={styles.switch} href={copy.switchHref}>
         {copy.switchText}
       </Link>
+      <Link className={styles.switch} href="/privacy">
+        privacy
+      </Link>
     </main>
   );
 }

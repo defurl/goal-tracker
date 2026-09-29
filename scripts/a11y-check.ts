@@ -88,7 +88,7 @@ async function main(): Promise<void> {
   });
   try {
     await checkRoom(browser);
-    for (const route of ['/text', '/login', '/signup']) {
+    for (const route of ['/text', '/login', '/signup', '/privacy']) {
       await checkPage(browser, route, DESKTOP, `${route} desktop`);
       await checkPage(browser, route, MOBILE, `${route} mobile`);
     }
