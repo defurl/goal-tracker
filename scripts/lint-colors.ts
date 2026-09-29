@@ -35,6 +35,7 @@ const SKIP_DIRS = new Set([
   'captures',
   'playwright-report',
   'test-results',
+  '.lighthouseci',
   // Extracted reference material from the portfolio. Not shipped, and it
   // legitimately contains the portfolio's own literals.
   'design-system',
