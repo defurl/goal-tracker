@@ -128,10 +128,18 @@ export function JournalBody({ signedIn, ready = true }: { signedIn: boolean; rea
   const [days, setDays] = useState<JournalDay[]>([]);
 
   const reloadDays = useCallback(() => {
-    void loadJournalDays().then(setDays);
+    // A failed read keeps the calendar that is already there.
+    loadJournalDays().then(setDays, () => undefined);
   }, []);
   useEffect(() => {
-    if (signedIn) reloadDays();
+    if (signedIn) {
+      reloadDays();
+      return;
+    }
+    // Signed out while the page stayed open (another tab, an expired
+    // session): nothing of that user's journal may stay on screen.
+    setDays([]);
+    setReflection(null);
   }, [signedIn, reloadDays]);
 
   const todayInsight = days.find((d) => d.date === new Intl.DateTimeFormat('en-CA').format(new Date()))?.insight;
