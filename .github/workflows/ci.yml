@@ -157,8 +157,8 @@ jobs:
 
   # Build plan 4.1: Lighthouse CI with asserted budgets. Its own job so a slow
   # Lighthouse run never holds up the lighting gate, and so its reports upload
-  # separately. The room's performance score only warns here — the runner has
-  # no GPU; scripts/lh-check.ts says why.
+  # separately. /text and auth only: with no GPU the runner cannot draw the
+  # room fast enough for Lighthouse to finish (scripts/lh-check.ts says more).
   lighthouse:
     runs-on: ubuntu-latest
     steps:
@@ -198,7 +198,7 @@ jobs:
           exit 1
 
       - name: Lighthouse budgets
-        run: pnpm lh:check
+        run: pnpm lh:check mobile
 
       - name: Upload the reports
         if: always()
