@@ -10,6 +10,7 @@
 
 import Link from 'next/link';
 
+import { clearSnapshot } from '@/lib/data/snapshot';
 import { useInteractionStore } from '@/lib/stores/interaction';
 import { useSignedIn } from '@/lib/supabase/useSignedIn';
 
@@ -26,8 +27,10 @@ export function AccountControl() {
     <div className={styles.corner}>
       {signedIn ? (
         // POST, matching app/auth/signout: a link would let a prefetch sign
-        // someone out.
-        <form action="/auth/signout" method="post">
+        // someone out. The server clears the session and this page is gone
+        // before the browser client would hear SIGNED_OUT, so the device copy
+        // of the room is cleared here, as the form goes.
+        <form action="/auth/signout" method="post" onSubmit={clearSnapshot}>
           <button className={styles.control} type="submit">
             sign out
           </button>
