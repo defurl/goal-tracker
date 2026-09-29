@@ -152,11 +152,15 @@ export function HabitsBody({ signedIn }: { signedIn: boolean }) {
         </p>
       ) : (
         <>
-          <ul className={styles.list} aria-label="due today">
-            {due.map((h) => (
-              <HabitRow key={h.id} habit={h} signedIn={signedIn} />
-            ))}
-          </ul>
+          {due.length > 0 ? (
+            <ul className={styles.list} aria-label="due today">
+              {due.map((h) => (
+                <HabitRow key={h.id} habit={h} signedIn={signedIn} />
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.quiet}>Nothing is due today.</p>
+          )}
           {rest.length > 0 && (
             <>
               <p className={styles.label}>not due today</p>
