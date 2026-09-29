@@ -18,9 +18,11 @@ export const metadata: Metadata = {
   description:
     'The same 3 a.m. desk — but every object on it is evidence that you acted on something you saved.',
   // Declared so the browser has an icon link and never falls back to asking for
-  // /favicon.ico, which does not exist.
+  // /favicon.ico, which does not exist. iOS ignores SVG touch icons, so it gets
+  // a PNG rendered from icon-maskable.svg.
   icons: {
     icon: { url: '/icon.svg', type: 'image/svg+xml' },
+    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
   },
 };
 
