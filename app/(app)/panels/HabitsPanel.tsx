@@ -27,7 +27,8 @@ export function HabitsPanel() {
 
   return (
     <>
-      {signedIn && (
+      {/* X-1: no totals of zero for someone who has not started. */}
+      {signedIn && (kept > 0 || points.total > 0) && (
         <div className={voice.meta}>
           <span className={voice.label}>
             <span className={voice.number}>{kept}</span> {kept === 1 ? 'day' : 'days'} kept this year

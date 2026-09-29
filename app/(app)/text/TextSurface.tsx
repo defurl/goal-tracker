@@ -32,16 +32,24 @@ export function TextSurface() {
       <header className={styles.header}>
         <h1 className={styles.title}>Be Better Everyday</h1>
         <div className={styles.meta}>
+          {/* X-1: a new visitor gets no row of zeros. The counters appear with
+              the first point; the sections below carry the welcome. Leaves are
+              the EARNED ones — the tree starts with its own. */}
           <Pending ready={ready}>
-            <span className={styles.label}>
-              <span className={styles.number}>{points.total}</span> glow points
-            </span>
-            <span className={styles.label}>
-              <span className={styles.number}>{points.today}</span> today
-            </span>
-            <span className={styles.label}>
-              <span className={styles.number}>{points.leafCount}</span> leaves on the bonsai
-            </span>
+            {points.total > 0 && (
+              <>
+                <span className={styles.label}>
+                  <span className={styles.number}>{points.total}</span> glow points
+                </span>
+                <span className={styles.label}>
+                  <span className={styles.number}>{points.today}</span> today
+                </span>
+                <span className={styles.label}>
+                  <span className={styles.number}>{points.leafCount}</span>{' '}
+                  {points.leafCount === 1 ? 'leaf grown' : 'leaves grown'}
+                </span>
+              </>
+            )}
           </Pending>
           {/* A plain link: /?room=1 also tells a phone to stop sending it here (middleware). */}
           <Link className={styles.label} href="/?room=1">
