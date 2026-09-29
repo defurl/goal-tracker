@@ -86,17 +86,19 @@ async function capture(browser: Browser, state: SceneState): Promise<void> {
 
   await page.goto(`${BASE_URL}${state.route}`, { waitUntil: 'networkidle' });
 
-  // The room states must have a canvas that actually got sized. R3F leaves it
-  // at the 300x150 default until its parent measures non-zero, and a capture of
-  // an unsized canvas is a black rectangle that looks like a lighting bug.
+  // The room draws no frame until ShaderWarmup has compiled every program, and
+  // a capture before that is a black rectangle that looks like a lighting bug.
+  // The canvas must also have been sized: R3F leaves it at the 300x150 default
+  // until its parent measures non-zero. SwiftShader compiles slowly, hence the
+  // generous timeout.
   if (state.route === '/') {
     await page.waitForFunction(
       () => {
         const c = document.querySelector('canvas');
-        return !!c && c.width > 300;
+        return !!c && c.width > 300 && !!document.querySelector('[data-room-ready]');
       },
       undefined,
-      { timeout: 15000 },
+      { timeout: 60000 },
     );
   }
 

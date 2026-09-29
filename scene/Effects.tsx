@@ -22,12 +22,16 @@ import {
 } from './lighting';
 import { useSceneStore } from '../lib/stores/scene';
 
-export function Effects() {
-  const reduced = useSceneStore((s) => s.prefersReducedMotion);
-  const lowFps = useSceneStore((s) => s.lowFps);
-  const isMobile = useSceneStore((s) => s.isMobile);
+type SceneState = ReturnType<typeof useSceneStore.getState>;
 
-  if (reduced || lowFps || isMobile) return null;
+/** Whether the composer is mounted. ShaderWarmup needs the same answer. */
+export const effectsEnabled = (s: Pick<SceneState, 'prefersReducedMotion' | 'lowFps' | 'isMobile'>) =>
+  !s.prefersReducedMotion && !s.lowFps && !s.isMobile;
+
+export function Effects() {
+  const enabled = useSceneStore(effectsEnabled);
+
+  if (!enabled) return null;
 
   return (
     <EffectComposer>
