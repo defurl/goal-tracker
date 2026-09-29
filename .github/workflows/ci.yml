@@ -130,6 +130,10 @@ jobs:
       - name: Reduced motion is removed, not reduced
         run: pnpm motion:check
 
+      # Build plan 4.5: /text from the service worker with the network off.
+      - name: Offline
+        run: pnpm offline:check
+
       # Uploaded on failure too — a failed lighting gate is exactly when someone
       # needs to see the frame that failed it. `warn`, not `error`, on an empty
       # directory: if an earlier step failed there is nothing to upload, and a
