@@ -27,7 +27,7 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
@@ -80,18 +80,66 @@ async function waitForChrome(): Promise<void> {
 // lhci's healthcheck looks for a Chrome install even when it will not launch one.
 const env = { ...process.env, CHROME_PATH };
 
+/**
+ * On GitHub Actions every failed or warned assertion also becomes an
+ * annotation. Annotations show on the run page and through the public checks
+ * API, where a job's log needs admin rights, so a red job says why without
+ * anyone having to open it.
+ */
+const IN_CI = process.env.GITHUB_ACTIONS === 'true';
+const RESULTS = join('.lighthouseci', 'assertion-results.json');
+
+function annotate(level: 'error' | 'warning', message: string): void {
+  if (IN_CI) console.log(`::${level} title=lh:check::${message.replace(/\r?\n/g, ' ')}`);
+}
+
+interface Assertion {
+  url: string;
+  auditId: string;
+  auditProperty?: string;
+  operator: string;
+  expected: number;
+  actual: number;
+  level: 'error' | 'warn';
+  passed: boolean;
+}
+
+function reportAssertions(config: string, output: string): void {
+  if (!existsSync(RESULTS)) {
+    // Lighthouse never got as far as asserting: say what it last printed.
+    const tail = output.trim().split('\n').slice(-6).join(' | ');
+    annotate('error', `${config}: Lighthouse did not finish. ${tail}`);
+    return;
+  }
+  const results = JSON.parse(readFileSync(RESULTS, 'utf8')) as Assertion[];
+  for (const a of results.filter((r) => !r.passed)) {
+    const audit = a.auditProperty ? `${a.auditId}.${a.auditProperty}` : a.auditId;
+    annotate(
+      a.level === 'error' ? 'error' : 'warning',
+      `${new URL(a.url).pathname} ${audit}: expected ${a.operator} ${a.expected}, found ${a.actual}`,
+    );
+  }
+}
+
 let failed = false;
 try {
   await waitForChrome();
   for (const config of CONFIGS) {
     console.log(`\nlh:check -> ${config}`);
+    rmSync(RESULTS, { force: true });
     const run = spawnSync(
       process.execPath,
       [LHCI, 'autorun', `--config=${config}`, `--collect.settings.port=${DEBUG_PORT}`],
-      { env, stdio: 'inherit' },
+      { env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
     );
+    process.stdout.write(run.stdout ?? '');
+    process.stderr.write(run.stderr ?? '');
+    reportAssertions(config, `${run.stdout ?? ''}\n${run.stderr ?? ''}`);
     if (run.status !== 0) failed = true;
   }
+} catch (err) {
+  annotate('error', (err as Error).message);
+  throw err;
 } finally {
   chrome.kill();
   await new Promise((resolve) => chrome.once('exit', resolve));
