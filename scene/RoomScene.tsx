@@ -29,6 +29,7 @@ import {
 } from './lighting';
 import { BG_NIGHT, GLOW_COOL, LAMP_WARM } from '../lib/style/colors';
 import { CameraRig } from './CameraRig';
+import { REST_POSE, REST_POSE_MOBILE } from './cameraPoses';
 import { Effects } from './Effects';
 import { InteractiveObject } from './InteractiveObject';
 import { WindowRim } from './WindowRim';
@@ -217,7 +218,7 @@ export function RoomScene() {
       </InteractiveObject>
       <DustMotes />
 
-      <CameraRig />
+      <CameraRig rest={REST_POSE} restMobile={REST_POSE_MOBILE} />
       <Effects />
     </>
   );

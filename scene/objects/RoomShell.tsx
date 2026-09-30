@@ -13,8 +13,8 @@ import { BG_PANEL } from '../../lib/style/colors';
 /** y = 0 is the desk top, never the floor. The floor hangs 0.74 m below it. */
 export const FLOOR_Y = -0.74;
 
-/** Shared by the floor and every wall segment. */
-function ConcreteMaterial() {
+/** Shared by the floor and every wall segment — and the hall's, so the two read as one building. */
+export function ConcreteMaterial() {
   return <meshStandardMaterial color={BG_PANEL} roughness={0.85} metalness={0.05} />;
 }
 

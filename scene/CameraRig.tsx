@@ -9,28 +9,32 @@
 import { useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3, type PerspectiveCamera } from 'three';
+import { CAMERA_MS as GLIDE_MS } from '../lib/motion/durations';
 import { useInteractionStore } from '../lib/stores/interaction';
 import { useSceneStore } from '../lib/stores/scene';
-import { REST_POSE, REST_POSE_MOBILE, FOCUS_POSES, isPortrait, portraitPose, type CameraPose } from './cameraPoses';
-
-/** Matches --dur-camera. Keep the two in sync by name if either changes. */
-const GLIDE_MS = 2200;
+import { FOCUS_POSES, isPortrait, portraitPose, type CameraPose } from './cameraPoses';
 
 /** A solver-free stand-in for the design system's cubic-bezier(0.65, 0, 0.35, 1). */
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-export function CameraRig() {
+interface CameraRigProps {
+  /** The scene's rest pose, and its variant for a phone. Each scene has its own. */
+  rest: CameraPose;
+  restMobile: CameraPose;
+}
+
+export function CameraRig({ rest, restMobile }: CameraRigProps) {
   const camera = useThree((s) => s.camera);
   const focus = useInteractionStore((s) => s.focus);
 
   // Three.js cameras do not store a lookAt point, so the rig tracks it.
-  const fromPosition = useRef(new Vector3(...REST_POSE.position));
-  const fromTarget = useRef(new Vector3(...REST_POSE.target));
-  const toPosition = useRef(new Vector3(...REST_POSE.position));
-  const toTarget = useRef(new Vector3(...REST_POSE.target));
-  const lookAt = useRef(new Vector3(...REST_POSE.target));
+  const fromPosition = useRef(new Vector3(...rest.position));
+  const fromTarget = useRef(new Vector3(...rest.target));
+  const toPosition = useRef(new Vector3(...rest.position));
+  const toTarget = useRef(new Vector3(...rest.target));
+  const lookAt = useRef(new Vector3(...rest.target));
   const elapsed = useRef(GLIDE_MS); // start settled at rest
   const lastFocus = useRef<typeof focus>(null);
   const lastPortrait = useRef<boolean | null>(null);
@@ -47,7 +51,7 @@ export function CameraRig() {
     if (focus !== lastFocus.current || reshaped) {
       lastFocus.current = focus;
       const { isMobile, prefersReducedMotion } = useSceneStore.getState();
-      const restPose: CameraPose = isMobile ? REST_POSE_MOBILE : REST_POSE;
+      const restPose: CameraPose = isMobile ? restMobile : rest;
       const fov = (camera as PerspectiveCamera).fov;
       const destination: CameraPose = focus
         ? portrait

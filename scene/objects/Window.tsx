@@ -28,13 +28,11 @@
 
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Color, type Group, type MeshStandardMaterial } from 'three';
+import type { Group } from 'three';
 
-import { lerpTo } from '../../lib/motion/lerp';
-import { SKY_STATES, skyBand, type SkyBand } from '../../lib/sky';
-import { useAppStore } from '../../lib/stores/app';
 import { BG_PANEL, BG_VOID, GLOW_COOL_SOFT, INK_MUTED, RAIN_STREAK } from '../../lib/style/colors';
 import { useSceneStore } from '../../lib/stores/scene';
+import { SkyPlane } from './SkyPlane';
 
 interface WindowProps {
   position: [number, number, number];
@@ -47,7 +45,6 @@ const FRAME_T = 0.04;
 const FRAME_DEPTH = 0.06;
 
 const CITY_INTENSITY = 0.55;
-const SKY_LERP = 0.05; // spec/05 §3
 
 const DROP_COUNT = 18;
 const DROP_Z = 0.012;
@@ -114,33 +111,6 @@ function WindowRain() {
 }
 
 export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
-  const skyRef = useRef<MeshStandardMaterial>(null);
-  const cityRef = useRef<MeshStandardMaterial>(null);
-
-  const bandColours = useMemo(
-    () =>
-      Object.fromEntries(
-        (Object.keys(SKY_STATES) as SkyBand[]).map((band) => [band, new Color(SKY_STATES[band].color)]),
-      ) as Record<SkyBand, Color>,
-    [],
-  );
-  const settled = useRef(false);
-
-  // Imperative reads only (spec/05 §1). The first hydrated frame snaps to the
-  // current band, so loading the page does not fade in from night.
-  useFrame(() => {
-    const sky = skyRef.current;
-    if (!sky) return;
-    const { hydrated, localHour } = useAppStore.getState();
-    if (!hydrated) return;
-    const band = skyBand(localHour);
-    const reduced = useSceneStore.getState().prefersReducedMotion;
-    const k = !settled.current || reduced ? 1 : SKY_LERP;
-    settled.current = true;
-    sky.emissive.lerp(bandColours[band], k);
-    sky.emissiveIntensity = lerpTo(sky.emissiveIntensity, SKY_STATES[band].intensity, k);
-  });
-
   return (
     <group position={position} rotation={rotation}>
       {/* Frame */}
@@ -182,25 +152,13 @@ export function Window({ position, rotation = [0, 0, 0] }: WindowProps) {
 
       <WindowRain />
 
-      {/* Sky beyond */}
-      <mesh position={[0, 0.25, -0.3]}>
-        <planeGeometry args={[W * 0.92, H * 0.55]} />
-        <meshStandardMaterial
-          ref={skyRef}
-          color={BG_VOID}
-          emissive={SKY_STATES.night.color}
-          emissiveIntensity={SKY_STATES.night.intensity}
-          roughness={1}
-          metalness={0}
-          toneMapped={false}
-        />
-      </mesh>
+      {/* Sky beyond, following the hour (SkyPlane) */}
+      <SkyPlane position={[0, 0.25, -0.3]} size={[W * 0.92, H * 0.55]} />
 
       {/* City beyond */}
       <mesh position={[0, -0.25, -0.3]}>
         <planeGeometry args={[W * 0.92, H * 0.55]} />
         <meshStandardMaterial
-          ref={cityRef}
           color={BG_VOID}
           emissive={GLOW_COOL_SOFT}
           emissiveIntensity={CITY_INTENSITY}

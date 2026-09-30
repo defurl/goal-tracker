@@ -23,7 +23,18 @@ import { WINDOW_RIM_INTENSITY, WINDOW_RIM_POSITION } from './lighting';
 
 const RIM_LERP = 0.05; // spec/05 §3, as the sky
 
-export function WindowRim({ target }: { target: Object3D }) {
+interface WindowRimProps {
+  target: Object3D;
+  /** Where the light comes from: the room's window by default; the hall's clerestory there. */
+  position?: readonly [number, number, number];
+  /**
+   * Multiplies RIM_STATES, for a rig scaled to a bigger space at the room's
+   * ratios (design-system/05: "keep these ratios"). 1 in the room.
+   */
+  scale?: number;
+}
+
+export function WindowRim({ target, position = WINDOW_RIM_POSITION, scale = 1 }: WindowRimProps) {
   const lightRef = useRef<DirectionalLight>(null);
   const settled = useRef(false);
 
@@ -35,16 +46,16 @@ export function WindowRim({ target }: { target: Object3D }) {
     const reduced = useSceneStore.getState().prefersReducedMotion;
     const k = !settled.current || reduced ? 1 : RIM_LERP;
     settled.current = true;
-    light.intensity = lerpTo(light.intensity, RIM_STATES[skyBand(localHour)], k);
+    light.intensity = lerpTo(light.intensity, RIM_STATES[skyBand(localHour)] * scale, k);
   });
 
   return (
     <directionalLight
       ref={lightRef}
-      position={WINDOW_RIM_POSITION}
+      position={position as [number, number, number]}
       target={target}
       color={GLOW_COOL_SOFT}
-      intensity={WINDOW_RIM_INTENSITY}
+      intensity={WINDOW_RIM_INTENSITY * scale}
     />
   );
 }
