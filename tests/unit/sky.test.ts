@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { SKY_STATES, skyBand } from '../../lib/sky.ts';
+import { LAMP_WARM } from '../../lib/style/colors.ts';
 
 test('every band starts on its hour', () => {
   assert.equal(skyBand(22), 'night');
@@ -30,4 +31,19 @@ test('every hour of the day maps to a defined state', () => {
     const state = SKY_STATES[skyBand(hour)];
     assert.ok(state && state.intensity > 0, `hour ${hour}`);
   }
+});
+
+/** WCAG relative luminance of a #RRGGBB token — the measure the bloom threshold uses. */
+function luminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+}
+
+test('the warm band stays under the bloom threshold (D-23 §12)', () => {
+  const warm = Object.values(SKY_STATES).filter((s) => s.color === LAMP_WARM);
+  assert.ok(warm.length > 0);
+  for (const state of warm) assert.ok(luminance(state.color) * state.intensity < 0.1, JSON.stringify(state));
 });

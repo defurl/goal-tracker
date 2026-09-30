@@ -229,6 +229,12 @@ const SKY_STATES: Record<Band, { color: string; intensity: number }> = {
 };
 ```
 
+> **Amendment, 2026-09-30 (owner decision, D-23 §12).** Dusk's intensity is
+> 0.16, not 1.0. The window is on the room's cool side, and at 1.0 its
+> `LAMP_WARM` sky (L ≈ 0.556) bloomed there once the window was in frame
+> (D-23 §11). At 0.16 it is L ≈ 0.089, under the 0.1 threshold: still warm, no
+> longer a light. `lib/sky.ts` holds the value; a unit test holds the rule.
+
 **The room stays nocturnal at every hour** (`00-product-brief.md` §1, LOCKED).
 Even `day` keeps the interior dark — the window brightens, the room does not.
 The rim light may rise slightly with it; if it does, re-run the lighting

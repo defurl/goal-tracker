@@ -15,11 +15,20 @@ export interface SkyState {
   intensity: number;
 }
 
+/**
+ * Dusk is the one warm band, and the window sits on the room's cool side:
+ * criterion 2 of the lighting test wants the right edge cooler than the left.
+ * At spec/05's LAMP_WARM × 1.0 (L ≈ 0.556) the sky bloomed there once the
+ * window was in frame. Owner decision 2026-09-30, D-23 §12: dusk stays under
+ * the 0.1 bloom threshold — 0.556 × 0.16 ≈ 0.089. Still warm, no longer a lamp.
+ */
+export const DUSK_INTENSITY = 0.16;
+
 export const SKY_STATES: Record<SkyBand, SkyState> = {
   night: { color: BG_NIGHT, intensity: 0.8 }, // 22–05
   dawn: { color: GLOW_COOL_SOFT, intensity: 1.1 }, // 05–08
   day: { color: GLOW_COOL_SOFT, intensity: 1.4 }, // 08–17
-  dusk: { color: LAMP_WARM, intensity: 1.0 }, // 17–20
+  dusk: { color: LAMP_WARM, intensity: DUSK_INTENSITY }, // 17–20
   evening: { color: BG_NIGHT, intensity: 0.9 }, // 20–22
 };
 
