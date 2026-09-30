@@ -275,7 +275,13 @@ describe('a child row belongs to its parent\'s owner — 014_parent_ownership.sq
       a.client.from('daily_challenges')
         .insert({ user_id: a.id, action_id: actionId, date: NEXT_DAY }),
     ]);
-    for (const { error } of attempts) assert.equal(error?.code, FK_VIOLATION);
+    // habit_logs and daily_challenges refuse any user insert since 022, so RLS
+    // stops those two before the foreign key is reached; the service-role case
+    // below still proves the schema itself refuses them.
+    const [habitLog, milestone, challenge] = attempts;
+    assert.equal(habitLog?.error?.code, RLS_DENIED);
+    assert.equal(milestone?.error?.code, FK_VIOLATION);
+    assert.equal(challenge?.error?.code, RLS_DENIED);
   });
 
   it('holds for the service role too — it is the schema, not a policy', async () => {

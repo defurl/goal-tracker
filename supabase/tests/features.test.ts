@@ -153,11 +153,40 @@ describe('Daily Challenge — 019', () => {
   it('awards nothing for a challenge dated any day but today', async () => {
     const u = await createUser('complete-past');
     const a = await action(u, 'backdated');
-    // Owner-writable under 012: the user can insert this row themselves.
-    const { data: c } = await u.client.from('daily_challenges')
-      .insert({ user_id: u.id, action_id: a, date: utcDay(-30) }).select().single();
-    await u.client.rpc('complete_challenge', { p_challenge_id: c?.id });
+    // Seeded as the service role: since 022 the user cannot insert it (below).
+    const c = await seed<{ id: string }>('daily_challenges', { user_id: u.id, action_id: a, date: utcDay(-30) });
+    await u.client.rpc('complete_challenge', { p_challenge_id: c.id });
     assert.equal(await total(u.id), 0);
+  });
+});
+
+describe('the owner cannot write their own history — 022, D-23 §13', () => {
+  it('habit_logs and daily_challenges are read-only; the functions still write them', async () => {
+    const u = await createUser('read-only');
+    const a = await action(u, 'read only');
+    const { data: habit } = await u.client.from('habits')
+      .insert({ user_id: u.id, name: 'Walk', type: 'build' }).select('id').single();
+    await u.client.rpc('ensure_daily_challenge');
+    await u.client.rpc('log_habit', { p_habit_id: habit?.id, p_completed: true });
+
+    const { data: challenge } = await u.client.from('daily_challenges').select('id').single();
+    const { data: log } = await u.client.from('habit_logs').select('id').single();
+    assert.ok(challenge && log, 'the owner can still read both');
+
+    const insertLog = await u.client.from('habit_logs')
+      .insert({ habit_id: habit?.id, user_id: u.id, date: utcDay(-3), completed: true });
+    const insertChallenge = await u.client.from('daily_challenges')
+      .insert({ user_id: u.id, action_id: a, date: utcDay(-3) });
+    assert.equal(insertLog.error?.code, RLS_DENIED);
+    assert.equal(insertChallenge.error?.code, RLS_DENIED);
+
+    // UPDATE and DELETE are not errors under RLS: they match no rows.
+    await u.client.from('daily_challenges').update({ roll_count: 3 }).eq('id', challenge.id);
+    await u.client.from('habit_logs').delete().eq('id', log.id);
+    const { data: kept } = await admin.from('habit_logs').select('id').eq('id', log.id);
+    assert.equal(kept?.length, 1, 'the log survived the delete');
+    const { data: rolls } = await admin.from('daily_challenges').select('roll_count').eq('id', challenge.id).single();
+    assert.equal(rolls?.roll_count, 0, 'the roll count was not rewritten');
   });
 });
 
