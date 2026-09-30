@@ -7,6 +7,8 @@
 //   - agent_logs holds token counts and error codes, never content (010)
 //   - the import agent sends the article to Gemini (lib/agents/extract.ts)
 //   - signing out clears the device snapshot (AccountControl, lib/data/hydrate)
+//   - deleting the auth user cascades to every table; agent_logs rows are kept
+//     with user_id set to null (the `on delete` clauses in the migrations)
 // If one of those changes, this page changes in the same commit.
 //
 // The AI Reflect paragraph follows the same flag the button does, so the page
@@ -26,7 +28,10 @@ export const metadata: Metadata = {
   title: 'Privacy · Be Better Everyday',
 };
 
-const UPDATED = '29 September 2026';
+const UPDATED = '30 September 2026';
+
+/** Where data requests go, until the app can delete an account itself (D-22). */
+const CONTACT = 'amorelyn.work@gmail.com';
 
 export default function PrivacyPage() {
   return (
@@ -103,6 +108,20 @@ export default function PrivacyPage() {
         </p>
         <p className={styles.quiet}>
           There is no advertising, no analytics and no session recording, and nothing is sold.
+        </p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="yours">
+        <h2 id="yours" className={styles.heading}>
+          Seeing or deleting it
+        </h2>
+        <p className={styles.quiet}>
+          To see what is kept about you, or to have your account deleted, email{' '}
+          <a href={`mailto:${CONTACT}`} className={styles.label}>
+            {CONTACT}
+          </a>
+          . Deleting an account removes everything that belongs to it. The records of AI calls keep only their size
+          and speed, and no longer point to you.
         </p>
       </section>
 
