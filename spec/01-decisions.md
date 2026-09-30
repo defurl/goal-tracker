@@ -582,6 +582,11 @@ signed-in room. Each is a rule from here on, not a one-off.
 
 **Consequence.** Build-plan rows 4.5 and 4.7 are read through this entry.
 
+> **Amendment, 2026-09-30 (D-24 §2, B5.2).** §6's future feature has shipped:
+> "delete account" sits beside sign-out on both surfaces, arms and fires per
+> §5, and calls `DELETE /api/account`. Requests to *see* your data still go to
+> the owner's address on /privacy.
+
 ### D-23 · Phase 3 settlements — **LOCKED** (owner-approved 2026-09-30)
 
 **Context.** Phase 3 left values PROPOSED and questions raised in
