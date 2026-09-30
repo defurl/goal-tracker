@@ -135,6 +135,14 @@ jobs:
           pnpm lighting:test ci room-midnight-desktop
           pnpm lighting:test ci room-midnight-desktop-reduced-motion
 
+      # The hall behind the door (design-system/13 §5): its own five criteria.
+      - name: Hall lighting acceptance test, noon and midnight, effects on and off
+        run: |
+          pnpm lighting:test ci hall-noon-desktop
+          pnpm lighting:test ci hall-noon-desktop-reduced-motion
+          pnpm lighting:test ci hall-midnight-desktop
+          pnpm lighting:test ci hall-midnight-desktop-reduced-motion
+
       # Build plan 4.2. Here rather than in its own job because it needs the
       # same thing the capture does: a built server and a WebGL-capable browser.
       - name: Accessibility smoke (axe-core)
