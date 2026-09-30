@@ -15,7 +15,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 1 | done — A1.1–A1.6, gate TRUE | **done — B1.1–B1.6, gate TRUE locally** (24/24, every raised gap closed by owner decision; CI `database` job green on a runner, run 35996635651, every step checked; migrations 001–016 pushed to the hosted project 2026-09-25 — anon reads empty, anon insert and `award_points` refused with 42501; Google sign-in not set up, button hidden behind `NEXT_PUBLIC_AUTH_GOOGLE`). See the 2026-09-24 track B entry |
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
-| Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs). 4.7 is an owner action. See the 2026-09-29 entry | (shared) |
+| Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,30 +32,18 @@ looks like; this file stays the state.
 
 **The build plan is finished.** `spec/06-build-plan.md` stops at Phase 4 and
 there is no Phase 5. What comes next is the owner's call; until then:
-1. **Owner answers** to the Phase 4 questions below, then amend the spec where
-   they settle something.
-2. **The owner's notes from the signed-in walk** (2026-09-30, below), for the
-   phase that picks up the UI and the bonsai.
+1. **The Phase 3 decisions still open** (below), and the owner's notes from the
+   signed-in walk (2026-09-30, below), for whatever phase picks up the UI and
+   the bonsai.
+2. **Future work the owner named:** in-app account deletion, and per-user AI
+   limits for free users (both D-22).
 
-**Phase 4 questions for the owner** (detail in the 2026-09-29 entry):
-1. **4.5, "room renders from cache".** Read as: a room already open keeps
-   working when the network drops (verified). A cold offline `/` lands on the
-   `/text` shell, because the 3D bundle is not cached (B2.9). Confirm, or say
-   the room itself must cold-load offline, which widens the cache by ~240 KB.
-2. **4.7, spend cap.** Owner action in Google AI Studio / Cloud billing. The
-   build plan still says "OpenAI dashboard"; D-19 amended the provider.
-3. **The room's Lighthouse run is local only** (PROPOSED): a runner has no GPU
-   and Lighthouse cannot finish there. 0.96 median on a GPU, 0.75 on
-   SwiftShader locally; its score only warns even locally.
-4. **Mobile LCP ≤ 2.5 s is a CI warning** (PROPOSED): simulated slow 4G.
-   Median 1.96 s now, so it could become an error.
-5. **`--ink-faint` on informative text** failed AA (3.3:1). Moved to
-   `--ink-muted` on /text; `--ink-faint` kept for disabled controls. PROPOSED.
-6. **Auth labels at 11.2 px** fail Lighthouse's legible-font-size audit on a
-   phone (best-practices 0.96). A typography call, not changed.
-7. **The Privacy Policy** needs an owner read. It has no contact line, and there
-   is no way to delete an account from the app; a policy usually offers both.
-8. **Archive takes two presses** within 3 s, the room's arm grammar. PROPOSED.
+**Phase 4 questions: all settled, 2026-09-30 — `spec/01-decisions.md` D-22.**
+Offline stays /text plus an open room; CI Lighthouse covers /text and auth,
+with LCP ≤ 2.5 s now an error; informative text needs 4.5:1; auth text is at
+least 12 px on phones; destructive actions arm, then fire; data requests go to
+the owner's address, now on /privacy; COST-1 is met by the free tier with no
+billing attached, so 4.7 is closed. Build-plan rows 4.5 and 4.7 point at D-22.
 
 **Open owner decisions carried from Phase 3**, detail in the entries below:
 1. **Bonsai:**
@@ -94,7 +82,7 @@ sign in to the hosted project.
   404ed or the contact and deletion lines are missing — ask
 - every panel shows loading or real content, never a wrong empty state
 - sign-out clears `bbe:snapshot:v1` from local storage
-- still owner actions: 4.7's spend cap
+- 4.7 closed: the free tier with no billing cannot be charged (D-22 §7)
 
 ---
 
