@@ -82,6 +82,7 @@ interface AppState {
   };
   habits: HabitSummary[];
   dayGrid: DayCell[];               // 365 entries, oldest first
+  history: HistoryRow[] | null;     // A5.8: per habit, a year each; null until asked for (lib/history.ts)
 
   // ── Feature 3: Journal ──────────────────────────────────────
   journal: {

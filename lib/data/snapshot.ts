@@ -10,7 +10,7 @@ import type { AppState } from '../stores/app';
 
 const KEY = 'bbe:snapshot:v1';
 
-type Persisted = Pick<AppState, 'challenge' | 'points' | 'habits' | 'dayGrid' | 'journal' | 'goals'>;
+type Persisted = Pick<AppState, 'challenge' | 'points' | 'habits' | 'dayGrid' | 'history' | 'journal' | 'goals'>;
 
 interface Snapshot {
   userId: string;
@@ -29,11 +29,11 @@ function storage(): Storage | null {
 export function saveSnapshot(userId: string, state: AppState): void {
   const store = storage();
   if (!store) return;
-  const { challenge, points, habits, dayGrid, journal, goals } = state;
+  const { challenge, points, habits, dayGrid, history, journal, goals } = state;
   const snapshot: Snapshot = {
     userId,
     savedAt: new Date().toISOString(),
-    state: { challenge, points, habits, dayGrid, journal, goals },
+    state: { challenge, points, habits, dayGrid, history, journal, goals },
   };
   try {
     store.setItem(KEY, JSON.stringify(snapshot));

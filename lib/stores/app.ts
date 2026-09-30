@@ -13,6 +13,7 @@
 
 import { create } from 'zustand';
 
+import type { HistoryRow } from '../history';
 import type { Database } from '../supabase/database.types';
 
 /** 0 unfilled · 1 filled · 2 today. 365 entries, oldest first. */
@@ -84,6 +85,12 @@ export interface AppState {
   habits: HabitSummary[];
   /** 365 entries, oldest first. Drives the wall grid instance colours. */
   dayGrid: DayCell[];
+  /**
+   * Every habit's year, archived ones after the active, for the hall's wall
+   * and /text's history (design-system/13 §8). null until something asks for
+   * it (lib/data/history.ts); [] signed out.
+   */
+  history: HistoryRow[] | null;
 
   // ── Feature 3: Journal ────────────────────────────────────────────────────
   journal: {
@@ -117,6 +124,7 @@ export const initialAppState: AppState = {
   leafArrival: 'appear',
   habits: [],
   dayGrid: [],
+  history: null,
   journal: { todayLogged: false, reflectionsRemaining: 0 },
   goals: [],
   localHour: 0,

@@ -8,6 +8,7 @@
 import { leafCountForPoints } from '../growth';
 import type { AppState, DayCell, HabitSummary } from '../stores/app';
 import { useAppStore } from '../stores/app';
+import { loadHistory } from './history';
 import { loadPoints } from './points';
 import { getSession, shiftDate, today, weekday, type DataSession } from './session';
 import { write } from './write';
@@ -72,11 +73,15 @@ export async function loadHabits(
 }
 
 async function refresh(session: DataSession): Promise<void> {
-  const [slice, points] = await Promise.all([
+  // The history is reloaded only once something has loaded it (the hall, or
+  // /text's history): until then nothing shows it.
+  const historyLoaded = useAppStore.getState().history !== null;
+  const [slice, points, history] = await Promise.all([
     loadHabits(session),
     loadPoints(session.supabase, session.userId, today(session)),
+    historyLoaded ? loadHistory(session).catch(() => null) : null,
   ]);
-  write({ ...slice, points, leafArrival: 'grow' });
+  write({ ...slice, points, leafArrival: 'grow', ...(history ? { history } : {}) });
 }
 
 export type CreateHabitOutcome = 'created' | 'cap_reached' | 'invalid' | 'unavailable' | 'signed_out';

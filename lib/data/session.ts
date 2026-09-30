@@ -28,14 +28,4 @@ export function today(session: DataSession): string {
   return localDate(session.timeZone);
 }
 
-/** YYYY-MM-DD, `days` before (negative) or after `date`. Calendar arithmetic, no zone. */
-export function shiftDate(date: string, days: number): string {
-  const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-
-/** 0 = Sunday … 6 = Saturday — Postgres' extract(dow), which habits.frequency uses (020). */
-export function weekday(date: string): number {
-  return new Date(`${date}T00:00:00Z`).getUTCDay();
-}
+export { shiftDate, weekday } from '../dates';
