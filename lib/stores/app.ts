@@ -73,6 +73,14 @@ export interface AppState {
     /** DERIVED from `total` by lib/growth.ts. Never set independently (spec/05 §4). */
     leafCount: number;
   };
+  /**
+   * How the bonsai shows the leaves the last `points` write added (A5.5).
+   * 'grow' when the user's own action in this session earned them — a droplet
+   * and a reveal, one leaf at a time. 'appear' when a load brought them: the
+   * first hydrate, a rehydrate on sign-in or back online, a snapshot. Those
+   * leaves were earned before, elsewhere, and are simply there.
+   */
+  leafArrival: 'grow' | 'appear';
   habits: HabitSummary[];
   /** 365 entries, oldest first. Drives the wall grid instance colours. */
   dayGrid: DayCell[];
@@ -106,6 +114,7 @@ export const initialAppState: AppState = {
   challenge: null,
   importing: false,
   points: { total: 0, today: 0, leafCount: 0 },
+  leafArrival: 'appear',
   habits: [],
   dayGrid: [],
   journal: { todayLogged: false, reflectionsRemaining: 0 },

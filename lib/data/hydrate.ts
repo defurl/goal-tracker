@@ -117,7 +117,7 @@ export async function hydrate(): Promise<void> {
     // snapshot if there is one. No error surface in the room; the corner
     // furniture and /text say offline (spec/05 §7).
     const cached = readSnapshot(user.id);
-    write({ ...(cached ?? {}), hydrated: true, offline: isOffline() });
+    write({ ...(cached ?? {}), leafArrival: 'appear', hydrated: true, offline: isOffline() });
   }
 }
 

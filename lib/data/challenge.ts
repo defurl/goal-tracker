@@ -58,7 +58,7 @@ async function refresh(session: DataSession): Promise<void> {
     loadChallenge(session),
     loadPoints(session.supabase, session.userId, today(session)),
   ]);
-  write({ challenge, points });
+  write({ challenge, points, leafArrival: 'grow' });
 }
 
 export type ImportOutcome =

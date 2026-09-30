@@ -76,7 +76,7 @@ async function refresh(session: DataSession): Promise<void> {
     loadHabits(session),
     loadPoints(session.supabase, session.userId, today(session)),
   ]);
-  write({ ...slice, points });
+  write({ ...slice, points, leafArrival: 'grow' });
 }
 
 export type CreateHabitOutcome = 'created' | 'cap_reached' | 'invalid' | 'unavailable' | 'signed_out';
@@ -123,6 +123,7 @@ export async function checkHabit(id: string, completed: boolean): Promise<void> 
   write({
     habits: state.habits.map((h) => (h.id === id ? { ...h, completedToday: completed } : h)),
     points,
+    leafArrival: 'grow',
   });
 
   await session.supabase.rpc('log_habit', { p_habit_id: id, p_completed: completed });

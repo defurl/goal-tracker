@@ -69,7 +69,7 @@ async function refresh(session: DataSession): Promise<void> {
     loadGoals(session),
     loadPoints(session.supabase, session.userId, today(session)),
   ]);
-  write({ goals, points });
+  write({ goals, points, leafArrival: 'grow' });
 }
 
 export type CreateGoalOutcome = 'created' | 'invalid_dates' | 'invalid' | 'unavailable' | 'signed_out';
