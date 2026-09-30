@@ -37,7 +37,7 @@ import { runAgent } from './run.ts';
 type Db = SupabaseClient<Database>;
 
 const AGENT_ID = 'journal_analysis_agent';
-const { prompt, dailyLimit } = AGENTS[AGENT_ID];
+const { prompt } = AGENTS[AGENT_ID];
 
 export interface ReflectDeps {
   provider: AgentProvider;
@@ -81,7 +81,7 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
   const today = localDate(timeZone);
 
   const rate = deps.reflectionEnabled
-    ? await consumeRateLimit(service, userId, AGENT_ID, today, dailyLimit)
+    ? await consumeRateLimit(service, userId, AGENT_ID, today)
     : null;
 
   const parsed = ReflectInput.safeParse(rawInput);

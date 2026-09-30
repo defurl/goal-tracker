@@ -381,6 +381,22 @@ returning count;
 If the returned count exceeds the agent's cap, return 429 with `Retry-After`
 and do not call the provider.
 
+### user_plans
+
+The plan the caps are read from (D-24 §7, migration 025). Every plan is
+`free` for now; `lib/prompts/index.ts` holds each plan's caps.
+
+```sql
+create table user_plans (
+  user_id  uuid primary key references auth.users(id) on delete cascade,
+  plan     text not null default 'free' check (plan in ('free'))
+);
+```
+
+Read-only to its owner (`read_own_plan`), made by `handle_new_user()`. It is
+its own table because `own_profile` is `for all`: a plan column on `profiles`
+would be one the user could write. A missing row reads as `free`.
+
 ---
 
 ## 7. RLS policies

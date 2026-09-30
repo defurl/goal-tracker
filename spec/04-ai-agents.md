@@ -302,8 +302,8 @@ invocations, which is not enough. Confirm the plan before choosing.
 
 | Agent | Trigger | Model | Output schema | Rate limit |
 |---|---|---|---|---|
-| `content_extraction_agent` | `POST /api/agent/extract` | `gpt-4o-mini` | `{ action, source_summary }` | 20 / user / day |
-| `journal_analysis_agent` | `POST /api/agent/reflect` | `gpt-4o-mini` | `{ primary_emotion, strength, next_action, summary }` | 3 / user / day |
+| `content_extraction_agent` | `POST /api/agent/extract` | `gpt-4o-mini` | `{ action, source_summary }` | 20 / user / day on `free` |
+| `journal_analysis_agent` | `POST /api/agent/reflect` | `gpt-4o-mini` | `{ primary_emotion, strength, next_action, summary }` | 3 / user / day on `free` |
 | `challenge_generator_agent` | hourly sweep | none (Phase 1) | — | system |
 
 SRS Q1 ("primary AI model for the reflection agent?") is answered here:
@@ -320,7 +320,8 @@ SRS Q1 ("primary AI model for the reflection agent?") is answered here:
 - **COST-2** — `gpt-4o-mini` is the default and the ceiling for MVP. Escalating
   to `gpt-4o` requires a demonstrated quality gap, not an intuition.
 - **RATE-1** — per-user limits enforced server-side via the `rate_limits` table
-  (`03-data-model.md` §6), atomically. Return 429 with `Retry-After`.
+  (`03-data-model.md` §6), atomically. Return 429 with `Retry-After`. The cap
+  is the one on the user's plan (`user_plans`, D-24 §7).
 - **LOG-1** — every call writes an `agent_logs` row, success or failure.
 
 ### Worst-case spend

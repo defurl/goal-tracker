@@ -1,7 +1,7 @@
 // THE PHASE 1 TRACK B GATE — spec/06-build-plan.md, spec/03-data-model.md §7.
 //
-// Authenticated as user A, attempt to read and to write every one of the 12
-// tables as user B. All 24 attempts must fail.
+// Authenticated as user A, attempt to read and to write every one of the 13
+// tables as user B. All 26 attempts must fail.
 //
 // "Write" is taken at its widest: inserting a row in B's name, updating one of
 // B's rows and deleting one of B's rows. A write attempt fails only if all three
@@ -79,6 +79,7 @@ before(async () => {
   await seed('rate_limits', {
     user_id: b.id, agent_id: 'journal_analysis_agent', date: DAY, count: 3,
   });
+  // B's plan row comes from the signup trigger (025).
 
   targets.push(
     {
@@ -145,6 +146,11 @@ before(async () => {
       // Resetting your own counter is the attack this table exists to stop.
       patch: { count: 0 },
     },
+    {
+      table: 'user_plans', owner: 'user_id', key: { user_id: b.id },
+      insert: { user_id: b.id, plan: 'free' },
+      patch: { plan: 'free' },
+    },
   );
 });
 
@@ -167,10 +173,11 @@ it('control: A is signed in and can read its own profile', async () => {
 const TABLES = [
   'profiles', 'user_actions', 'daily_challenges', 'habits', 'habit_logs', 'point_ledger',
   'glow_points', 'journal_entries', 'goals', 'milestones', 'agent_logs', 'rate_limits',
+  'user_plans',
 ] as const;
 
 describe('cross-user isolation: A attempts every table as B', () => {
-  it('covers all twelve tables', () => {
+  it('covers all thirteen tables', () => {
     assert.deepEqual(targets.map((t) => t.table).sort(), [...TABLES].sort());
   });
 

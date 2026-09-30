@@ -10,6 +10,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { secondsIntoLocalDay } from '../data/time.ts';
+import { DAILY_LIMITS, planOf, type AgentId } from '../prompts/index.ts';
 import type { Database } from '../supabase/database.types.ts';
 import type { AgentErrorCode } from './provider.ts';
 
@@ -45,17 +46,25 @@ export type RateDecision = { allowed: true } | { allowed: false; unavailable: bo
 export async function consumeRateLimit(
   service: Db,
   userId: string,
-  agentId: string,
+  agentId: AgentId,
   date: string,
-  cap: number,
 ): Promise<RateDecision> {
-  const { data, error } = await service.rpc('consume_rate_limit', {
-    p_user_id: userId,
-    p_agent_id: agentId,
-    p_date: date,
-  });
+  const [count, cap] = await Promise.all([
+    service.rpc('consume_rate_limit', { p_user_id: userId, p_agent_id: agentId, p_date: date }),
+    dailyLimit(service, userId, agentId),
+  ]);
+  const { data, error } = count;
   if (error || typeof data !== 'number') return { allowed: false, unavailable: true };
   return data <= cap ? { allowed: true } : { allowed: false, unavailable: false };
+}
+
+/**
+ * The cap on the caller's plan (025, D-24 §7). A plan that cannot be read is
+ * taken as 'free': the lowest caps, so a failed read never grants more.
+ */
+export async function dailyLimit(service: Db, userId: string, agentId: AgentId): Promise<number> {
+  const { data } = await service.from('user_plans').select('plan').eq('user_id', userId).maybeSingle();
+  return DAILY_LIMITS[planOf(data?.plan)][agentId];
 }
 
 /** Seconds until the user's next local midnight, when their count resets. */

@@ -28,7 +28,7 @@ import { runAgent, type AgentRun } from './run.ts';
 type Db = SupabaseClient<Database>;
 
 const AGENT_ID = 'content_extraction_agent';
-const { prompt, dailyLimit } = AGENTS[AGENT_ID];
+const { prompt } = AGENTS[AGENT_ID];
 
 export interface ExtractDeps {
   provider: AgentProvider;
@@ -88,7 +88,7 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
   const started = Date.now();
   const timeZone = await timeZoneOf(db, userId);
 
-  const rate = await consumeRateLimit(service, userId, AGENT_ID, localDate(timeZone), dailyLimit);
+  const rate = await consumeRateLimit(service, userId, AGENT_ID, localDate(timeZone));
   if (!rate.allowed && !rate.unavailable) {
     return { status: 429, retryAfter: retryAfterSeconds(timeZone), body: { limited: true } };
   }

@@ -3,7 +3,10 @@
 import { after, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { admin, createUser, deleteUsers, seed } from './harness.ts';
+import { dailyLimit } from '../../lib/agents/ops.ts';
+import { DAILY_LIMITS } from '../../lib/prompts/index.ts';
+import { service } from './agentHarness.ts';
+import { admin, createUser, deleteUsers, RLS_DENIED, seed } from './harness.ts';
 
 after(deleteUsers);
 
@@ -19,6 +22,42 @@ describe('handle_new_user()', () => {
     const u = await createUser('profile');
     const { data } = await admin.from('profiles').select().eq('id', u.id).single();
     assert.equal(data?.timezone, 'UTC');
+  });
+});
+
+describe('user_plans — 025, D-24 §7', () => {
+  it('gives every new user the free plan', async () => {
+    const u = await createUser('plan');
+    const { data } = await admin.from('user_plans').select('plan').eq('user_id', u.id).single();
+    assert.equal(data?.plan, 'free');
+  });
+
+  it('a user can read their plan and cannot change it', async () => {
+    const u = await createUser('plan-owner');
+    const own = await u.client.from('user_plans').select('plan').eq('user_id', u.id);
+    assert.equal(own.data?.length, 1, 'the owner cannot read their own plan');
+
+    const updated = await u.client.from('user_plans').update({ plan: 'free' }).eq('user_id', u.id).select();
+    assert.equal(updated.data?.length ?? 0, 0, 'the owner updated their own plan');
+    const deleted = await u.client.from('user_plans').delete().eq('user_id', u.id).select();
+    assert.equal(deleted.data?.length ?? 0, 0, 'the owner deleted their own plan');
+
+    // With the row gone, an insert is the only way to choose a plan; it is refused too.
+    await admin.from('user_plans').delete().eq('user_id', u.id);
+    const inserted = await u.client.from('user_plans').insert({ user_id: u.id, plan: 'free' });
+    assert.equal(inserted.error?.code, RLS_DENIED);
+  });
+
+  it('the caps follow the plan, and a missing plan reads as free', async () => {
+    const u = await createUser('plan-caps');
+    for (const agent of ['content_extraction_agent', 'journal_analysis_agent'] as const) {
+      assert.equal(await dailyLimit(service, u.id, agent), DAILY_LIMITS.free[agent]);
+    }
+    await admin.from('user_plans').delete().eq('user_id', u.id);
+    assert.equal(
+      await dailyLimit(service, u.id, 'journal_analysis_agent'),
+      DAILY_LIMITS.free.journal_analysis_agent,
+    );
   });
 });
 
