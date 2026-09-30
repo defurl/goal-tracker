@@ -50,4 +50,21 @@ export const JOURNAL_ANALYSIS_V2 = {
   model: 'gemini-2.5-flash-lite',
 } as const;
 
+/**
+ * V3 — V2 plus rule 7, never quote the entry (owner decision 2026-09-30,
+ * D-23 §16). The rule asks; lib/journal/quoting.ts enforces it in the route,
+ * because whatever the model writes into these fields is stored.
+ */
+export const JOURNAL_ANALYSIS_V3 = {
+  ...JOURNAL_ANALYSIS_V2,
+  version: '3.0',
+  systemPrompt: JOURNAL_ANALYSIS_V2.systemPrompt.replace(
+    `   Otherwise set "support_response": false.
+`,
+    `   Otherwise set "support_response": false.
+7. Never quote the entry. Do not repeat any phrase from it, however short. Describe what you noticed in your own words.
+`,
+  ),
+} as const;
+
 export type JournalReflection = z.infer<typeof JOURNAL_ANALYSIS_V1.schema>;

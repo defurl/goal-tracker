@@ -25,7 +25,8 @@ import { z } from 'zod';
 
 import { localDate } from '../data/time.ts';
 import { MAX_ENTRY_CHARS, MOOD_KEYS, moodScore, TOPIC_TAGS } from '../journal/moods.ts';
-import { GENTLE_REFLECTION } from '../prompts/fallbacks.ts';
+import { quotesEntry } from '../journal/quoting.ts';
+import { GENTLE_REFLECTION, GENTLE_SUPPORT_REFLECTION } from '../prompts/fallbacks.ts';
 import { AGENTS } from '../prompts/index.ts';
 import type { JournalReflection } from '../prompts/journalAnalysis.ts';
 import type { Database } from '../supabase/database.types.ts';
@@ -125,6 +126,25 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
   }
 
   const run = await runAgent(provider, prompt, parsed.data.entry_text);
+
+  // D-23 §16: a reflection that quotes the entry would store part of it. It is
+  // neither stored nor shown; the user gets a curated one, and a distress flag
+  // survives the swap.
+  const quoted = run.ok && quotesEntry(parsed.data.entry_text, run.output);
+  if (quoted) {
+    await logAgentCall(service, {
+      agentId: AGENT_ID,
+      userId,
+      model: prompt.model,
+      inputTokens: run.usage.inputTokens,
+      outputTokens: run.usage.outputTokens,
+      latencyMs: Date.now() - started,
+      success: false,
+      errorCode: 'QUOTED_ENTRY',
+    });
+    const reflection = run.output.support_response ? GENTLE_SUPPORT_REFLECTION : GENTLE_REFLECTION;
+    return { status: 200, body: { reflection, fallback: true } };
+  }
 
   if (run.ok) {
     await db

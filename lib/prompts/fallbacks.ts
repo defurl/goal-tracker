@@ -57,6 +57,26 @@ export const GENTLE_REFLECTION: JournalReflection = {
 };
 
 /**
+ * The reflection shown when the agent DID flag distress (D-13) but its words
+ * cannot be used — they quoted the entry (D-23 §16). Dropping to
+ * GENTLE_REFLECTION there would also drop the support path, the one thing that
+ * must survive. So this keeps `support_response: true`, and the panel still
+ * shows the support resources under it.
+ *
+ * Written to rule 6 of the journal prompt: acknowledges, encourages reaching
+ * someone, calm, no diagnosis, no number or name — the app supplies those.
+ * PROPOSED wording; D-13 wants the owner's eye on anything said here.
+ */
+export const GENTLE_SUPPORT_REFLECTION: JournalReflection = {
+  primary_emotion: '',
+  strength: 'You put some of it into words, and that is not a small thing.',
+  next_action: 'Get a glass of water, and send a message to one person you trust.',
+  summary:
+    'It sounds like you are carrying a lot right now. You do not have to hold it on your own — talking to someone you trust, or to a support line, can help.',
+  support_response: true,
+};
+
+/**
  * A fallback the user has not been given before, while any remain; after
  * that, any of them. `used` is the action text of their earlier fallbacks.
  */

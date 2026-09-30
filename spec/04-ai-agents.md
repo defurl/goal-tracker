@@ -150,6 +150,15 @@ Return JSON:
 } as const;
 ```
 
+> **Amendment, 2026-09-30 (owner decision, D-23 §16).** The live prompt is
+> `JOURNAL_ANALYSIS_V3`: V2 plus rule 7, "Never quote the entry. Do not repeat
+> any phrase from it, however short. Describe what you noticed in your own
+> words." The rule asks; the route enforces. `lib/journal/quoting.ts` rejects a
+> reflection that shares five consecutive words with the entry in any field. It
+> is neither stored nor shown, the call is logged as `QUOTED_ENTRY`, and the user
+> gets the curated reflection. If the model had set `support_response`, that is
+> `GENTLE_SUPPORT_REFLECTION`, so the D-13 path survives the swap.
+
 ### Privacy contract — FR-3.6
 
 `entry_text` exists in exactly three places and no others: the HTTPS request

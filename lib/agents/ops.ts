@@ -20,7 +20,7 @@ type Db = SupabaseClient<Database>;
  * could not be read, so the model was never called. Also a code, never a
  * message — a fetch error can name the URL.
  */
-export type LoggedErrorCode = AgentErrorCode | 'SOURCE_UNREADABLE' | 'LIMITER_UNAVAILABLE';
+export type LoggedErrorCode = AgentErrorCode | 'SOURCE_UNREADABLE' | 'LIMITER_UNAVAILABLE' | 'QUOTED_ENTRY';
 
 export interface AgentLogRow {
   agentId: string;

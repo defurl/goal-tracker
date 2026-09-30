@@ -4,12 +4,12 @@
 // is always the version that produced it.
 
 import { CONTENT_EXTRACTION_V2 } from './contentExtraction.ts';
-import { JOURNAL_ANALYSIS_V2 } from './journalAnalysis.ts';
+import { JOURNAL_ANALYSIS_V3 } from './journalAnalysis.ts';
 
-// V1 (gpt-4o-mini) stays in its file as the record of what produced earlier rows.
+// Earlier versions stay in their files as the record of what produced earlier rows.
 export const AGENTS = {
   content_extraction_agent: { prompt: CONTENT_EXTRACTION_V2, dailyLimit: 20 },
-  journal_analysis_agent: { prompt: JOURNAL_ANALYSIS_V2, dailyLimit: 3 },
+  journal_analysis_agent: { prompt: JOURNAL_ANALYSIS_V3, dailyLimit: 3 },
 } as const;
 
 export type AgentId = keyof typeof AGENTS;
