@@ -135,6 +135,12 @@ jobs:
           pnpm lighting:test ci room-midnight-desktop
           pnpm lighting:test ci room-midnight-desktop-reduced-motion
 
+      # With dawn, noon and midnight above, every sky band (the Phase 5 gate).
+      - name: Lighting acceptance test, at dusk and in the evening
+        run: |
+          pnpm lighting:test ci room-dusk-desktop
+          pnpm lighting:test ci room-evening-desktop
+
       # The hall behind the door (design-system/13 §5): its own five criteria.
       - name: Hall lighting acceptance test, noon and midnight, effects on and off
         run: |
