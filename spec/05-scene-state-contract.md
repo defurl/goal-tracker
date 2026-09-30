@@ -172,6 +172,7 @@ lerps; nothing pops.** Under `prefersReducedMotion`, every lerp snaps (`k = 1`).
 | `journal.todayLogged` | Notebook emissive | `false → 0.0`, `true → 0.15` (barely lit) | `k = 0.05` |
 | `localHour` | Window sky plane `{color, intensity}` | lookup table, §5 | `k = 0.05` |
 | `focusMode` | Ambient audio gain | `0 → 0.3` | 600 ms |
+| `localHour` | Mug steam opacity (A5.3, D-18) | dawn band (05–08) `→` up to 0.08, other hours `→ 0`; removed under reduced motion | `k = 0.05` |
 
 **Nothing else in the room reacts to application state.** Adding a surface to
 this table is a design change that needs the lighting acceptance test re-run,

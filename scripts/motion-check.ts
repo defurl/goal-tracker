@@ -14,6 +14,10 @@
  * opacity and animation, the panel's animation, and the global transition
  * escape hatch.
  *
+ * The room at rest is checked twice: at the runner's hour, and pinned to dawn,
+ * the one band with steam on the mug (A5.3). Stillness cannot tell removed from
+ * frozen; MugSteam returns null under reduced motion, and this proves nothing moves.
+ *
  * And the control: with motion allowed, the same two frames must DIFFER. A
  * stillness test that would also pass on a room that moves is proving nothing.
  *
@@ -22,6 +26,8 @@
  */
 
 import { chromium, type Browser, type Page } from 'playwright';
+
+import { zoneForHour } from './zone-for-hour.ts';
 
 const BASE_URL = process.env.CAPTURE_BASE_URL ?? 'http://localhost:3000';
 const VIEWPORT = { width: 1280, height: 800 };
@@ -34,12 +40,13 @@ function check(ok: boolean, what: string, detail = ''): void {
   if (!ok) failures.push(what);
 }
 
-async function openRoom(browser: Browser, reduced: boolean): Promise<Page> {
+async function openRoom(browser: Browser, reduced: boolean, hour?: number): Promise<Page> {
   const context = await browser.newContext({
     viewport: VIEWPORT,
     deviceScaleFactor: 1,
     reducedMotion: reduced ? 'reduce' : 'no-preference',
     colorScheme: 'dark',
+    ...(hour === undefined ? {} : { timezoneId: zoneForHour(hour) }),
   });
   const page = await context.newPage();
   await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
@@ -96,6 +103,10 @@ async function reducedMotion(browser: Browser): Promise<void> {
   check(animation === 'none', 'the detail panel has no animation', animation);
 
   await page.context().close();
+
+  const dawn = await openRoom(browser, true, 6);
+  check(await stillOverOneSecond(dawn), 'the room at dawn, the steam band, does not move');
+  await dawn.context().close();
 }
 
 async function control(browser: Browser): Promise<void> {

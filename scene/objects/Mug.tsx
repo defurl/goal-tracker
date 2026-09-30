@@ -2,11 +2,12 @@
 //
 // Dark exterior with a paper-toned liner, so the lamp catches the rim and the
 // mug reads as an open vessel rather than a dark cylinder. ~85 mm tall.
-// Steam is a P2 idea and is deliberately not here.
+// In the dawn band a faint wisp of steam rises off it (MugSteam, A5.3).
 
 import { DoubleSide } from 'three';
 
 import { BG_VOID, INK_PAPER } from '../../lib/style/colors';
+import { MugSteam } from './MugSteam';
 
 interface MugProps {
   /** Group origin sits at the base, so y = 0 stands it on the desk. */
@@ -39,6 +40,8 @@ export function Mug({ position }: MugProps) {
         <torusGeometry args={[0.022, 0.006, 12, 24, Math.PI]} />
         <meshStandardMaterial color={BG_VOID} roughness={0.4} metalness={0.15} />
       </mesh>
+
+      <MugSteam rimY={HEIGHT} />
     </group>
   );
 }

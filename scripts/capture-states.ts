@@ -28,6 +28,8 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium, type Browser } from 'playwright';
 
+import { zoneForHour } from './zone-for-hour.ts';
+
 const BASE_URL = process.env.CAPTURE_BASE_URL ?? 'http://localhost:3000';
 const LABEL = process.argv[2] ?? 'local';
 const OUT_DIR = join(process.cwd(), 'captures', LABEL);
@@ -40,6 +42,12 @@ interface SceneState {
   reducedMotion?: boolean;
   /** An object to activate from the keyboard once the room is ready: its label. */
   activate?: string;
+  /**
+   * The local hour to capture at, whatever the time here. The room reads the
+   * browser's time zone when signed out, so a zone is picked that puts the
+   * clock at this hour. Without it a state shows the runner's hour.
+   */
+  hour?: number;
 }
 
 /**
@@ -51,6 +59,8 @@ const STATES: SceneState[] = [
   { name: 'room-rest-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, reducedMotion: true },
   { name: 'room-rest-mobile', route: '/', viewport: { width: 390, height: 844 } },
   { name: 'room-window-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window' },
+  // Mid-dawn: the one band with steam on the mug (A5.3).
+  { name: 'room-dawn-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 6 },
   { name: 'text-surface-desktop', route: '/text', viewport: { width: 1600, height: 1000 } },
   { name: 'text-surface-mobile', route: '/text', viewport: { width: 390, height: 844 } },
 ];
@@ -64,6 +74,7 @@ async function capture(browser: Browser, state: SceneState): Promise<void> {
     deviceScaleFactor: 1,
     reducedMotion: state.reducedMotion ? 'reduce' : 'no-preference',
     colorScheme: 'dark', // D-03: there is no light mode to capture.
+    ...(state.hour === undefined ? {} : { timezoneId: zoneForHour(state.hour) }),
   });
   const page = await context.newPage();
 
