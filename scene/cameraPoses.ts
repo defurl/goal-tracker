@@ -40,7 +40,8 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   notebook: { position: [0.66, 0.43, 0.65], target: [0.89, 0.01, 0.15] },
   headphones: { position: [0.6, 0.42, 0.6], target: [0.85, 0.04, 0.15] },
   phone: { position: [0.45, 0.33, 0.58], target: [0.63, 0.0, 0.2] },
-  window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.3] },
+  // Glide-only and not wired yet (D-23 backlog). The target follows WINDOW_Z.
+  window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.6] },
   door: { position: [-0.4, 0.7, 1.2], target: [-1.4, -0.74, 0.3] },
 
   // PROPOSED — the bonsai does not exist yet (Phase 3.6). Derived from its

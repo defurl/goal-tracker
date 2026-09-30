@@ -34,7 +34,7 @@ import { CameraRig } from './CameraRig';
 import { Effects } from './Effects';
 import { InteractiveObject } from './InteractiveObject';
 import { useInteractionStore } from '../lib/stores/interaction';
-import { RoomShell } from './objects/RoomShell';
+import { RoomShell, WINDOW_Z } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
 import { DeskSurface } from './objects/DeskSurface';
 import { Lamp } from './objects/Lamp';
@@ -207,7 +207,7 @@ export function RoomScene() {
         <WallGrid />
       </InteractiveObject>
       {/* Right wall, in the opening RoomShell is built around (04-room-spec §6). */}
-      <Window position={[1.98, 1.0, -0.3]} rotation={[0, -Math.PI / 2, 0]} />
+      <Window position={[1.98, 1.0, WINDOW_Z]} rotation={[0, -Math.PI / 2, 0]} />
       <DustMotes />
 
       <CameraRig />

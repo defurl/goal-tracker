@@ -19,17 +19,40 @@ function ConcreteMaterial() {
 }
 
 /**
- * Right wall segments, built AROUND a 0.7 x 1.0 m opening centred at
- * (2.0, 1.0, -0.3) rather than as one plane with a hole. z = -0.3 puts the
- * window roughly behind the monitors so it peeks past their right edge.
- * The wall runs forward past the camera (z up to +2.5) so the right edge of
- * frame reads as a real room edge rather than void.
+ * Where the window opening is centred along the right wall. 04-room-spec §2
+ * puts it at z = -0.3 so the window "peeks past the monitors' right edge", but
+ * from this room's rest pose (07-camera, FOV 50) that left the window ~2°
+ * outside the frame at 16:10. At -0.6 the back half of the window shows at the
+ * lower right edge and the front edge is just clipped: it peeks. Owner decision
+ * 2026-09-30, D-23 §11. The camera stays exactly as 07 specifies. The window
+ * rim light already sits at z = -0.6 (lighting.ts).
  */
+export const WINDOW_Z = -0.6;
+const OPENING_W = 0.7;
+const WALL_BACK = -1.2;
+const WALL_FRONT = 2.5;
+
+/**
+ * Right wall segments, built AROUND a 0.7 x 1.0 m opening centred at
+ * (2.0, 1.0, WINDOW_Z) rather than as one plane with a hole. The wall runs
+ * forward past the camera (z up to +2.5) so the right edge of frame reads as a
+ * real room edge rather than void.
+ */
+const OPENING_BACK = WINDOW_Z - OPENING_W / 2;
+const OPENING_FRONT = WINDOW_Z + OPENING_W / 2;
 const RIGHT_WALL_SEGMENTS: { key: string; position: [number, number, number]; args: [number, number] }[] = [
-  { key: 'behind-window', position: [2.0, 0.51, -0.925], args: [0.55, 2.5] },
-  { key: 'in-front-of-window', position: [2.0, 0.51, 1.275], args: [2.45, 2.5] },
-  { key: 'above-window', position: [2.0, 1.63, -0.3], args: [0.7, 0.26] },
-  { key: 'below-window', position: [2.0, -0.12, -0.3], args: [0.7, 1.24] },
+  {
+    key: 'behind-window',
+    position: [2.0, 0.51, (WALL_BACK + OPENING_BACK) / 2],
+    args: [OPENING_BACK - WALL_BACK, 2.5],
+  },
+  {
+    key: 'in-front-of-window',
+    position: [2.0, 0.51, (OPENING_FRONT + WALL_FRONT) / 2],
+    args: [WALL_FRONT - OPENING_FRONT, 2.5],
+  },
+  { key: 'above-window', position: [2.0, 1.63, WINDOW_Z], args: [OPENING_W, 0.26] },
+  { key: 'below-window', position: [2.0, -0.12, WINDOW_Z], args: [OPENING_W, 1.24] },
 ];
 
 export function RoomShell() {
