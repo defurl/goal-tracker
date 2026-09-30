@@ -5,8 +5,8 @@ landed. `PROGRESS.md` is the handoff — state, measurements, open decisions;
 `git log` is the commit record. This file answers "what does the product do
 today, and what does it look like", and is updated when a phase closes.
 
-**As of 2026-09-28:** Phases 0–3 done, every gate TRUE. Phase 4 (hardening) is
-next and has not started.
+**As of 2026-09-30:** Phases 0–5 done, every gate TRUE. Deployment is the
+owner's, and the UI rework is the next phase.
 
 ---
 
@@ -190,17 +190,99 @@ under reduced motion.
 
 ---
 
+## Phase 4 — hardening (2026-09-29)
+
+Nothing new to see; everything checked.
+
+- **Speed:** the first frame no longer links every shader at once
+  (`ShaderWarmup`), and the room scores 0.96 on desktop Lighthouse. `/text`,
+  login and signup score 0.99 as a phone. CI holds `/text` and auth to their
+  budgets on every push.
+- **Accessibility:** axe over every DOM route at two sizes and over the room
+  with each panel opened from the keyboard. Informative text is 4.5:1.
+- **Reduced motion:** proven, not assumed. Two frames a second apart are
+  identical at rest and with a panel open.
+- **Empty states:** nothing shows a signed-out or empty state for a moment
+  before the real one; a new visitor sees welcomes, not zeros.
+- **Offline:** `/text` reloads from the service worker with the network off,
+  and an open room keeps working when the network drops.
+- **Privacy:** `/privacy`, linked from the journal and auth, leads with the
+  fact that entries are never stored.
+- **Two-press actions:** archive (and, from Phase 5, account deletion) arm on
+  the first press and fire on the second, within 3 s.
+
+---
+
+## Phase 5 — the backlog and the door (2026-09-30)
+
+**Room backlog.**
+- **The window** is glide only: the camera turns to it and nothing opens.
+- **The headphones' two-minute timer.** Focus on starts it; the count shows
+  beside the sound control, and at two minutes the bed fades out. On `/text`,
+  a silent Focus section with the same timer.
+- **Mug steam** rises faintly at dawn only.
+- **The daylit window:** by day the sky brightens and the rim light with it;
+  the room stays nocturnal.
+- **The bonsai, rewired and moved.** Each new leaf gets its own droplet, one at
+  a time; leaves that arrive by loading appear at once. The tree now sits at
+  `[-0.6, 0, 0.2]`, the mug behind the headphones (D-11 amended), and the pool
+  peak dropped from 0.94 to 0.68.
+
+**Account and limits.**
+- A plan per user (`free`), read-only to them; the AI's daily caps come from
+  the plan.
+- **Delete account**, beside sign-out on both surfaces: every row goes, and the
+  AI logs keep their rows without the user.
+
+**The door and the hall.**
+- The room's warm floor spill is a door. "Step through": the camera glides,
+  the room fades out, and the hall fades in.
+- **The hall:** a tall concrete space with the bonsai grown full size under a
+  pendant, a doorway and a clerestory. It has five light roles and its own
+  five-criterion lighting test.
+- **The history wall:** one year-long line per habit, archived ones after the
+  active ones, with the longest run a little warmer and today the one bright
+  cell.
+- **Its panel:** each habit's longest streak first, "now" beside it, and the
+  days kept this year.
+- The hall is its own chunk, fetched on the door's first hover.
+  `?scene=hall` links straight to it.
+
+**History on `/text`.**
+- The same list, last on the page. Under each habit, its last twelve weeks as a
+  small strip, a week to a column. It loads only when scrolled near.
+
+### What the product looks like now
+
+- **The room** as at Phase 3, plus the window's glide, the countdown beside
+  "sound on", steam at dawn, a brighter sky by day and the tree in its new
+  spot. The floor spill says "step through".
+- **The hall** behind it: the tree in its pool, the wall of years, the doorway
+  back.
+- **The corner:** sound, then delete account and sign out.
+- **`/text`:** challenge, import, habits, journal, goals, focus and history, as
+  plain text, for phones and offline use.
+
+### Numbers at the Phase 5 gate
+
+- **Lighting:** TRUE in all five sky bands, and at noon and midnight with
+  effects on and off. The pool peak is at most 0.687 in every room state. The
+  hall is TRUE at noon and midnight, effects on and off.
+- **Bundle:** shell 187.8 / 200 KB gz, scene 240.8 / 320 KB gz (the hall
+  included, the shell free of three.js), audio 76.3 / 100 KB gz.
+- **Tests:** 160 unit tests. The database suite checks isolation across 13
+  tables, plus plans and deletion.
+
+---
+
 ## Not built, or not wired, yet
 
-- **Window glide:** design-system/08 §4 lists the window as glide-only (the
-  camera glides, no panel), but it has no `InteractiveObject` and no pose. No
-  build-plan task names it.
-- **Two-minute timer:** spec/00 describes the headphones as "Focus Mode toggle.
-  Two-minute timer". Only the toggle is built.
 - **Sound on `/text`:** there is no sound control there, because audio is
-  ambient rather than one of the four features.
+  ambient rather than one of the four features (D-23 §10).
+- **Reminders:** not sent (D-24).
+- **The UI rework:** its own later phase, reviewed and partly designed by the
+  owner.
 - **Signed-in room flows, never walked by the agent:**
   - an import from the phone
   - a real completion taking monitor 1 to 1.4
-  - a leaf being earned
   - a journal save warming the bookmark
