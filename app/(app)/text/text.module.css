@@ -368,6 +368,25 @@
   border-color: var(--glow-cool-soft);
 }
 
+/* A habit's last twelve weeks (A5.9): the calendar on its side, a week to a
+   column, so it runs the way the hall's line does. Small — it sits under a
+   sentence, and at 390 px it must leave the sentence room. */
+.strip {
+  --cell: 0.7rem;
+  grid-template-columns: none;
+  grid-template-rows: repeat(7, var(--cell));
+  grid-auto-flow: column;
+  grid-auto-columns: var(--cell);
+  gap: 0.2rem;
+  justify-content: start;
+  margin-top: var(--step-1);
+}
+
+.strip .day {
+  width: var(--cell);
+  height: var(--cell);
+}
+
 /* ── the goal timeline (FR-4.3, hand-authored SVG) ───────────────────────── */
 
 .timeline {

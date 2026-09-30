@@ -8,5 +8,5 @@ import { useSurfaceState } from '../useSurfaceState';
 
 export function HistoryPanel() {
   const { ready, signedIn } = useSurfaceState();
-  return <HistoryList ready={ready} signedIn={signedIn} />;
+  return <HistoryList ready={ready} signedIn={signedIn} surface="hall" />;
 }

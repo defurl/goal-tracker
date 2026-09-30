@@ -12,6 +12,7 @@ import { ChallengeSection } from './ChallengeSection';
 import { FocusSection } from './FocusSection';
 import { GoalsSection } from './GoalsSection';
 import { HabitsSection } from './HabitsSection';
+import { HistorySection } from './HistorySection';
 import { JournalSection } from './JournalSection';
 import { Pending } from './Skeleton';
 
@@ -65,6 +66,7 @@ export function TextSurface() {
       <JournalSection signedIn={signedIn} ready={ready} />
       <GoalsSection signedIn={signedIn} ready={ready} />
       <FocusSection />
+      <HistorySection signedIn={signedIn} ready={ready} />
     </main>
   );
 }
