@@ -1,7 +1,9 @@
 // 3.6 — the bonsai. D-11 (LOCKED), design-system/12 §3.2, spec/02 F2, spec/05 §3–4.
 //
-// On the desk at [-0.8, 0, 0.1], capped at 0.35 m so it never occludes
-// monitor 1. Primitives only: a shallow pot, a tapered S-curve trunk, four
+// On the desk at [-0.6, 0, 0.2], capped at 0.35 m so it never occludes
+// monitor 1. D-11 placed it at [-0.8, 0, 0.1], in the lamp pool, and its top
+// leaves were the hottest pixels there; A5.6 moved it right of the lamp and
+// forward, beside the headphones, on the owner's pick (D-11 amendment). Primitives only: a shallow pot, a tapered S-curve trunk, four
 // branch pads. Leaves are ONE InstancedMesh of MAX_LEAVES (lib/growth.ts) —
 // one draw call — and `points.leafCount` decides how many are grown.
 //
@@ -36,7 +38,7 @@ import { useAppStore } from '../../lib/stores/app';
 import { useSceneStore } from '../../lib/stores/scene';
 import { BG_VOID, DATA_GREEN, GLOW_COOL, INK_GHOST, LAMP_WARM } from '../../lib/style/colors';
 
-export const BONSAI_POSITION: [number, number, number] = [-0.8, 0, 0.1];
+export const BONSAI_POSITION: [number, number, number] = [-0.6, 0, 0.2];
 
 const POT = { w: 0.15, h: 0.045, d: 0.1 };
 

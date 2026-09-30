@@ -59,6 +59,8 @@ const STATES: SceneState[] = [
   { name: 'room-rest-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, reducedMotion: true },
   { name: 'room-rest-mobile', route: '/', viewport: { width: 390, height: 844 } },
   { name: 'room-window-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window' },
+  // The bonsai's focus pose with the habits panel open (A5.6 moved the tree).
+  { name: 'room-bonsai-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'bonsai' },
   // Mid-dawn: the one band with steam on the mug (A5.3).
   { name: 'room-dawn-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 6 },
   // The daylit window's two extremes (A5.4, D-24 §9): the sky and rim at their

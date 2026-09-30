@@ -163,9 +163,12 @@ export function RoomScene() {
       {/* The keyboard is what the monitor fill lights aim at, so it sits
           between them and forward of the screens. */}
       <Keyboard position={[0.1, KEYBOARD_DROP, 0.1]} />
-      <Mug position={[-0.62, 0, 0.06]} />
-      {/* D-11: the bonsai, on the desk left of the monitors. It grows a leaf per
-          threshold of lifetime points; its numbers are in the habits panel. */}
+      {/* Behind the headphones and the tree, out of the lamp pool: its pale
+          liner under the bulb was the pool's hottest pixel (A5.6). */}
+      <Mug position={[-0.46, 0, -0.06]} />
+      {/* D-11 (amended, A5.6): the bonsai, right of the lamp and forward,
+          beside the headphones. It grows a leaf per threshold of lifetime
+          points; its numbers are in the habits panel. */}
       <InteractiveObject
         id="bonsai"
         label="bonsai"

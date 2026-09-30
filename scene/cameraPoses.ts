@@ -44,10 +44,9 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.6] },
   door: { position: [-0.4, 0.7, 1.2], target: [-1.4, -0.74, 0.3] },
 
-  // PROPOSED — derived from D-11's position ([-0.8, 0, 0.1], capped at
-  // 0.35 m), not yet tuned against a render. A5.6 may move the tree; the pose
-  // follows it then.
-  bonsai: { position: [-0.95, 0.5, 0.75], target: [-0.8, 0.15, 0.1] },
+  // Follows the tree to its A5.6 spot ([-0.6, 0, 0.2]): the earlier pose,
+  // moved with it, so the view onto the tree is the same.
+  bonsai: { position: [-0.75, 0.5, 0.85], target: [-0.6, 0.15, 0.2] },
   // The 365-day tracker (3.5). Checked against a render with the panel open,
   // 2026-09-28: the whole band sits left of the panel. A closer camera clipped
   // the band and let monitor 1 fill the frame; a lower target did the same.
@@ -88,7 +87,7 @@ export const FOCUS_SUBJECTS: Partial<Record<ObjectId, FocusSubject>> = {
   // GRID_CENTRE, a 1.33 m band (WallGrid.tsx).
   wallGrid: { centre: [-0.75, 0.493, -1.2], width: 1.36 },
   // BONSAI_POSITION; at TREE_SCALE the pads span ~0.2 m, centred ~0.16 m up.
-  bonsai: { centre: [-0.8, 0.16, 0.1], width: 0.22 },
+  bonsai: { centre: [-0.6, 0.16, 0.2], width: 0.22 },
 };
 
 const FILL = 0.8;
