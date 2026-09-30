@@ -254,6 +254,53 @@ than as countable data.
 
 ---
 
+### Phase 5 — The backlog, the extras and the door · scope set by D-24
+
+Two tracks again, split as in Phases 1 and 2. Track B has no scene work and can
+run beside all of Track A. Track A is sequential, lowest lighting risk first,
+and the lighting acceptance test is re-run after **each** task, in all five sky
+bands, effects on and off. Values below are **PROPOSED** unless they cite a
+decision.
+
+#### Track B · Account and limits
+
+| # | Task |
+|---|---|
+| B5.1 | **Plans (D-24 §7).** A `user_plans` table — `user_id` primary key on `auth.users` with `on delete cascade`, `plan text not null default 'free' check (plan in ('free'))` — select-only to its owner, a row made by `handle_new_user()` and backfilled for existing users. Not a column on `profiles`: `own_profile` is `for all`, so a user could write it. The caps in `lib/prompts/index.ts` become per-plan, `free` holding today's 20 and 3, and `lib/agents/ops.ts` reads the caller's plan |
+| B5.2 | **Account deletion (D-22 §5, D-24 §2).** A route under `app/api/` deletes the signed-in user through the service role (`auth.admin.deleteUser`), taking the id from the session and never from the body. The cascades remove every row; `agent_logs` keeps its rows with `user_id` null. The control lives in `AccountControl`, so it is on the room and `/text`; it arms, says what the next press does, and fires within `ARM_WINDOW_MS`. It clears the local snapshot and signs out. `/privacy` changes in the same commit |
+
+**Gate:** `test:db` proves a user cannot change their own plan and that caps
+follow the plan; after a deletion, no table holds a row carrying the deleted
+id, and `agent_logs` rows remain with a null user. The isolation gate still
+passes.
+
+#### Track A · The room
+
+| # | Task | Surface |
+|---|---|---|
+| A5.1 | **The window, glide only** (08 §4). Wrap it in `InteractiveObject`, `focusObject('window', null)`, the existing pose. No panel; back and Escape return. No scene transition follows: only the door has a second scene | room (ambient; no `/text` counterpart, as 3.7 had none) |
+| A5.2 | **The two-minute timer** (spec/00, D-24 §6). Turning focus on starts it; at two minutes the bed fades out over 600 ms and focus turns off. The countdown shows beside the sound control in the corner — the headphones stay a toggle, with no panel (08 §4). A silent timer on `/text`. Not persisted, no chime, and under reduced motion the count still changes but nothing moves | both |
+| A5.3 | **The mug's morning steam** (D-18). A few transparent sprites in the dawn band only, on the dust-mote precedent (`09-atmosphere.md`: opacity ≤ 0.08, no depth write), not emissive. Removed — not slowed — under reduced motion. A new spec/05 §3 row, `localHour` → steam | room (ambient) |
+| A5.4 | **The daylit window** (12 §6 option 2, D-24 §9). The day band's sky brightens, and the rim light rises from 1.2 toward 2.5 at midday, lerped with the sky. Every sky value is luminance-checked against the 0.1 bloom threshold. The capture job gains pinned-hour captures (Playwright `timezoneId`) so both extremes are tested on every CI run, not only the runner's hour | room (ambient) |
+| A5.5 | **The bonsai, rewired.** One droplet per new leaf, in sequence, not one shared; only a leaf earned in this session animates — a hydrate, a rehydrate on `online` or a sign-in elsewhere shows leaves at once; the droplet's path clears the top pad. A unit test for `lib/growth.ts` | both (`/text` shows the leaf count already) |
+| A5.6 | **The bonsai, moved** (D-24 §5). Candidate spots to the right of or lower than `[-0.8, 0, 0.1]`, each measured by the lighting test until the pool peak is under 1 with no exception; the owner approves one on its screenshot, and D-11 gains the amendment note. The bonsai focus pose follows | room |
+| A5.7 | **The door scene — design** (D-24 §8). A short design note for the owner before any code: the space, its light rig inside the five roles, and its own acceptance criteria. The full-size tree is the reworked bonsai at scale, so this follows A5.5 and A5.6 | — |
+| A5.8 | **The door scene — build.** A hit disc on the door spill, a fade out of the room and into the scene (08 §4; a crossfade under reduced motion), back and Escape to return. The scene is its own chunk, loaded on the first entry, outside the shell budget (D-10). The history reads from `habit_logs`, `longest_streak` and the day grid through the store, never the network | room |
+| A5.9 | **History on `/text`** (D-07). The same history as a list: each habit with its longest streak and its kept days. The longest streak is primary and resets are never announced (D-09) | `/text` |
+
+The bonsai comes after the steam and the window here for the reason it came
+second to last in Phase 3: it is the task most likely to break the lighting,
+and it is followed only by the scene built around it.
+
+**Gate:** the lighting acceptance test reads TRUE in all five sky bands, and
+at noon and midnight, effects on and off, with the pool peak under 1 and no
+accepted exception. The door scene passes the criteria its design note set.
+`bundle:check` holds all three budgets with the scene split out. `a11y:check`,
+`motion:check` and `offline:check` still pass, extended to the door scene and
+the history view. Every row of spec/05 §3, old and new, is wired.
+
+---
+
 ## 3. Definition of done
 
 A task is not done until **all** of these hold. This list is the single most
