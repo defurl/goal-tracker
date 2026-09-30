@@ -163,6 +163,12 @@ unbounded (a bonsai with 4,000 leaves is a shrub). Growth uses `--dur-reveal`
 (900 ms), never a spring bounce. Leaf colour derives at runtime:
 `new Color(DATA_GREEN).multiplyScalar(0.35)`.
 
+> **Amendment, 2026-09-30 (D-23 §2–4, A5.5).** The scalar is 0.25, with the
+> tree scaled 0.88: at 0.35 the leaves under the bulb clipped to lime-white.
+> Eight base leaves are always there, and earned leaves grow on top. The
+> droplet and reveal play only for a leaf earned in this session, one leaf at
+> a time; leaves a load brings are simply there.
+
 **The wall grid.** A 7 × N grid of ~4 cm emissive quads, one per day, inset 2–3 mm
 proud of the wall exactly as the Ando joint lines are, centred on a panel centre
 (**not** on a joint line, which would straddle the groove). Three states, all

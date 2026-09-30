@@ -68,8 +68,8 @@ shows goals on a timeline. Its interface is not a dashboard — it is a dark,
 quiet 3D room, reused from the owner's portfolio project, in which each feature
 is a physical object on a desk. You click the phone to import an article. The
 warm monitor shows today's challenge and literally brightens the room when you
-complete it. A bonsai on the desk grows a leaf for each habit completion and
-never, under any circumstance, wilts.
+complete it. A bonsai on the desk grows a leaf at each threshold of lifetime
+points (spec/05 §4) and never, under any circumstance, wilts.
 
 ---
 

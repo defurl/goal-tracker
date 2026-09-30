@@ -294,7 +294,8 @@ explanation; log it and move on.
 - Monitor 1 shows a resting state, not a spinner. Monitor 2 shows an empty
   goals frame. The wall grid renders all cells `INK_GHOST` — which is
   indistinguishable from a genuinely empty tracker, and that is correct.
-- The bonsai renders with `leafCount = 0`: a bare bonsai, not a missing object.
+- The bonsai renders with `leafCount = 0`: its eight base leaves and no earned
+  ones — a young tree, not a missing object and not a bare one (D-23 §3).
 
 This matters because `../design-system/11-anti-patterns.md` forbids loading
 screens with rotating tips, and because the room's whole proposition is that it
