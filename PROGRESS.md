@@ -32,11 +32,19 @@ looks like; this file stays the state.
 
 **The build plan is finished.** `spec/06-build-plan.md` stops at Phase 4 and
 there is no Phase 5. What comes next is the owner's call; until then:
-1. **The Phase 3 decisions still open** (below), and the owner's notes from the
-   signed-in walk (2026-09-30, below), for whatever phase picks up the UI and
-   the bonsai.
-2. **Future work the owner named:** in-app account deletion, and per-user AI
-   limits for free users (both D-22).
+1. **Owner action: push migrations 022–024 to the hosted project**
+   (`supabase db push`). Until then the hosted database still has the
+   owner-writable logs, the unbounded goal award and no `prompt_version`
+   column — and the deployed agents write `prompt_version`, so **deploy the
+   app only after the push**.
+2. **Owner review:** the wording of `GENTLE_SUPPORT_REFLECTION`
+   (`lib/prompts/fallbacks.ts`), shown only when the journal agent flagged
+   distress but its words quoted the entry. PROPOSED; D-13 wants the owner's eye
+   on anything said there.
+3. **Backlog the owner named** (D-22, D-23): in-app account deletion, per-user AI
+   limits for free users, the bonsai rework (droplet, growth, its place in the
+   pool), the headphones' two-minute timer, the window as a glide-only object.
+   The UI will be reworked once the build phases are over.
 
 **Phase 4 questions: all settled, 2026-09-30 — `spec/01-decisions.md` D-22.**
 Offline stays /text plus an open room; CI Lighthouse covers /text and auth,
@@ -45,28 +53,26 @@ least 12 px on phones; destructive actions arm, then fire; data requests go to
 the owner's address, now on /privacy; COST-1 is met by the free tier with no
 billing attached, so 4.7 is closed. Build-plan rows 4.5 and 4.7 point at D-22.
 
-**Open owner decisions carried from Phase 3**, detail in the entries below:
-1. **Bonsai:**
-   - its place in the lamp pool (D-11), with criterion 5 at 0.945 of < 1
-   - leaf tone 0.25
-   - the 8 base leaves
-   - the droplet playing only when a leaf is earned
-2. **Wall grid:** the 53 × 7 layout, the 0.1 filled glow and the day order.
-3. **Phone:** lying face up, and its emissive levels.
-4. **Import panel:** the 3 s dwell before it closes itself.
-5. **Monitor text:** dark ink, and the notebook bookmark in `SIGNAL`.
-6. **Audio:** the 100 KB budget. The spec/00 two-minute timer is not built, and
-   `/text` has no sound control.
-7. **Window:**
-   - it is glide-only in 08 §4 but not wired
-   - it sits outside the rest frame
-   - dusk blooms on ultrawide screens
-8. **Carried from Phase 2 track B:**
-   - owner-writable history (012)
-   - goal farming
-   - no record of the prompt version
-   - the model may quote the entry
-   - support resources not yet verified (D-13)
+**Phase 3 decisions: all settled, 2026-09-30 — `spec/01-decisions.md` D-23.**
+Ten values locked as built (bonsai spot until its rework, leaf tone 0.25 at
+scale 0.88, 8 base leaves, droplet only for a new leaf, wall 53 × 7 at 0.1,
+phone face up at 0.35 / 1.1, 3 s import close, dark ink and the SIGNAL
+bookmark, audio ≤ 100 KB, no sound on /text). Seven built the same day, one
+commit each:
+- the window moves to z = -0.6 and now peeks at the right edge; the lighting
+  test reads TRUE in all five sky bands, effects on and off
+- dusk's sky is 0.16 (L ≈ 0.089), under the bloom threshold
+- 022: habit_logs and daily_challenges are SELECT-only to their owner
+- 023: one goal award per user per day, inside award_points()
+- 024: `prompt_version` on user_actions and journal_entries
+- JOURNAL_ANALYSIS_V3 and a server check: a reflection sharing five words in a
+  row with the entry is neither stored nor shown
+- the support resources were checked against each service's site and signed
+  off; `VERIFIED_ON` is 2026-09-30, re-check by 2027-09-30
+
+Local gates on the final tree: unit 131/131, database 75/75 on a fresh stack
+with 001–024, lighting TRUE. Worth knowing: `supabase db reset` fails from
+Git Bash on this machine (a temp-directory error) and works from PowerShell.
 
 **Owner's signed-in walk, 2026-09-30.** Done by the owner; the agent does not
 sign in to the hosted project.
