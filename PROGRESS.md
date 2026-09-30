@@ -30,10 +30,12 @@ looks like; this file stays the state.
 
 ### Next session
 
+**The build plan is finished.** `spec/06-build-plan.md` stops at Phase 4 and
+there is no Phase 5. What comes next is the owner's call; until then:
 1. **Owner answers** to the Phase 4 questions below, then amend the spec where
    they settle something.
-2. **The signed-in walk** (owner action, below). Phase 4's empty-state and
-   sign-out fixes were verified signed out only.
+2. **The owner's notes from the signed-in walk** (2026-09-30, below), for the
+   phase that picks up the UI and the bonsai.
 
 **Phase 4 questions for the owner** (detail in the 2026-09-29 entry):
 1. **4.5, "room renders from cache".** Read as: a room already open keeps
@@ -78,13 +80,21 @@ looks like; this file stays the state.
    - the model may quote the entry
    - support resources not yet verified (D-13)
 
-**Owner actions:** walk the signed-in room once. The agent has never done it:
-- import from the phone
-- complete the challenge (monitor 1 goes to 1.4)
-- earn a leaf
-- save a journal entry (the bookmark warms)
-- check off a habit (today's cell lights)
-- sign out, and check that /text shows no row of zeros and no flash of "sign in"
+**Owner's signed-in walk, 2026-09-30.** Done by the owner; the agent does not
+sign in to the hosted project.
+- sign-in lands in the room, not /text. That is by design on a desktop (phones
+  are sent to /text by the middleware), so /text right after sign-in was not
+  walked
+- the goals panel (timeline, milestones) is approved as it stands; the UI will
+  be reworked once the build phases are over
+- archive's two presses work
+- **the bonsai's droplet and its growth animation are not well wired** — noted
+  for a later phase, not fixed
+- the privacy link: reported as "no page". Not yet clear whether /privacy
+  404ed or the contact and deletion lines are missing — ask
+- every panel shows loading or real content, never a wrong empty state
+- sign-out clears `bbe:snapshot:v1` from local storage
+- still owner actions: 4.7's spend cap
 
 ---
 
