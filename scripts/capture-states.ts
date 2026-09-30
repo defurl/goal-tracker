@@ -63,6 +63,10 @@ const STATES: SceneState[] = [
   { name: 'room-bonsai-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'bonsai' },
   // Mid-dawn: the one band with steam on the mug (A5.3).
   { name: 'room-dawn-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 6 },
+  // Dusk, the one warm band, and the evening after it. With dawn, noon and
+  // midnight, every sky band is pinned, not left to the runner's hour.
+  { name: 'room-dusk-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 18 },
+  { name: 'room-evening-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 21 },
   // The daylit window's two extremes (A5.4, D-24 §9): the sky and rim at their
   // brightest, and at their darkest.
   { name: 'room-noon-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 12 },
