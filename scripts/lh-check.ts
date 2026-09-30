@@ -6,9 +6,10 @@
  *   lighthouse/mobile.json    /text, /login, /signup — phones land on /text (D-07)
  *   lighthouse/desktop.json   / — the room
  *
- * Asserted as errors: performance ≥ 0.85 on the DOM routes, CLS ≤ 0.1, no
- * console errors, and the script transfer budgets from D-10 (200 KB for the
- * shell; 200 + 320 KB for the room, whose scene chunk is lazy but still loads).
+ * Asserted as errors: performance ≥ 0.85 on the DOM routes, LCP ≤ 2.5 s, CLS
+ * ≤ 0.1, no console errors, and the script transfer budgets from D-10 (200 KB
+ * for the shell; 200 + 320 KB for the room, whose scene chunk is lazy but still
+ * loads).
  *
  * **CI runs the mobile config only** (`pnpm lh:check mobile`). A runner has no
  * GPU, so the room is drawn on SwiftShader, where each frame holds the main
@@ -18,8 +19,8 @@
  * budget is asserted in CI anyway, by bundle:check. Its performance score is a
  * warning even locally, since a slow GPU is not a regression.
  *
- * LCP on the mobile routes is a warning: Lighthouse simulates slow 4G there,
- * and the 2.5 s budget was set against the portfolio's desktop numbers.
+ * LCP on the mobile routes is an error under simulated slow 4G (owner
+ * decision 2026-09-30, D-22): the runner measured a 1.96 s median.
  *
  * Usage, against the production server (`pnpm build && pnpm start`):
  *   pnpm lh:check            both configs

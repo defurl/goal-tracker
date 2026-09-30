@@ -17,7 +17,7 @@
         "categories:performance": ["error", { "minScore": 0.85 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
         "errors-in-console": "error",
-        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
         "resource-summary:script:size": ["error", { "maxNumericValue": 204800 }]
       }
     },
