@@ -95,6 +95,7 @@ interface AppState {
   // ── Ambient ─────────────────────────────────────────────────
   localHour: number;                // 0–23, user's timezone. Drives the window.
   focusMode: boolean;               // headphones toggle
+  focusEndsAt: number | null;       // A5.2: the timer's end, epoch ms. DOM only
 
   // ── Lifecycle ───────────────────────────────────────────────
   hydrated: boolean;                // false until first load completes

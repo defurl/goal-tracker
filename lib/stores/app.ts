@@ -91,6 +91,11 @@ export interface AppState {
   localHour: number;
   /** Headphones toggle. Drives ambient audio gain only. */
   focusMode: boolean;
+  /**
+   * When the two-minute timer ends (epoch ms) while focus is on, else null
+   * (A5.2). The corner and /text count down from it; the scene never reads it.
+   */
+  focusEndsAt: number | null;
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
   hydrated: boolean;
@@ -107,6 +112,7 @@ export const initialAppState: AppState = {
   goals: [],
   localHour: 0,
   focusMode: false,
+  focusEndsAt: null,
   hydrated: false,
   offline: false,
 };

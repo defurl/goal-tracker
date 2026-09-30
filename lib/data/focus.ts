@@ -5,12 +5,23 @@
 // come through here. It is deliberately NOT persisted: audio is off by
 // default on every visit, and a remembered "on" would mean sound starting
 // without a gesture — the auto-play the anti-patterns forbid.
+//
+// Turning focus on starts the two-minute timer (spec/00, A5.2, D-24 §6). When
+// it runs out focus turns off, so the bed fades out over its usual 600 ms, and
+// nothing else happens: no chime, no alert. The end time is in the store for
+// the countdowns to read; the timeout that ends it lives here, beside the
+// only writer.
 
+import { FOCUS_MS, focusPatch } from '../focusTimer';
 import { useAppStore } from '../stores/app';
 import { write } from './write';
 
+let ending: ReturnType<typeof setTimeout> | null = null;
+
 export function setFocusMode(on: boolean): void {
-  write({ focusMode: on });
+  if (ending) clearTimeout(ending);
+  ending = on ? setTimeout(() => setFocusMode(false), FOCUS_MS) : null;
+  write(focusPatch(on, Date.now()));
 }
 
 export function toggleFocusMode(): void {

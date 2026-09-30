@@ -9,6 +9,7 @@
 import Link from 'next/link';
 
 import { ChallengeSection } from './ChallengeSection';
+import { FocusSection } from './FocusSection';
 import { GoalsSection } from './GoalsSection';
 import { HabitsSection } from './HabitsSection';
 import { JournalSection } from './JournalSection';
@@ -63,6 +64,7 @@ export function TextSurface() {
       <HabitsSection signedIn={signedIn} ready={ready} />
       <JournalSection signedIn={signedIn} ready={ready} />
       <GoalsSection signedIn={signedIn} ready={ready} />
+      <FocusSection />
     </main>
   );
 }

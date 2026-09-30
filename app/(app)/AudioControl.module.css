@@ -7,6 +7,19 @@
   right: var(--step-3);
   bottom: calc(var(--step-3) + 2.75rem);
   z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--step-1);
+}
+
+/* The focus countdown. Plain text in the corner's voice: no ring, no bar, and
+   nothing that moves — the digits changing is the only change (A5.2). */
+.count {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
 }
 
 .control {
