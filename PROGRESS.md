@@ -16,6 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
+| Phase 5 | **planned, not started** — A5.1–A5.9 (D-24) | **planned, not started** — B5.1–B5.2 (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -30,8 +31,23 @@ looks like; this file stays the state.
 
 ### Next session
 
-**The build plan is finished.** `spec/06-build-plan.md` stops at Phase 4 and
-there is no Phase 5. What comes next is the owner's call; until then:
+**Phase 5 is planned, not started** (2026-09-30). The owner set its scope in
+`spec/01-decisions.md` D-24; `spec/06-build-plan.md` Phase 5 lays it out.
+Track B (B5.1 plans, B5.2 account deletion) runs beside Track A, which starts
+at A5.1 (the window, glide only) and ends with the door scene. A5.7 is a design
+note for the owner before any door-scene code. Reminders stay unsent, and the
+UI rework is its own later phase, reviewed and partly designed by the owner.
+Deployment is the owner's, later.
+
+Found while planning, for the task that touches them:
+- A5.5: spec/02 and design-system/12 still say leaf tone × 0.35 (D-23 §2 locked
+  0.25); spec/README says a leaf per completion (spec/05 and AC-2.4 say per
+  threshold); spec/05 says a bare tree at `leafCount` 0 (D-23 §3 locked eight
+  base leaves). `cameraPoses.ts` still says the bonsai "does not exist yet".
+- A5.3: the mug is mounted at `[-0.62, 0, 0.06]`, not 04-room-spec's
+  `[-0.55, 0, 0.15]`, inside the lamp pool beside the bonsai; A5.6 may move both.
+
+Earlier, still true:
 1. **Migrations 022–024 are on the hosted project** (pushed 2026-09-30 at the
    owner's request; `db push --dry-run` now reports it up to date, and
    `prompt_version` answers on both tables). The app can be deployed.
