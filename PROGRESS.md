@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam), A5.4 (daylit window), A5.5 (bonsai rewired) done; A5.6–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1–A5.6 done (window, focus timer, mug steam, daylit window, bonsai rewired and moved); A5.7–A5.9, the door scene, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,8 +32,23 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.5 done and goes on at A5.6, moving the bonsai (owner approves
-the spot on its screenshot, then D-11 is amended).
+has A5.1–A5.6 done and goes on at A5.7, the door scene's design note for
+the owner (no door-scene code before it is approved).
+- **A5.6:** the bonsai is at `[-0.6, 0, 0.2]` and the mug at
+  `[-0.46, 0, -0.06]` (owner's pick, D-11 amended). At rest: pool 0.250
+  (0.248 before the tree existed), keyboard 20.4 % (as then), pool peak 0.682
+  (was 0.940). TRUE in all seven lit states. Measured with a scratch-only
+  build that took positions from the URL, headless Chromium on the RTX 2060
+  for effects on (SwiftShader drops bloom mid-run under load, so its numbers
+  are not comparable frame to frame) and reduced motion for effects off.
+  Learned on the way: the mug's pale liner is the pool's hottest pixel
+  wherever it goes near the bulb (1.0 at the tree's old spot), and in
+  monitor 1's cool fill it glows cyan; behind the headphones it is neither.
+  The pot now clears the headphones' left earcup by 1.3 cm (footprints
+  computed; closer candidates overlapped it). Bonsai focus pose moved with
+  the tree; new capture `room-bonsai-desktop`. design-system/04's mug
+  `[-0.55, 0, 0.15]` and 12's `[-0.8, 0, 0.1]` are extracted fact; D-11's
+  amendment overrides them.
 - **A5.5:** `leafArrival` in the store ('grow' from an action's refresh or the
   optimistic habit write; 'appear' from every hydrate path, snapshot
   included). Earned leaves come one at a time, a droplet each, 600 ms apart
