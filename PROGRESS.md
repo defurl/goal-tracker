@@ -35,10 +35,9 @@ there is no Phase 5. What comes next is the owner's call; until then:
 1. **Migrations 022–024 are on the hosted project** (pushed 2026-09-30 at the
    owner's request; `db push --dry-run` now reports it up to date, and
    `prompt_version` answers on both tables). The app can be deployed.
-2. **Owner review:** the wording of `GENTLE_SUPPORT_REFLECTION`
-   (`lib/prompts/fallbacks.ts`), shown only when the journal agent flagged
-   distress but its words quoted the entry. PROPOSED; D-13 wants the owner's eye
-   on anything said there.
+2. **`GENTLE_SUPPORT_REFLECTION` is signed off** (owner, 2026-09-30): the
+   reflection shown when the journal agent flagged distress but its words
+   quoted the entry (`lib/prompts/fallbacks.ts`).
 3. **Backlog the owner named** (D-22, D-23): in-app account deletion, per-user AI
    limits for free users, the bonsai rework (droplet, growth, its place in the
    pool), the headphones' two-minute timer, the window as a glide-only object.

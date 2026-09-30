@@ -65,7 +65,7 @@ export const GENTLE_REFLECTION: JournalReflection = {
  *
  * Written to rule 6 of the journal prompt: acknowledges, encourages reaching
  * someone, calm, no diagnosis, no number or name — the app supplies those.
- * PROPOSED wording; D-13 wants the owner's eye on anything said here.
+ * Wording signed off by the owner, 2026-09-30 (D-13).
  */
 export const GENTLE_SUPPORT_REFLECTION: JournalReflection = {
   primary_emotion: '',
