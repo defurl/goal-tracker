@@ -22,6 +22,16 @@ export const REST_POSE_MOBILE: CameraPose = {
 };
 
 /**
+ * The hall's arrival pose (design-system/13 §6), in the hall's own frame —
+ * y = 0 is its floor. Just inside the doorway: the tree left of centre, the
+ * history wall behind it, the clerestory at the right edge. PROPOSED.
+ */
+export const HALL_REST_POSE: CameraPose = {
+  position: [-1.0, 1.6, 3.6],
+  target: [0, 0.9, -1.5],
+};
+
+/**
  * Focus poses. **Composition rule baked into every one: the focused object sits
  * LEFT of centre**, because the DOM detail panel floats in the top-right corner
  * at ~440 px and would otherwise occlude it. If a panel ever sits on a different
@@ -51,6 +61,11 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   // 2026-09-28: the whole band sits left of the panel. A closer camera clipped
   // the band and let monitor 1 fill the frame; a lower target did the same.
   wallGrid: { position: [-0.2, 0.85, 0.9], target: [0, 0.75, -1.2] },
+
+  // The hall (design-system/13 §6), in its own frame. The ids belong to one
+  // scene each, so the two sets share this table. PROPOSED, tuned at build.
+  hallWall: { position: [2.9, 1.35, 0.6], target: [2.9, 1.3, -1.5] },
+  hallTree: { position: [-1.4, 0.7, 1.5], target: [-0.55, 1.25, 0.2] },
 };
 
 // ── Portrait ─────────────────────────────────────────────────────────────────

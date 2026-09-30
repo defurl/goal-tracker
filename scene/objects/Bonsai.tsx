@@ -161,7 +161,19 @@ function Limb({ a, b, r0, r1, color }: { a: P; b: P; r0: number; r1: number; col
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-export function Bonsai() {
+interface BonsaiProps {
+  /** The desk's by default (D-11 as amended). */
+  position?: [number, number, number];
+  /** The desk's by default. The hall mounts the same tree at five times it (design-system/13 §3). */
+  scale?: number;
+  /**
+   * Whether an earned leaf gets its droplet and reveal. Leaves are earned at
+   * the desk; the hall's tree only shows them (13 §3), so there it is false.
+   */
+  grows?: boolean;
+}
+
+export function Bonsai({ position = BONSAI_POSITION, scale = TREE_SCALE, grows = true }: BonsaiProps = {}) {
   const leavesRef = useRef<InstancedMesh>(null);
   const dropRef = useRef<Mesh>(null);
 
@@ -199,7 +211,7 @@ export function Bonsai() {
         dirty.current = true;
       }
     } else if (target > grown.current) {
-      const instant = reduced || leafArrival === 'appear';
+      const instant = !grows || reduced || leafArrival === 'appear';
       const runs = instant ? [] : scheduleLeaves(target - grown.current, now, drops.current.at(-1) ?? null);
       for (let i = grown.current; i < target; i++) {
         const run = runs[i - grown.current];
@@ -252,7 +264,7 @@ export function Bonsai() {
   });
 
   return (
-    <group position={BONSAI_POSITION} rotation={[0, 0.35, 0]} scale={TREE_SCALE}>
+    <group position={position} rotation={[0, 0.35, 0]} scale={scale}>
       {/* Pot and soil */}
       {/* Matte: unglazed stoneware. A glossy pot this close to the bulb put a
           highlight in the lamp pool brighter than the pool itself. */}
@@ -282,10 +294,12 @@ export function Bonsai() {
       </instancedMesh>
 
       {/* The watering droplet — the room's one sharp motion (03-motion.md). */}
-      <mesh ref={dropRef} position={[DROP_XZ[0], DROP_FROM, DROP_XZ[1]]} visible={false} scale={[1, 1.5, 1]}>
-        <sphereGeometry args={[0.005, 10, 8]} />
-        <meshBasicMaterial color={GLOW_COOL} />
-      </mesh>
+      {grows && (
+        <mesh ref={dropRef} position={[DROP_XZ[0], DROP_FROM, DROP_XZ[1]]} visible={false} scale={[1, 1.5, 1]}>
+          <sphereGeometry args={[0.005, 10, 8]} />
+          <meshBasicMaterial color={GLOW_COOL} />
+        </mesh>
+      )}
     </group>
   );
 }

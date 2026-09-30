@@ -22,7 +22,10 @@ export type ObjectId =
   | 'bonsai' // Growth / points
   | 'wallGrid' // The 365-day tracker
   | 'window' // Time of day
-  | 'door'; // Route to the second scene
+  | 'door' // Route to the second scene
+  // The hall (design-system/13): the scene behind the door.
+  | 'hallWall' // The history wall — glide + panel
+  | 'hallTree'; // The full-size tree — glide only
 
 export type PanelId =
   | 'challenge'
@@ -30,6 +33,7 @@ export type PanelId =
   | 'journal'
   | 'import'
   | 'habits'
+  | 'history'
   | null;
 
 export interface InteractionState {
