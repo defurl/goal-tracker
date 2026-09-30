@@ -6,10 +6,13 @@
 // one draw call — and `points.leafCount` decides how many are grown.
 //
 // Growth, and only growth (11-anti-patterns.md: never shrink, wilt or drop):
-//   - a new leaf is announced by the one sharp motion the room allows, a
-//     GLOW_COOL droplet falling into the pot over --dur-tick (180 ms), then
-//     the leaf grows from nothing over --dur-reveal (900 ms). No spring.
-//   - leaves already earned when the room loads are simply there.
+//   - a leaf the user earns in this session is announced by the one sharp
+//     motion the room allows, a GLOW_COOL droplet falling into the pot over
+//     --dur-tick (180 ms), then the leaf grows from nothing over --dur-reveal
+//     (900 ms). No spring. Several leaves at once come one at a time, a droplet
+//     each, 600 ms apart (A5.5, lib/leafSchedule.ts), so each reads as its own.
+//   - leaves a load brought are simply there: the first hydrate, a rehydrate on
+//     sign-in or back online, a snapshot (`leafArrival`, set by lib/data).
 //   - under reduced motion there is no droplet and a new leaf is there at once.
 //   - the count falls only when the store resets to the default room (sign
 //     out); that is a different room, not a tree losing leaves, so it snaps.
@@ -28,6 +31,7 @@ import { useFrame } from '@react-three/fiber';
 import { Color, Object3D, Quaternion, Vector3, type InstancedMesh, type Mesh } from 'three';
 
 import { MAX_LEAVES } from '../../lib/growth';
+import { DROP_MS, REVEAL_MS, dropProgress, scheduleLeaves } from '../../lib/leafSchedule';
 import { useAppStore } from '../../lib/stores/app';
 import { useSceneStore } from '../../lib/stores/scene';
 import { BG_VOID, DATA_GREEN, GLOW_COOL, INK_GHOST, LAMP_WARM } from '../../lib/style/colors';
@@ -69,9 +73,15 @@ const TREE_SCALE = 0.88;
 const LEAF_SHAPE: P = [1.5, 0.55, 1.15];
 const BASE_LEAVES = 8;
 const TOTAL = BASE_LEAVES + MAX_LEAVES;
-const DROP_MS = 180; // --dur-tick
-const REVEAL_MS = 900; // --dur-reveal
 const DROP_FROM = 0.36;
+/**
+ * Where the droplet falls, in the tree's frame: in front of the canopy, to the
+ * soil. The old column (x 0.01, z 0) ran through the top pad and the trunk, so
+ * the droplet was hidden where it mattered. At z 0.042 every pad's ellipsoid
+ * test is > 1 (pad 1 starts at x 0.02; pads 2 and 4 are 2.1 and 1.7 on z
+ * alone), and it is still inside the soil's 0.044.
+ */
+const DROP_XZ: [number, number] = [-0.03, 0.042];
 
 /** A small deterministic PRNG, so every visit grows the same tree. */
 function mulberry32(seed: number): () => number {
@@ -163,7 +173,8 @@ export function Bonsai() {
   // Indexed by EARNED leaf; the base leaves are always fully grown.
   const progress = useMemo(() => new Float32Array(MAX_LEAVES), []);
   const revealAt = useMemo(() => new Float32Array(MAX_LEAVES), []);
-  const dropStart = useRef<number | null>(null);
+  // Every droplet still to fall or falling, by start time, oldest first.
+  const drops = useRef<number[]>([]);
   const dirty = useRef(true);
   const dummy = useMemo(() => new Object3D(), []);
 
@@ -171,7 +182,7 @@ export function Bonsai() {
   useFrame(({ clock }) => {
     const mesh = leavesRef.current;
     if (!mesh) return;
-    const { hydrated, points } = useAppStore.getState();
+    const { hydrated, points, leafArrival } = useAppStore.getState();
     const target = Math.min(points.leafCount, MAX_LEAVES);
     const now = clock.elapsedTime * 1000;
     const reduced = useSceneStore.getState().prefersReducedMotion;
@@ -186,11 +197,15 @@ export function Bonsai() {
         dirty.current = true;
       }
     } else if (target > grown.current) {
+      const instant = reduced || leafArrival === 'appear';
+      const runs = instant ? [] : scheduleLeaves(target - grown.current, now, drops.current.at(-1) ?? null);
       for (let i = grown.current; i < target; i++) {
-        progress[i] = reduced ? 1 : 0;
-        revealAt[i] = now + DROP_MS;
+        const run = runs[i - grown.current];
+        progress[i] = run ? 0 : 1;
+        if (!run) continue;
+        drops.current.push(run.dropAt);
+        revealAt[i] = run.revealAt;
       }
-      if (!reduced) dropStart.current = now;
       grown.current = target;
       dirty.current = true;
     } else if (target < grown.current) {
@@ -206,14 +221,14 @@ export function Bonsai() {
       dirty.current = true;
     }
 
+    // The droplet: whichever is falling now, if any. Landed ones leave the queue.
+    while (drops.current.length && now - drops.current[0]! >= DROP_MS) drops.current.shift();
     const drop = dropRef.current;
     if (drop) {
-      const start = dropStart.current;
-      const t = start === null ? 1 : (now - start) / DROP_MS;
-      drop.visible = t < 1;
+      const t = dropProgress(drops.current[0], now);
+      drop.visible = t !== null;
       // Falling, so it accelerates: y follows t².
-      if (t < 1) drop.position.y = DROP_FROM - (DROP_FROM - POT.h) * t * t;
-      else dropStart.current = null;
+      if (t !== null) drop.position.y = DROP_FROM - (DROP_FROM - POT.h) * t * t;
     }
 
     if (!dirty.current) return;
@@ -265,7 +280,7 @@ export function Bonsai() {
       </instancedMesh>
 
       {/* The watering droplet — the room's one sharp motion (03-motion.md). */}
-      <mesh ref={dropRef} position={[0.01, DROP_FROM, 0]} visible={false} scale={[1, 1.5, 1]}>
+      <mesh ref={dropRef} position={[DROP_XZ[0], DROP_FROM, DROP_XZ[1]]} visible={false} scale={[1, 1.5, 1]}>
         <sphereGeometry args={[0.005, 10, 8]} />
         <meshBasicMaterial color={GLOW_COOL} />
       </mesh>

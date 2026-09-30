@@ -44,10 +44,9 @@ export const FOCUS_POSES: Record<ObjectId, CameraPose> = {
   window: { position: [0.4, 0.9, 0.9], target: [1.98, 1.0, -0.6] },
   door: { position: [-0.4, 0.7, 1.2], target: [-1.4, -0.74, 0.3] },
 
-  // PROPOSED — the bonsai does not exist yet (Phase 3.6). Derived from its
-  // specified position, not tuned against a render; re-frame it once the
-  // geometry lands.
-  //   bonsai   D-11: desk at [-0.8, 0, 0.1], capped at 0.35 m
+  // PROPOSED — derived from D-11's position ([-0.8, 0, 0.1], capped at
+  // 0.35 m), not yet tuned against a render. A5.6 may move the tree; the pose
+  // follows it then.
   bonsai: { position: [-0.95, 0.5, 0.75], target: [-0.8, 0.15, 0.1] },
   // The 365-day tracker (3.5). Checked against a render with the panel open,
   // 2026-09-28: the whole band sits left of the panel. A closer camera clipped
