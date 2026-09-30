@@ -49,6 +49,7 @@ import { Window } from './objects/Window';
 import { GRID_CENTRE, GRID_HEIGHT, WallGrid } from './objects/WallGrid';
 import { BONSAI_POSITION, Bonsai } from './objects/Bonsai';
 import { DustMotes } from './objects/DustMotes';
+import { Door } from './objects/Door';
 
 export function RoomScene() {
   const focusObject = useInteractionStore((s) => s.focusObject);
@@ -217,6 +218,8 @@ export function RoomScene() {
         <Window position={[1.98, 1.0, WINDOW_Z]} rotation={[0, -Math.PI / 2, 0]} />
       </InteractiveObject>
       <DustMotes />
+      {/* The door spill, a way through to the hall (design-system/13 §7). */}
+      <Door />
 
       <CameraRig rest={REST_POSE} restMobile={REST_POSE_MOBILE} />
       <Effects />

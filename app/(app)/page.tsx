@@ -10,12 +10,32 @@
 // and inside its own lazy chunk (D-10).
 
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 
+import { ensureHistory } from '../../lib/data/history';
+import { useAppStore } from '../../lib/stores/app';
+import { useSceneStore } from '../../lib/stores/scene';
 import { AudioControl } from './AudioControl';
 import { DetailPanel } from './DetailPanel';
+import { SceneFade } from './SceneFade';
 import { SceneNav } from './SceneNav';
 
 const RoomCanvas = dynamic(() => import('../../scene/RoomCanvas'), { ssr: false });
+
+/**
+ * The hall's wall shows every habit's year (design-system/13 §8), which the room
+ * never loads. Fetched on arrival in the hall, and again if a sign-in or a
+ * sign-out has reset it while there. Renders nothing.
+ */
+function HallHistory() {
+  const inHall = useSceneStore((s) => s.current === 'hall');
+  const hydrated = useAppStore((s) => s.hydrated);
+  const unloaded = useAppStore((s) => s.history === null);
+  useEffect(() => {
+    if (inHall && hydrated && unloaded) void ensureHistory();
+  }, [inHall, hydrated, unloaded]);
+  return null;
+}
 
 export default function RoomPage() {
   return (
@@ -24,6 +44,8 @@ export default function RoomPage() {
       <SceneNav />
       <DetailPanel />
       <AudioControl />
+      <SceneFade />
+      <HallHistory />
     </main>
   );
 }

@@ -1,0 +1,18 @@
+/* Full-bleed only for the length of a scene change, and never interactive
+   content: it is a curtain, not a surface (08-interaction-grammar.md §5). */
+
+.fade {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg-void);
+  opacity: 0;
+  pointer-events: none;
+  transition-property: opacity;
+  transition-timing-function: var(--ease-ui);
+}
+
+.fade[data-on] {
+  opacity: 1;
+  pointer-events: auto;
+}

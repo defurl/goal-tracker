@@ -8,11 +8,15 @@
 
 import { create } from 'zustand';
 
-/** One room in Phase 1. The door spill routes to a second scene later. */
-export type SceneKey = 'room';
+/**
+ * The room, and the hall behind its door (design-system/13, build plan A5.8).
+ * One canvas mounts one of them; lib/scene/transition.ts changes which.
+ */
+export type SceneKey = 'room' | 'hall';
 
 export interface SceneState {
   current: SceneKey;
+  /** True from the fade-out until the new scene is compiled and fading in. */
   transitioning: boolean;
   prefersReducedMotion: boolean;
   isMobile: boolean;
