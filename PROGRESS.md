@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam) done; A5.4–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam), A5.4 (daylit window) done; A5.5–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,7 +32,19 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.3 done and goes on at A5.4, the daylit window.
+has A5.1–A5.4 done and goes on at A5.5, the bonsai rewired.
+- **A5.4:** the window is daylit (12 §6 option 2). **PROPOSED, for the owner's
+  eye:** day sky `GLOW_COOL_SOFT` × 4.0 (was 1.4; at 2.0 it read as a dim
+  evening blue through the pane), and the rim at 1.2 after dark, 1.8 at dawn,
+  2.5 by day (`RIM_STATES`), lerped in `scene/WindowRim.tsx`. The day sky is
+  L ≈ 0.52, over the bloom threshold on purpose (1.4 already was, ≈ 0.18); only
+  the warm dusk band must stay under. At 16:10 rest only the city strip is in
+  frame, so the day sky is seen from the window's glide (`room-window-noon-
+  desktop`). Lighting TRUE at noon and midnight, effects on and off; noon's
+  right edge reads cooler (R−B −2.5 vs −1.5). CI now tests all four. The rim's
+  effect on the room is small — the room stays nocturnal, as D-24 §9 asks.
+  Captures under load vary bloom (the city strip reads (17,34,44) one run and
+  (4,16,24) the next): adaptive FPS, as noted in Phase 4.
 - **A5.3:** six unlit INK_PAPER sprites (≤ 0.08 opacity, no depth write) rise
   off the mug in the dawn band only, lerped in at k = 0.05; `MugSteam` returns
   null under reduced motion. A new spec/05 §3 row. The steam starts visible at
