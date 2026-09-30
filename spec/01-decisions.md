@@ -20,9 +20,9 @@
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
-Phase 4 raised. D-23 settles what Phase 3 left open.
+Phase 4 raised. D-23 settles what Phase 3 left open. D-24 sets the scope of Phase 5.
 
-All twenty-three are **LOCKED**. There are no open questions.
+All twenty-four are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -633,6 +633,53 @@ listed as work is to be built.
   the pool
 - the headphones' two-minute timer (spec/00)
 - the window as a glide-only object (08 §4)
+
+---
+
+### D-24 · Phase 5 scope — **LOCKED** (owner-approved 2026-09-30)
+
+**Context.** The build plan ended at Phase 4, and the four features ship on
+both surfaces. The owner chose what Phase 5 builds and settled the four
+questions that choice raised. `06-build-plan.md` Phase 5 is read through this
+entry.
+
+**In scope**
+1. **The room backlog from D-23:** the bonsai rework, the headphones'
+   two-minute timer, and the window as a glide-only object.
+2. **Account and limits:** in-app account deletion, and per-user AI limits
+   keyed to a plan. D-22 §6 called deletion a future feature; this schedules it.
+3. **The deferred extras:** the mug's morning steam (D-18) and the daylit
+   window sky (`../design-system/12-habit-tracker-adaptation.md` §6, option 2).
+4. **The door scene:** the second scene behind the door spill.
+
+**Rulings**
+5. **The bonsai may move, and D-11 will be amended when it does.** The new
+   spot is chosen on the lighting test's numbers and a screenshot the owner
+   approves; it stays on the desk, under the 0.35 m cap, with no light of its
+   own. The chosen position is recorded as a dated amendment under D-11.
+6. **The two-minute timer ships on both surfaces.** On `/text` it is silent,
+   because D-23 §10 stands. Its end is quiet on both: no chime, no alert.
+7. **AI limits are keyed to a plan.** Every user has one, and for now every
+   plan is `free`, whose caps are today's (20 imports, 3 reflections a day).
+   A user cannot change their own plan. Payment stays out of scope (spec/00 §4):
+   the field exists so a later plan needs no migration, not to sell one.
+8. **The door scene is one scene with both views:** the full-size tree, in a
+   space whose surfaces carry the habit history. `/text` gets a history view
+   in the same phase (D-07).
+9. **The room stays nocturnal** (D-03). The daylit window brightens the sky
+   plane and may raise the rim light within option 2 of `12` §6; nothing else
+   in the room gets brighter, and the lighting test runs at both extremes.
+
+**Out of scope**
+- **Reminders.** `reminder_time` stays stored; nothing sends (spec/00 §4).
+- **The UI rework.** It is its own later phase, in which the owner reviews
+  every panel and designs some of them by hand. Phase 5 does not restyle a
+  panel beyond what its own features need.
+- **Payment of any kind** (spec/00 §4).
+
+**Consequence.** spec/00 §4's "second 3D scene … Phase 2" and the "Phase 2
+candidate" daylit window are Phase 5 through this entry. D-11 and D-22 §6 are
+read through it until their amendment notes land.
 
 ---
 
