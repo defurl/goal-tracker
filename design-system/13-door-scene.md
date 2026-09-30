@@ -237,7 +237,42 @@ styles). No 3D, no three.js (D-10).
 
 ---
 
-## 10. What this note does not change
+## 10. As built (A5.8, 2026-09-30)
+
+The build tuned the starting values against §5's test. Where it moved, why:
+
+| value | note | built | why |
+|---|---|---|---|
+| hall height | 2.6 m | **3.6 m** | from the arrival pose the camera saw over a 2.6 m wall into the void |
+| left wall | `x = -3.5` | **`x = -3.0`** | so the doorway sits inside the frame's left edge |
+| doorway | `z = 0.6`, 1.0 wide | **`z = -1.0`, 0.8 wide** | anything on the left wall nearer than `z ≈ -0.55` is outside the frame at the arrival pose |
+| arrival pose | `[-2.4, 1.55, 2.4] → [0.2, 1.0, -1.2]` | **`[-1.0, 1.6, 3.6] → [0, 0.9, -1.5]`** | tree, doorway, band and clerestory in one frame |
+| wall pose | `[0.9, 1.25, 0.9] → [0.9, 1.2, -1.5]` | **`[2.9, 1.35, 0.6] → [2.9, 1.3, -1.5]`** | the panel covered the recent end; now today sits just left of centre |
+| tree pose | `[-1.7, 1.0, 0.8] → [-0.6, 1.1, -0.5]` | **`[-1.4, 0.7, 1.5] → [-0.55, 1.25, 0.2]`** | looks up into the canopy |
+| tree | `[-0.6, 0, -0.5]` | **`[-0.6, 0, 0.2]`**, ×4.4 | off the wall, so the key pools on the tree, not the concrete |
+| pendant | `[-0.6, 2.2, -0.4]` | **`[-0.6, 2.5, 0.3]`**, a deep shade (0.7π) that casts the key's shadow | a bare point light lit the wall above the band as much as the floor; the shade cuts the light off below the band and pools it on the tree. The shadow camera's near plane is 0.05 m, or the shade (0.2 m out) would cast nothing |
+| key | 14.0, d 4.5 | **60, d 6** | a point light's reach falls with the square of distance; the ratio table could not survive a room six times the desk's height |
+| fill ×2 | 5.6 | **3.0**, angle 0.9, penumbra 1 | at 5.6 they read as two blue ovals |
+| rim | 2.1 | **RIM_STATES × 3** | |
+| spill | `[-4.2, 1.2, 0.6]`, 6.2 | **`[-3.8, 1.0, -1.0]`, 4** | follows the doorway; any brighter and the doorway's jamb outshone the tree with effects off |
+| clerestory sky | the room's | **the room's × 0.2** | in frame and bare, at the room's day value it outshone the pool; at 0.25 the margin with effects off was 7 % |
+
+**Measured** (1600 × 1000 captures; pool = the tree and the floor under it):
+noon, effects on — pool 0.0385, doorway 0.0186 and its floor 0.0257,
+clerestory 0.0156, band 29 %; noon, effects off — pool 0.0182 vs clerestory
+0.0138, the tightest margin (32 %); midnight — pool 0.0191 / 0.0174. All five
+TRUE in all four. Signed in with a seeded year (local only; CI has no
+history): at rest the band is 33 % of the pool, and at the wall pose a line
+averages twice the bare wall between lines, with the longest run warmer and
+today the one bright cell.
+
+Also as built: the wall holds at most **24 lines** (the panel lists every
+habit); under reduced motion the fade is a **cut**, because the global CSS
+escape hatch collapses every transition (03-motion principle 5), not the
+crossfade §7 described; the tree shows 8 base leaves signed out, as the desk's
+does.
+
+## 11. What this note does not change
 
 The room: its rig, its test and its layout stay exactly as they are, apart from
 the door's hit disc and label. D-03, D-04, D-07, D-09, D-10 and

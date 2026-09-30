@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1–A5.7 done (window, focus timer, mug steam, daylit window, bonsai rewired and moved, door-scene note approved); A5.8–A5.9, the door scene's build, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1–A5.8 done (… the door scene built: the hall, its history wall and panel); A5.9, history on /text, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,7 +32,32 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.7 done. **A5.7's design note is approved** (2026-09-30):
+has A5.1–A5.8 done; A5.9 (history on /text) is the last Phase 5 task.
+- **A5.8, the hall** (2026-09-30), design-system/13 with an "as built"
+  section (§10) recording every value the build moved and why. The room's
+  floor spill is a door ("step through"): glide, fade, the canvas swaps to
+  the hall, compiled before it fades in; back is two steps (the hall's
+  arrival, then the room). `?scene=hall` opens it directly, for links and
+  for the checks. The hall is its own chunk (scene 240.8 / 320 KB, shell
+  three-free), fetched on the door's first hover; offline it opens only if
+  already fetched. Five roles, six instances; its own five-criterion test
+  in `lighting:test` (a `hall-…` capture), TRUE at noon and midnight, effects
+  on and off, and in CI. Walked signed in as a throwaway local user with a
+  seeded year: the panel's numbers (longest 43 · now 2 · kept 279; an
+  archived habit labelled, no "now"), the lines legible at the wall pose.
+  **Known limits:** CI has no history, so criterion 4's "legible up close"
+  is a local measurement; the fade is a cut under reduced motion, not a
+  crossfade; the wall shows at most 24 lines. **For the owner's eye:** the
+  pendant's shade throws a hard curved cut-off across the lower wall (it is
+  what keeps the band in shadow so its light reads), and the wall is very
+  dark at the wall pose.
+- The per-habit history (`lib/history.ts`, `lib/data/history.ts`) computes
+  the current streak from the days by log_habit()'s rule; the stored one is
+  stale after a missed day. The data layer cannot be imported by the
+  database tests (extensionless imports under plain Node), so its queries
+  were checked by the walk, not by `test:db`.
+
+**A5.7's design note is approved** (2026-09-30):
 `design-system/13-door-scene.md` and `13-hall-lighting-plan.svg`. The owner
 chose the hall, a year line per habit with the longest run marked, archived
 habits on the wall after the active ones, and a glide-only tree. Its numbers

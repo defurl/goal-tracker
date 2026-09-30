@@ -174,6 +174,8 @@ lerps; nothing pops.** Under `prefersReducedMotion`, every lerp snaps (`k = 1`).
 | `localHour` | Window sky plane `{color, intensity}` | lookup table, §5 | `k = 0.05` |
 | `localHour` | Window rim light intensity (A5.4, D-24 §9) | `RIM_STATES` in `lib/sky.ts`: 1.2 after dark, 1.8 dawn, 2.5 day | `k = 0.05` |
 | `focusMode` | Ambient audio gain | `0 → 0.3` | 600 ms |
+| `history[]` | The hall's wall: one line of cells per habit (A5.8, design-system/13 §4) | `0 →` bare recess · `1 → SIGNAL_DIM` @ 0.1 · longest run @ 0.2 · `2 → SIGNAL` @ 0.9 | `k = 0.05` |
+| `points.leafCount` | The hall's full-size tree (A5.8) | the desk tree's leaves, at ×4.4; no droplet, no reveal | none — shown as loaded |
 | `localHour` | Mug steam opacity (A5.3, D-18) | dawn band (05–08) `→` up to 0.08, other hours `→ 0`; removed under reduced motion | `k = 0.05` |
 
 **Nothing else in the room reacts to application state.** Adding a surface to
