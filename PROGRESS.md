@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam), A5.4 (daylit window) done; A5.5–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam), A5.4 (daylit window), A5.5 (bonsai rewired) done; A5.6–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,7 +32,22 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.4 done and goes on at A5.5, the bonsai rewired.
+has A5.1–A5.5 done and goes on at A5.6, moving the bonsai (owner approves
+the spot on its screenshot, then D-11 is amended).
+- **A5.5:** `leafArrival` in the store ('grow' from an action's refresh or the
+  optimistic habit write; 'appear' from every hydrate path, snapshot
+  included). Earned leaves come one at a time, a droplet each, 600 ms apart
+  (`lib/leafSchedule.ts`, PROPOSED stagger); a run in progress keeps its place.
+  The droplet now falls at (-0.03, 0.042) in the tree's frame, in front of the
+  canopy. Walked on a local build as a throwaway user, frozen with
+  Playwright's clock: the droplet in mid-fall in front of the top pad, the
+  first leaf growing as it lands, and a second droplet 600 ms later — the
+  server's Perfect Day +25 took 20 → 45, a second leaf, so the sequencing ran
+  for real. An admin award then an `online` rehydrate brought a leaf with no
+  droplet. Unit tests for the schedule and for `lib/growth.ts` (none existed).
+  Stale docs fixed: spec/02 × 0.35, spec/README "a leaf per completion",
+  spec/05 "a bare bonsai", and the camera-pose comment. design-system/12
+  still says × 0.35; it is extracted fact, and D-23 §2 overrides it.
 - **A5.4:** the window is daylit (12 §6 option 2). **PROPOSED, for the owner's
   eye:** day sky `GLOW_COOL_SOFT` × 4.0 (was 1.4; at 2.0 it read as a dim
   evening blue through the pane), and the rim at 1.2 after dark, 1.8 at dawn,
