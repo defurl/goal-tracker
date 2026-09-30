@@ -19,9 +19,10 @@
 
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
-that was wrong in the source proposal. D-21 replaces the inherited palette.
+that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
+Phase 4 raised.
 
-All twenty-one are **LOCKED**. There are no open questions.
+All twenty-two are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -468,7 +469,7 @@ bonsai — not the screen.
 ## Open questions
 
 **None currently open.** Every question raised during the spec pass has been
-decided; D-01 to D-21 are the complete set.
+decided; D-01 to D-22 are the complete set.
 
 Three things remain marked **PROPOSED** in other documents. They are reasoned
 defaults, not open questions — build against them, and flag them in your PR so
@@ -546,6 +547,40 @@ and nothing else in the four features produces negative live data. Deepening a
 colour that never reaches a pixel would be motion without movement. **If a
 feature ever does need it, re-check it against `--signal` at that point** — the
 token stays in the palette so the check has something to check.
+
+### D-22 · Phase 4 hardening settlements — **LOCKED** (owner-approved 2026-09-30)
+
+**Context.** Phase 4 (`06-build-plan.md`) raised eight questions that the plan
+and the design system did not answer. The owner settled them after walking the
+signed-in room. Each is a rule from here on, not a one-off.
+
+1. **Offline means /text, and an open room.** B2.9 stands: the service worker
+   caches the `/text` shell and never the 3D bundle. "Room renders from cache"
+   (build plan 4.5) means a room already open keeps working from the store when
+   the network drops. A cold offline `/` is answered by the `/text` shell.
+   `offline:check` asserts both.
+2. **Lighthouse in CI covers /text and auth.** Performance ≥ 0.85 and LCP ≤
+   2.5 s under simulated slow 4G are errors. The room is measured on a machine
+   with a GPU: a CI runner draws it on SwiftShader and Lighthouse cannot finish
+   there. The room's performance score is a warning even locally. Its script
+   budget stays enforced in CI by `bundle:check` (D-10).
+3. **Informative text meets 4.5:1** (WCAG AA). `--ink-faint` is 3.3:1 on the
+   void, so it is for disabled controls and decoration only; small text that
+   says something uses `--ink-muted`.
+4. **No text under 12 px on the auth pages on a phone.** The phone type scale
+   takes `--step-1` to 11.2 px. The auth form holds the desktop rung instead.
+5. **Destructive actions arm, then fire.** The first press arms the action and
+   says what the next press will do; a second press within `ARM_WINDOW_MS`
+   (3000 ms, `08-interaction-grammar.md`) carries it out, and the arm lapses on
+   its own. No confirmation dialogs: a dialog is a modal (`11-anti-patterns.md`).
+6. **Data requests go to the owner.** The Privacy Policy names the owner's
+   address for seeing or deleting an account. In-app account deletion is a
+   future feature, not a Phase 4 gap.
+7. **COST-1 is met by the free tier.** The provider is Gemini on Google AI
+   Studio's free tier with no billing attached, so nothing can be charged (the
+   D-19 amendment). Per-user limits for free users are future work.
+
+**Consequence.** Build-plan rows 4.5 and 4.7 are read through this entry.
 
 ---
 

@@ -248,9 +248,9 @@ than as countable data.
 | 4.2 | `axe-core` + Playwright a11y smoke over `/`, `/text`, auth |
 | 4.3 | Reduced-motion pass — every row of `03-motion.md` §"Reduced motion, concretely" |
 | 4.4 | Empty states for every widget and panel (X-1) |
-| 4.5 | Offline verification: airplane mode, `/text` usable, room renders from cache |
+| 4.5 | Offline verification: airplane mode, `/text` usable, room renders from cache (an open room; D-22 §1) |
 | 4.6 | Privacy Policy stating FR-3.6 plainly, including that entries are not retrievable |
-| 4.7 | Provider spend cap confirmed set in the OpenAI dashboard (COST-1) |
+| 4.7 | Provider spend cap (COST-1): met by the Gemini free tier with no billing attached (D-19 amendment, D-22 §7) |
 
 ---
 
