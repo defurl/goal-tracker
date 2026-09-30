@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **planned, not started** — A5.1–A5.9 (D-24) | **planned, not started** — B5.1–B5.2 (D-24) |
+| Phase 5 | **in progress** — A5.1 done (window, glide only); A5.2–A5.9 to go (D-24) | **in progress** — B5.1 done (plans, 025 local only); B5.2 to go (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -31,7 +31,23 @@ looks like; this file stays the state.
 
 ### Next session
 
-**Phase 5 is planned, not started** (2026-09-30). The owner set its scope in
+**Phase 5 is under way** (2026-09-30): A5.1 and B5.1 are done.
+- **B5.1:** `user_plans` (025), read-only to its owner and made by
+  `handle_new_user()`; the rate limiter reads the cap from the plan, and a
+  missing or unreadable plan reads as `free`. Database 80/80 (13 tables in the
+  isolation gate). **025 is not on the hosted project yet**: the owner decides
+  when to push it.
+- **A5.1:** the window glides and opens nothing; the object in focus drops its
+  label and keyboard button, as a panel object does when its panel opens.
+  Escape and "back to the desk" return. Lighting TRUE, effects on and off;
+  a11y, motion and offline checks pass. New capture `room-window-desktop`. The
+  pose is 07-camera's `[0.4, 0.9, 0.9]`, so the window is seen at an angle,
+  small, right of centre: worth the owner's eye in the UI rework.
+- Verified against a production build in a scratch worktree on port 3100,
+  because `pnpm build` would overwrite the `.next` of the owner's dev server
+  on 3000.
+
+The plan: The owner set its scope in
 `spec/01-decisions.md` D-24; `spec/06-build-plan.md` Phase 5 lays it out.
 Track B (B5.1 plans, B5.2 account deletion) runs beside Track A, which starts
 at A5.1 (the window, glide only) and ends with the door scene. A5.7 is a design
