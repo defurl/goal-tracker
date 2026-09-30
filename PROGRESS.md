@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1 (window, glide only) and A5.2 (focus timer) done; A5.3–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1 (window), A5.2 (focus timer), A5.3 (mug steam) done; A5.4–A5.9 to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,7 +32,16 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1 and A5.2 done and goes on at A5.3, the mug's steam.
+has A5.1–A5.3 done and goes on at A5.4, the daylit window.
+- **A5.3:** six unlit INK_PAPER sprites (≤ 0.08 opacity, no depth write) rise
+  off the mug in the dawn band only, lerped in at k = 0.05; `MugSteam` returns
+  null under reduced motion. A new spec/05 §3 row. The steam starts visible at
+  opacity 0 so ShaderWarmup compiles its program (compile skips invisible
+  objects). New `room-dawn-desktop` capture, pinned to 06:00 with a Playwright
+  time zone (`scripts/zone-for-hour.ts`); CI lighting-tests it, and
+  `motion:check` checks the room still at dawn. Lighting TRUE at rest (on and
+  off) and at dawn; the steam moves the numbers only in the third decimal.
+  Stillness cannot tell removed from frozen: removal rests on the code.
 - **B5.2:** "delete account" beside sign-out (room and /text) arms, then fires
   within 3 s, and calls `DELETE /api/account` (session id only; DELETE so no
   cross-site form can send it). `account.test.ts` seeds every user table,
