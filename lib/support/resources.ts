@@ -7,11 +7,11 @@
 // to reach it, and makes NO claim about what the service will do
 // (confidentiality and escalation vary by provider and country).
 //
-// ┌──────────────────────────────────────────────────────────────────────────┐
-// │ UNVERIFIED — drafted 2026-09-25 for the owner to check (owner decision). │
-// │ Confirm each entry against the service's own site, then set             │
-// │ `VERIFIED_ON` and record who checked it. Re-check at least yearly.      │
-// └──────────────────────────────────────────────────────────────────────────┘
+// Verified 2026-09-30 (D-23 §17): the agent read each service's own site —
+// 988lifeline.org (call and text 988), samaritans.org UK and Ireland pages
+// (116 123, free from any phone), findahelpline.com (a free directory by
+// country) — and the owner signed off. Re-check by 2027-09-30, and before any
+// entry is added or changed.
 
 export interface SupportResource {
   name: string;
@@ -23,7 +23,7 @@ export interface SupportResource {
 }
 
 /** ISO date the list was last checked by a person, or null. */
-export const VERIFIED_ON: string | null = null;
+export const VERIFIED_ON: string | null = '2026-09-30';
 
 export const SUPPORT_RESOURCES: readonly SupportResource[] = [
   { name: '988 Suicide & Crisis Lifeline', reach: 'call or text 988', href: 'tel:988', regions: ['US'] },
