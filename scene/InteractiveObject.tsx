@@ -54,6 +54,10 @@ export function InteractiveObject({
   // something is focused: a glide-only object (the window) has no panel and
   // should not blank every other label for the duration of its glide.
   const panelOpen = useInteractionStore((s) => s.panel !== null);
+  // Once the camera is looking at this object its label says nothing new, and
+  // for a glide-only object no panel arrives to hide it. So the object in
+  // focus drops its label and button, as a panel object does when it opens.
+  const inFocus = useInteractionStore((s) => s.focus === id);
   const isMobile = useSceneStore((s) => s.isMobile);
 
   const disarm = () => {
@@ -119,13 +123,13 @@ export function InteractiveObject({
     onActivate?.();
   };
 
-  const showLabel = Boolean(label) && !panelOpen && (hovered || armed);
+  const showLabel = Boolean(label) && !panelOpen && !inFocus && (hovered || armed);
 
   return (
     <group onPointerOver={enter} onPointerOut={leave} onClick={click}>
       {children}
 
-      {onActivate && !panelOpen && (
+      {onActivate && !panelOpen && !inFocus && (
         <Html position={labelPosition} transform={false} prepend center style={{ pointerEvents: 'none' }}>
           <button
             type="button"

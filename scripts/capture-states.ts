@@ -38,6 +38,8 @@ interface SceneState {
   viewport: { width: number; height: number };
   /** 03-motion.md: under reduced motion ambient motion is REMOVED, not slowed. */
   reducedMotion?: boolean;
+  /** An object to activate from the keyboard once the room is ready: its label. */
+  activate?: string;
 }
 
 /**
@@ -48,6 +50,7 @@ const STATES: SceneState[] = [
   { name: 'room-rest-desktop', route: '/', viewport: { width: 1600, height: 1000 } },
   { name: 'room-rest-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, reducedMotion: true },
   { name: 'room-rest-mobile', route: '/', viewport: { width: 390, height: 844 } },
+  { name: 'room-window-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window' },
   { name: 'text-surface-desktop', route: '/text', viewport: { width: 1600, height: 1000 } },
   { name: 'text-surface-mobile', route: '/text', viewport: { width: 390, height: 844 } },
 ];
@@ -100,6 +103,12 @@ async function capture(browser: Browser, state: SceneState): Promise<void> {
       undefined,
       { timeout: 60000 },
     );
+  }
+
+  // The same path a keyboard user takes: the object's hidden button, then Enter.
+  if (state.activate) {
+    await page.locator(`button[aria-label="${state.activate}"]`).focus();
+    await page.keyboard.press('Enter');
   }
 
   await page.waitForTimeout(SETTLE_MS);

@@ -206,8 +206,17 @@ export function RoomScene() {
       >
         <WallGrid />
       </InteractiveObject>
-      {/* Right wall, in the opening RoomShell is built around (04-room-spec §6). */}
-      <Window position={[1.98, 1.0, WINDOW_Z]} rotation={[0, -Math.PI / 2, 0]} />
+      {/* Right wall, in the opening RoomShell is built around (04-room-spec §6).
+          Glide only (08 §4, build plan A5.1): the camera goes to look out and
+          no panel opens. Only the door leads anywhere, so nothing follows. */}
+      <InteractiveObject
+        id="window"
+        label="window"
+        labelPosition={[1.9, 1.0, WINDOW_Z]}
+        onActivate={() => focusObject('window', null)}
+      >
+        <Window position={[1.98, 1.0, WINDOW_Z]} rotation={[0, -Math.PI / 2, 0]} />
+      </InteractiveObject>
       <DustMotes />
 
       <CameraRig />
