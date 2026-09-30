@@ -349,6 +349,10 @@ Changing a prompt means **adding `_V2` alongside `_V1`**, not editing `_V1` in
 place. Record which version produced a row where the output is user-visible, so
 a regression can be traced to a prompt change rather than guessed at.
 
+> **Built, 2026-09-30 (D-23 §15, migration 024):** `user_actions.prompt_version`
+> and `journal_entries.prompt_version` hold the version string; null means no
+> prompt wrote the row (a curated fallback, or a mood-only save).
+
 ```
 lib/prompts/
   contentExtraction.ts    CONTENT_EXTRACTION_V1

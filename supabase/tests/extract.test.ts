@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 
 import { extractAction } from '../../lib/agents/extract.ts';
 import { FALLBACK_SOURCE_SUMMARY } from '../../lib/prompts/fallbacks.ts';
+import { AGENTS } from '../../lib/prompts/index.ts';
 import { brokenService, deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
 import { admin, createUser, deleteUsers } from './harness.ts';
 
@@ -24,6 +25,7 @@ describe('extraction agent', () => {
 
     const { data } = await admin.from('user_actions').select().eq('user_id', u.id).single();
     assert.equal(data?.source_summary, FALLBACK_SOURCE_SUMMARY);
+    assert.equal(data?.prompt_version, null, 'a curated fallback was written by no prompt (024)');
 
     const log = await lastLog(u.id, 'content_extraction_agent');
     assert.equal(log.latest?.success, false);
@@ -49,6 +51,10 @@ describe('extraction agent', () => {
       { success: true, error_code: null, input_tokens: 321 },
     );
     assert.ok(!JSON.stringify(log.latest).includes('PASTED-ARTICLE-BODY'));
+
+    // 04 §7, 024: the row names the prompt version that wrote it.
+    const { data: row } = await admin.from('user_actions').select('prompt_version').eq('user_id', u.id).single();
+    assert.equal(row?.prompt_version, AGENTS.content_extraction_agent.prompt.version);
   });
 
   it('an unreadable URL never reaches the model and still yields an action', async () => {

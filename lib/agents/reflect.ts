@@ -154,6 +154,8 @@ export async function reflectOnEntry(deps: ReflectDeps, rawInput: unknown): Prom
         ai_emotion: run.output.primary_emotion,
         ai_strength: run.output.strength,
         ai_next_action: run.output.next_action,
+        // 04 §7, 024: which prompt wrote these four fields.
+        prompt_version: prompt.version,
       })
       .eq('user_id', userId)
       .eq('date', today);

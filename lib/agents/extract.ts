@@ -129,6 +129,8 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
       action_text: extracted.action,
       source_url: url ?? null,
       source_summary: extracted.summary,
+      // 04 §7, 024: which prompt wrote this action; null for a curated fallback.
+      prompt_version: run?.ok ? prompt.version : null,
     })
     .select('id, action_text, source_summary, source_url')
     .single();

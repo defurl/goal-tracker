@@ -12,6 +12,7 @@ import { execFileSync } from 'node:child_process';
 
 import { reflectOnEntry } from '../../lib/agents/reflect.ts';
 import { GENTLE_REFLECTION } from '../../lib/prompts/fallbacks.ts';
+import { AGENTS } from '../../lib/prompts/index.ts';
 import { brokenService, deps, lastLog, networkBlocked, neverCalled, scripted } from './agentHarness.ts';
 import { admin, createUser, deleteUsers } from './harness.ts';
 
@@ -40,8 +41,8 @@ describe('journal agent', () => {
 
     const { data } = await admin.from('journal_entries').select().eq('user_id', u.id).single();
     assert.deepEqual(
-      { mood: data?.mood, mood_score: data?.mood_score, tags: data?.tags, ai_summary: data?.ai_summary },
-      { mood: 'tired', mood_score: -1, tags: ['work'], ai_summary: null },
+      { mood: data?.mood, mood_score: data?.mood_score, tags: data?.tags, ai_summary: data?.ai_summary, prompt_version: data?.prompt_version },
+      { mood: 'tired', mood_score: -1, tags: ['work'], ai_summary: null, prompt_version: null },
     );
     assert.equal((await lastLog(u.id, 'journal_analysis_agent')).latest?.error_code, 'PROVIDER_ERROR');
   });
@@ -129,8 +130,10 @@ describe('THE GATE — AC-3.2: a dump after a reflection holds no fragment of th
     // the pipeline's doing, not a test that never sent it.
     assert.equal(p.requests[0]?.user, entry);
 
-    const { data: stored } = await admin.from('journal_entries').select('ai_summary').eq('user_id', u.id).single();
+    const { data: stored } = await admin.from('journal_entries').select('ai_summary, prompt_version').eq('user_id', u.id).single();
     assert.equal(stored?.ai_summary, REFLECTION.summary);
+    // 04 §7, 024: the four ai_* fields name the prompt version that wrote them.
+    assert.equal(stored?.prompt_version, AGENTS.journal_analysis_agent.prompt.version);
 
     // Every schema, auth and cron included — not only the tables this code writes.
     const dump = execFileSync(

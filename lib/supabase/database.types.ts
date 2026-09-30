@@ -250,6 +250,7 @@ export type Database = {
           id: string
           mood: string
           mood_score: number
+          prompt_version: string | null
           tags: string[]
           user_id: string
         }
@@ -263,6 +264,7 @@ export type Database = {
           id?: string
           mood: string
           mood_score: number
+          prompt_version?: string | null
           tags?: string[]
           user_id: string
         }
@@ -276,6 +278,7 @@ export type Database = {
           id?: string
           mood?: string
           mood_score?: number
+          prompt_version?: string | null
           tags?: string[]
           user_id?: string
         }
@@ -393,6 +396,7 @@ export type Database = {
           action_text: string
           created_at: string
           id: string
+          prompt_version: string | null
           source_summary: string
           source_url: string | null
           status: Database["public"]["Enums"]["action_status"]
@@ -402,6 +406,7 @@ export type Database = {
           action_text: string
           created_at?: string
           id?: string
+          prompt_version?: string | null
           source_summary: string
           source_url?: string | null
           status?: Database["public"]["Enums"]["action_status"]
@@ -411,6 +416,7 @@ export type Database = {
           action_text?: string
           created_at?: string
           id?: string
+          prompt_version?: string | null
           source_summary?: string
           source_url?: string | null
           status?: Database["public"]["Enums"]["action_status"]
