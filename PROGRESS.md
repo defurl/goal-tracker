@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **done — A5.1–A5.9, gate TRUE** (the window, the timer, the steam, the daylit window, the bonsai rewired and moved, the hall behind the door with its history, and that history on /text; every sky band pinned in CI) (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **done — A5.1–A5.9, gate TRUE** (the window, the timer, the steam, the daylit window, the bonsai rewired and moved, the hall behind the door with its history, and that history on /text; every sky band pinned in CI) (D-24) | **done** — B5.1 (plans) and B5.2 (account deletion) (D-24); 025 on the hosted project 2026-10-01 |
 
 **CI is green with five jobs** (run 36737013095, A5.8): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,8 +32,8 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is done** (2026-09-30): Track A (A5.1–A5.9) and Track B (B5.1,
-B5.2), gate TRUE. What is left is the owner's: push 025 to the hosted
-project, deploy, and look over the PROPOSED values below. Then the UI phase,
+B5.2), gate TRUE. What is left is the owner's: deploy, and look over the
+PROPOSED values below. Then the UI phase,
 which the owner reviews and partly designs. Reminders stay unsent.
 - **The Phase 5 gate.** Lighting TRUE in all five sky bands: dusk (18:00) and
   the evening (21:00) are now pinned captures, lighting-tested in CI beside
@@ -168,8 +168,7 @@ day until the next check-off (`log_habit()` is the only place it is computed).
 - **B5.1:** `user_plans` (025), read-only to its owner and made by
   `handle_new_user()`; the rate limiter reads the cap from the plan, and a
   missing or unreadable plan reads as `free`. Database 80/80 (13 tables in the
-  isolation gate). **025 is not on the hosted project yet**: the owner decides
-  when to push it.
+  isolation gate). 025 is on the hosted project (2026-10-01).
 - **A5.1:** the window glides and opens nothing; the object in focus drops its
   label and keyboard button, as a panel object does when its panel opens.
   Escape and "back to the desk" return. Lighting TRUE, effects on and off;
@@ -197,9 +196,10 @@ Found while planning, for the task that touches them:
   `[-0.55, 0, 0.15]`, inside the lamp pool beside the bonsai; A5.6 may move both.
 
 Earlier, still true:
-1. **Migrations 022–024 are on the hosted project** (pushed 2026-09-30 at the
-   owner's request; `db push --dry-run` now reports it up to date, and
-   `prompt_version` answers on both tables). The app can be deployed.
+1. **Migrations 001–025 are on the hosted project** (022–024 pushed
+   2026-09-30 and 025 on 2026-10-01, each at the owner's request; `db push
+   --dry-run` reports it up to date). After 025, an anon read of `user_plans`
+   returns `[]` and an anon insert is refused (42501). The app can be deployed.
 2. **`GENTLE_SUPPORT_REFLECTION` is signed off** (owner, 2026-09-30): the
    reflection shown when the journal agent flagged distress but its words
    quoted the entry (`lib/prompts/fallbacks.ts`).
