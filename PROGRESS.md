@@ -32,8 +32,13 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.6 done and goes on at A5.7, the door scene's design note for
-the owner (no door-scene code before it is approved).
+has A5.1–A5.6 done. **A5.7's design note is written and awaits the owner**:
+`design-system/13-door-scene.md` and `13-hall-lighting-plan.svg`, both
+PROPOSED, with five questions in §9. No door-scene code before it is approved.
+The note also fixes two gaps the research found: the store has no per-habit
+history (only the combined day grid, which includes archived habits' days
+while `habits` excludes them), and the stored `streak` is stale after a missed
+day until the next check-off (`log_habit()` is the only place it is computed).
 - **A5.6:** the bonsai is at `[-0.6, 0, 0.2]` and the mug at
   `[-0.46, 0, -0.06]` (owner's pick, D-11 amended). At rest: pool 0.250
   (0.248 before the tree existed), keyboard 20.4 % (as then), pool peak 0.682
