@@ -6,6 +6,12 @@
   right: var(--step-3);
   bottom: var(--step-3);
   z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--step-1);
+  /* Armed, the delete label is long; on a phone the pair wraps, not overflows. */
+  max-width: calc(100vw - 2 * var(--step-3));
 }
 
 .control {

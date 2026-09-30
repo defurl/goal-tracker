@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
   throw new Error('app/api/_lib/server.ts was bundled for the browser.');
 }
 
-/** Bypasses RLS. For rate_limits and agent_logs, which have no user write path. */
+/** Bypasses RLS. For rate_limits, agent_logs and user_plans, which have no user write path, and for deleting an account. */
 export function serviceClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
   return createSupabaseClient<Database>(supabaseUrl, key, {

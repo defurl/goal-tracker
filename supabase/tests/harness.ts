@@ -88,3 +88,24 @@ export async function seed<T extends Record<string, unknown>>(
 
 /** Postgres' insufficient_privilege — what an RLS violation surfaces as. */
 export const RLS_DENIED = '42501';
+
+/**
+ * Every table that holds a user's rows, and the column naming the user. The
+ * isolation gate attacks each one and the deletion test empties each one, so a
+ * new table goes here or both tests fail to cover it.
+ */
+export const USER_TABLES = {
+  profiles: 'id',
+  user_actions: 'user_id',
+  daily_challenges: 'user_id',
+  habits: 'user_id',
+  habit_logs: 'user_id',
+  point_ledger: 'user_id',
+  glow_points: 'user_id',
+  journal_entries: 'user_id',
+  goals: 'user_id',
+  milestones: 'user_id',
+  agent_logs: 'user_id',
+  rate_limits: 'user_id',
+  user_plans: 'user_id',
+} as const;

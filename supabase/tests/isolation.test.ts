@@ -20,7 +20,7 @@
 import { after, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { admin, createUser, deleteUsers, RLS_DENIED, seed, type TestUser } from './harness.ts';
+import { admin, createUser, deleteUsers, RLS_DENIED, seed, USER_TABLES, type TestUser } from './harness.ts';
 
 type Row = Record<string, unknown>;
 
@@ -170,11 +170,7 @@ it('control: A is signed in and can read its own profile', async () => {
   assert.equal(data?.length, 1, 'A cannot see its own profile — the session is not live');
 });
 
-const TABLES = [
-  'profiles', 'user_actions', 'daily_challenges', 'habits', 'habit_logs', 'point_ledger',
-  'glow_points', 'journal_entries', 'goals', 'milestones', 'agent_logs', 'rate_limits',
-  'user_plans',
-] as const;
+const TABLES = Object.keys(USER_TABLES);
 
 describe('cross-user isolation: A attempts every table as B', () => {
   it('covers all thirteen tables', () => {
