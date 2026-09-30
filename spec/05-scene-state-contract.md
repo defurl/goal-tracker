@@ -171,6 +171,7 @@ lerps; nothing pops.** Under `prefersReducedMotion`, every lerp snaps (`k = 1`).
 | `goals[].progress` | Monitor 2 canvas texture | redraw on change | n/a — discrete |
 | `journal.todayLogged` | Notebook emissive | `false → 0.0`, `true → 0.15` (barely lit) | `k = 0.05` |
 | `localHour` | Window sky plane `{color, intensity}` | lookup table, §5 | `k = 0.05` |
+| `localHour` | Window rim light intensity (A5.4, D-24 §9) | `RIM_STATES` in `lib/sky.ts`: 1.2 after dark, 1.8 dawn, 2.5 day | `k = 0.05` |
 | `focusMode` | Ambient audio gain | `0 → 0.3` | 600 ms |
 | `localHour` | Mug steam opacity (A5.3, D-18) | dawn band (05–08) `→` up to 0.08, other hours `→ 0`; removed under reduced motion | `k = 0.05` |
 
@@ -241,6 +242,13 @@ const SKY_STATES: Record<Band, { color: string; intensity: number }> = {
 Even `day` keeps the interior dark — the window brightens, the room does not.
 The rim light may rise slightly with it; if it does, re-run the lighting
 acceptance test at both extremes.
+
+> **Amendment, 2026-09-30 (D-24 §9, A5.4).** The window is daylit, option 2 of
+> `../design-system/12-habit-tracker-adaptation.md` §6. `day` is
+> `GLOW_COOL_SOFT` at 4.0, not 1.4, and the rim rises to 2.5 by day, 1.8 at
+> dawn, and stays at the rig's 1.2 after dark (§3). Both PROPOSED. The
+> acceptance test reads TRUE at noon and midnight, effects on and off, and CI
+> runs it at both.
 
 The city plane below keeps its portfolio behaviour: base `GLOW_COOL_SOFT`,
 lerped **only 5 %** toward a target. Do not repurpose it for BBE state — it is

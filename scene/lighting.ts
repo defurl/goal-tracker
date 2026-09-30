@@ -60,6 +60,8 @@ export const MONITOR_FILL_PENUMBRA = 0.7;
 // Also needs an Object3D target.
 export const WINDOW_RIM_POSITION = [1.4, 1.0, -0.6] as const;
 export const WINDOW_RIM_TARGET = [0, 0.5, 0] as const;
+// The after-dark value, and the one the acceptance test was tuned on. Since
+// A5.4 the rim rises by day (lib/sky.ts RIM_STATES, scene/WindowRim.tsx).
 export const WINDOW_RIM_INTENSITY = 1.2;
 
 // ── DOOR SPILL: off-frame warm ───────────────────────────────────────────────

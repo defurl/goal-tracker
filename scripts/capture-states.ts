@@ -61,6 +61,14 @@ const STATES: SceneState[] = [
   { name: 'room-window-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window' },
   // Mid-dawn: the one band with steam on the mug (A5.3).
   { name: 'room-dawn-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 6 },
+  // The daylit window's two extremes (A5.4, D-24 §9): the sky and rim at their
+  // brightest, and at their darkest.
+  { name: 'room-noon-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 12 },
+  { name: 'room-midnight-desktop', route: '/', viewport: { width: 1600, height: 1000 }, hour: 0 },
+  { name: 'room-noon-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, hour: 12, reducedMotion: true },
+  { name: 'room-midnight-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, hour: 0, reducedMotion: true },
+  // At rest only the city strip is in frame; this is where the day sky shows.
+  { name: 'room-window-noon-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window', hour: 12 },
   { name: 'text-surface-desktop', route: '/text', viewport: { width: 1600, height: 1000 } },
   { name: 'text-surface-mobile', route: '/text', viewport: { width: 390, height: 844 } },
 ];

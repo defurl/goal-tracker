@@ -25,14 +25,13 @@ import {
   MONITOR_FILL_PENUMBRA,
   MONITOR_FILL_POSITIONS,
   MONITOR_FILL_TARGETS,
-  WINDOW_RIM_INTENSITY,
-  WINDOW_RIM_POSITION,
   WINDOW_RIM_TARGET,
 } from './lighting';
-import { BG_NIGHT, GLOW_COOL, GLOW_COOL_SOFT, LAMP_WARM } from '../lib/style/colors';
+import { BG_NIGHT, GLOW_COOL, LAMP_WARM } from '../lib/style/colors';
 import { CameraRig } from './CameraRig';
 import { Effects } from './Effects';
 import { InteractiveObject } from './InteractiveObject';
+import { WindowRim } from './WindowRim';
 import { useInteractionStore } from '../lib/stores/interaction';
 import { RoomShell, WINDOW_Z } from './objects/RoomShell';
 import { AndoWallDetails } from './objects/AndoWallDetails';
@@ -110,14 +109,10 @@ export function RoomScene() {
         </group>
       ))}
 
-      {/* RIM — the window. Cool separation edge on right-hand faces. */}
+      {/* RIM — the window. Cool separation edge on right-hand faces, rising
+          with daylight (A5.4). */}
       <primitive object={rimTarget} />
-      <directionalLight
-        position={WINDOW_RIM_POSITION}
-        target={rimTarget}
-        color={GLOW_COOL_SOFT}
-        intensity={WINDOW_RIM_INTENSITY}
-      />
+      <WindowRim target={rimTarget} />
 
       {/* DOOR SPILL — off-frame warm. There is no door geometry: this light IS
           the doorway. A light source off-frame implies a space off-frame. */}

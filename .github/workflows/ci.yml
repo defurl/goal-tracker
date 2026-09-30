@@ -124,6 +124,17 @@ jobs:
       - name: Lighting acceptance test, at dawn (mug steam, A5.3)
         run: pnpm lighting:test ci room-dawn-desktop
 
+      # The daylit window's extremes (A5.4): brightest sky and rim, and darkest.
+      - name: Lighting acceptance test, noon, effects on and off
+        run: |
+          pnpm lighting:test ci room-noon-desktop
+          pnpm lighting:test ci room-noon-desktop-reduced-motion
+
+      - name: Lighting acceptance test, midnight, effects on and off
+        run: |
+          pnpm lighting:test ci room-midnight-desktop
+          pnpm lighting:test ci room-midnight-desktop-reduced-motion
+
       # Build plan 4.2. Here rather than in its own job because it needs the
       # same thing the capture does: a built server and a WebGL-capable browser.
       - name: Accessibility smoke (axe-core)

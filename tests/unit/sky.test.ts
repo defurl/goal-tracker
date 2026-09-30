@@ -3,7 +3,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { SKY_STATES, skyBand } from '../../lib/sky.ts';
+import { RIM_STATES, SKY_STATES, skyBand } from '../../lib/sky.ts';
+import { WINDOW_RIM_INTENSITY } from '../../scene/lighting.ts';
 import { LAMP_WARM } from '../../lib/style/colors.ts';
 
 test('every band starts on its hour', () => {
@@ -46,4 +47,14 @@ test('the warm band stays under the bloom threshold (D-23 §12)', () => {
   const warm = Object.values(SKY_STATES).filter((s) => s.color === LAMP_WARM);
   assert.ok(warm.length > 0);
   for (const state of warm) assert.ok(luminance(state.color) * state.intensity < 0.1, JSON.stringify(state));
+});
+
+test('after dark the rim is the rig the acceptance test was tuned on (A5.4)', () => {
+  for (const band of ['night', 'evening', 'dusk'] as const) assert.equal(RIM_STATES[band], WINDOW_RIM_INTENSITY, band);
+});
+
+test('daylight only ever adds to the rim, and day is the most (12 §6 option 2)', () => {
+  for (const value of Object.values(RIM_STATES)) assert.ok(value >= WINDOW_RIM_INTENSITY);
+  assert.equal(Math.max(...Object.values(RIM_STATES)), RIM_STATES.day);
+  assert.ok(RIM_STATES.day <= 2.5, 'option 2 says ~2.5');
 });
