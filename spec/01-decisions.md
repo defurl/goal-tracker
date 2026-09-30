@@ -20,9 +20,9 @@
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
-Phase 4 raised.
+Phase 4 raised. D-23 settles what Phase 3 left open.
 
-All twenty-two are **LOCKED**. There are no open questions.
+All twenty-three are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -469,7 +469,7 @@ bonsai — not the screen.
 ## Open questions
 
 **None currently open.** Every question raised during the spec pass has been
-decided; D-01 to D-22 are the complete set.
+decided; D-01 to D-23 are the complete set.
 
 Three things remain marked **PROPOSED** in other documents. They are reasoned
 defaults, not open questions — build against them, and flag them in your PR so
@@ -581,6 +581,58 @@ signed-in room. Each is a rule from here on, not a one-off.
    D-19 amendment). Per-user limits for free users are future work.
 
 **Consequence.** Build-plan rows 4.5 and 4.7 are read through this entry.
+
+### D-23 · Phase 3 settlements — **LOCKED** (owner-approved 2026-09-30)
+
+**Context.** Phase 3 left values PROPOSED and questions raised in
+`PROGRESS.md` (the 2026-09-25 and 2026-09-28 entries). The owner settled them
+after the signed-in walk. What was built as proposed is now locked; what is
+listed as work is to be built.
+
+**Locked as built**
+1. **The bonsai stays at D-11's position** until the bonsai rework (below).
+   The pool peak of 0.945 against criterion 5's < 1 is accepted until then.
+2. **Leaf tone `DATA_GREEN × 0.25`, tree scaled 0.88.** The spec's 0.35 clipped
+   to lime-white under the bulb.
+3. **Eight base leaves, always.** A bare tree reads as dead (the wilting-plant
+   anti-pattern). Earned leaves grow on top; none is ever taken away.
+4. **The droplet means a new leaf,** not every completion — spec/05 maps only
+   `leafCount` to the bonsai.
+5. **The wall tracker is 53 × 7 at a 2.5 cm pitch,** oldest first, column by
+   column, today last, rows not aligned to weekdays. **Kept days glow at 0.1**,
+   today at 0.9: texture at rest, legible on approach.
+6. **The phone lies face up;** its screen is 0.35 at rest and 1.1 while
+   importing.
+7. **The import panel closes itself 3 s after a success,** cancelled by any
+   touch or key in it.
+8. **Monitor 1's text is dark ink on the glow;** the journal's glow is the
+   notebook bookmark, in `SIGNAL` at 0.15.
+9. **Audio has its own budget, ≤ 100 KB gz,** loaded on the first "sound on"
+   and never in the shell — a third budget beside D-10's two.
+10. **`/text` has no sound.** Ambient audio belongs to the room.
+
+**To build**
+11. **The window comes into the rest frame,** so it peeks past the monitors'
+    right edge at 16:10 as `04-room-spec` intends. Lighting test re-run.
+12. **Dusk's sky stays under the bloom threshold,** so the right edge still
+    reads cool on a frame wide enough to show the window.
+13. **`habit_logs` and `daily_challenges` are read-only to their owner;** every
+    write goes through the server functions. Closes streak backfilling and
+    resetting the roll cap (D-15).
+14. **Goal completions award points at most once per user per day,** in
+    `award_points()`.
+15. **Every stored AI row records its prompt version** (04 §7), in a column.
+16. **The journal summary never quotes the entry.** A prompt rule, and a
+    server-side check that falls back to the default reflection when the
+    output shares a long run of words with the entry (FR-3.6).
+17. **The support resources are checked against each service's own site** by
+    the agent and signed off by the owner before `VERIFIED_ON` is set (D-13).
+
+**Backlog, not built**
+- the bonsai rework: the droplet and growth animation, and the tree's place in
+  the pool
+- the headphones' two-minute timer (spec/00)
+- the window as a glide-only object (08 §4)
 
 ---
 
