@@ -283,6 +283,28 @@ describe('set_milestone() — 021', () => {
     await u.client.rpc('set_milestone', { p_milestone_id: m2.id, p_complete: true });
     assert.equal(await total(u.id), 100);
   });
+
+  it('awards one goal a day; a second pays out when completed on a later day (023, D-23 §14)', async () => {
+    const u = await createUser('goal-farm');
+    const oneMilestoneGoal = async (title: string) => {
+      const goal = await seed<{ id: string }>('goals', {
+        user_id: u.id, title, start_date: utcDay(-5), target_date: utcDay(30),
+      });
+      return seed<{ id: string }>('milestones', { goal_id: goal.id, user_id: u.id, title });
+    };
+    const first = await oneMilestoneGoal('first');
+    const second = await oneMilestoneGoal('second');
+
+    await u.client.rpc('set_milestone', { p_milestone_id: first.id, p_complete: true });
+    await u.client.rpc('set_milestone', { p_milestone_id: second.id, p_complete: true });
+    assert.equal(await total(u.id), 100, 'the second goal the same day awards nothing');
+
+    // Move today's award into the past: it is now "yesterday's goal".
+    await admin.from('point_ledger').update({ date: utcDay(-1) }).eq('user_id', u.id);
+    await u.client.rpc('set_milestone', { p_milestone_id: second.id, p_complete: false });
+    await u.client.rpc('set_milestone', { p_milestone_id: second.id, p_complete: true });
+    assert.equal(await total(u.id), 200, 'the second goal pays out on a later day');
+  });
 });
 
 describe('the write paths act only on the caller’s own rows', () => {
