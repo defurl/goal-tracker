@@ -16,9 +16,9 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1–A5.8 done (… the door scene built: the hall, its history wall and panel); A5.9, history on /text, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **done — A5.1–A5.9, gate TRUE** (the window, the timer, the steam, the daylit window, the bonsai rewired and moved, the hall behind the door with its history, and that history on /text; every sky band pinned in CI) (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
-**CI is green with five jobs** (run 36564302228): `verify`, `database`,
+**CI is green with five jobs** (run 36737013095, A5.8): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
 off, then `a11y:check`, `motion:check`, `offline:check`) and `lighthouse`
 (`lh:check mobile`: /text and auth, no warnings). Every action is on a Node 24
@@ -31,8 +31,38 @@ looks like; this file stays the state.
 
 ### Next session
 
-**Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.8 done; A5.9 (history on /text) is the last Phase 5 task.
+**Phase 5 is done** (2026-09-30): Track A (A5.1–A5.9) and Track B (B5.1,
+B5.2), gate TRUE. What is left is the owner's: push 025 to the hosted
+project, deploy, and look over the PROPOSED values below. Then the UI phase,
+which the owner reviews and partly designs. Reminders stay unsent.
+- **The Phase 5 gate.** Lighting TRUE in all five sky bands: dusk (18:00) and
+  the evening (21:00) are now pinned captures, lighting-tested in CI beside
+  dawn, noon and midnight. In every room state the pool peak is at most 0.687,
+  and all four hall states are TRUE, effects on and off. Scene 240.8 / 320 KB
+  with the shell three-free; a11y, motion and offline pass, and cover the hall
+  and /text's history. The new spec/05 §3 rows (steam, rim, history, the hall
+  tree) are wired.
+- **A5.9, history on /text** (2026-09-30). A History section, last on the
+  page, holds the hall panel's list (`HistoryList`, now given a `surface`).
+  Under each habit, its last twelve weeks as a strip: 84 days, a week to a
+  column, today last, kept days in `--signal`. There is no strip when nothing
+  was kept in those weeks — an archived habit months gone would be 84 empty
+  cells. The read waits until the section is within 200 px of the screen.
+  Walked signed in as a throwaway local user with a seeded year, at 390 and
+  1280 px:
+  - no history read before scrolling, one after;
+  - strip counts match the seed (walk 64, gym 33), and the Mon/Wed/Fri habit
+    reads as rows;
+  - axe is clean on the whole page signed in, which `a11y:check` (signed
+    out) cannot see;
+  - no horizontal overflow, and the page's end clears the corner.
+
+  `offline:check` now expects the Focus and History sections too. Lighthouse
+  /text is 0.99 median both before and after, CLS 0, TBT within this
+  machine's noise.
+  **PROPOSED, for the owner's eye:** the welcome copy ("Your kept days will
+  gather here."), the 0.7 rem cell, and the full `--signal` fill, which is
+  louder than the hall's wall.
 - **A5.8, the hall** (2026-09-30), design-system/13 with an "as built"
   section (§10) recording every value the build moved and why. The room's
   floor spill is a door ("step through"): glide, fade, the canvas swaps to
