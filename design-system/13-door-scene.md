@@ -237,7 +237,7 @@ styles). No 3D, no three.js (D-10).
 
 ---
 
-## 10. As built (A5.8, 2026-09-30)
+## 10. As built (A5.8–A5.9, 2026-09-30)
 
 The build tuned the starting values against §5's test. Where it moved, why:
 
@@ -271,6 +271,18 @@ habit); under reduced motion the fade is a **cut**, because the global CSS
 escape hatch collapses every transition (03-motion principle 5), not the
 crossfade §7 described; the tree shows 8 base leaves signed out, as the desk's
 does.
+
+**/text, as built (A5.9).** The History section is last on the page — every
+section above it is something to do today — and its read waits until the
+section nears the screen, so a visit that never scrolls there never pays for
+it. The strip is the `.calendar` turned on its side: 84 days, a week to a
+column, today last, so every seventh day shares a row (not aligned to
+Sunday, as the journal's calendar is not). Kept is `--signal`; anything else
+is an empty cell. Twelve weeks with nothing kept draw no strip at all — an
+archived habit months gone, or one begun today, would otherwise be 84 empty
+cells (X-1). To a screen reader each strip is one image: "Gym, the last
+twelve weeks: kept 33 days". The welcome, with no wall to point at: "Your
+kept days will gather here."
 
 ## 11. What this note does not change
 
