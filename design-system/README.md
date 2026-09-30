@@ -33,7 +33,7 @@ against the specs; consult the extracts when a spec is ambiguous.
 | 10 | `10-tech-stack.md` | project setup, dependencies, perf budget, tooling. |
 | 11 | `11-anti-patterns.md` | **before proposing anything.** Hard no list. |
 | 12 | `12-habit-tracker-adaptation.md` | applying all of the above to the new app. **Proposal, not fact.** |
-| 13 | `13-door-scene.md` | the second scene behind the door (build plan A5.7–A5.9). **PROPOSED, awaiting the owner.** Lighting plan: `13-hall-lighting-plan.svg`. |
+| 13 | `13-door-scene.md` | the second scene behind the door (build plan A5.7–A5.9). **Approved 2026-09-30; its numbers are PROPOSED until A5.8 tunes them.** Lighting plan: `13-hall-lighting-plan.svg`. |
 
 Documents 00–11 are **extracted fact** from a shipped project. Document 12 is a
 **proposal** and is meant to be argued with.

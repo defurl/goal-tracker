@@ -1,12 +1,14 @@
 # 13 — The Door Scene ("the hall")
 
-> Status: **PROPOSED** — the design note build plan A5.7 asks for, for the
-> owner to approve before any door-scene code (A5.8, A5.9). Scope is D-24 §8:
+> Status: **approved by the owner, 2026-09-30** (A5.7): the space, the
+> history's shape, archived habits and the tree are settled in §9. The numbers
+> stay **PROPOSED** starting values until A5.8 tunes them against §5. This is
+> the design note build plan A5.7 asks for before any door-scene code. Scope is
+> D-24 §8:
 > *one scene with both views: the full-size tree, in a space whose surfaces
 > carry the habit history; `/text` gets a history view in the same phase.*
 > Every number here is a starting value to be tuned against the acceptance test
-> in §5, the way the room's were. The questions the owner has to answer are in
-> §9.
+> in §5, the way the room's were.
 >
 > Lighting plan: `13-hall-lighting-plan.svg` (10-tech-stack: "make an
 > equivalent for any new scene").
@@ -66,7 +68,7 @@ desk — the owner's tree, not a new one.
 - The 0.35 m cap is the desk tree's (it keeps monitor 1 clear, D-11); it does
   not bind the hall.
 - **Glide only** (08 §4): activating the tree moves the camera to look up into
-  it; no panel. PROPOSED — see §9.
+  it; no panel (§9).
 
 ---
 
@@ -83,12 +85,14 @@ long, set into the concrete at eye height:
   recess, unlit. Today is `SIGNAL` × 0.9 on the rows that kept it. Exactly the
   room wall's states, so a kept day looks the same in both places.
 - **The longest run is the only emphasis:** its cells sit at 0.2 instead of
-  0.1. The longest streak is the number D-09 makes primary; on the wall it is a
-  slightly warmer stretch of line, never a label. PROPOSED — see §9.
+  0.1 (the 0.2 is PROPOSED). The longest streak is the number D-09 makes
+  primary; on the wall it is a slightly warmer stretch of line, never a label.
 - **Nothing marks a miss.** No red, no gap marker, no end-of-streak notch
   (11-anti-patterns, D-09). A habit with no kept days is a bare line of recesses.
 - **No numbers on the wall** (11: percentages belong in the DOM panel).
-- Archived habits: see §9.
+- **Archived habits follow the active ones**, one line each, treated exactly the
+  same — no dimming, which would read as failure. The panel labels them
+  "archived". The history stays whole.
 
 At rest the band is texture — the room's 5 % rule (spec/05 §3): nobody should
 be able to count days from the doorway. At the wall's focus pose the lines are
@@ -223,20 +227,13 @@ styles). No 3D, no three.js (D-10).
 
 ---
 
-## 9. Questions for the owner
+## 9. Settled by the owner, 2026-09-30
 
-1. **The space.** The hall as described (an interior concrete hall continuing
-   the room), or a night courtyard (open sky, the tree in the ground, history on
-   paving stones — more atmosphere, and a sky and a garden to build)?
-2. **The shape of the history.** One year-long line per habit across the wall
-   (a timeline, §4), or a 53 × 7 block per habit like the room's wall, blocks
-   side by side?
-3. **Archived habits.** On the wall after the active ones, treated the same (the
-   panel says "archived"), or left off the wall and only in the panel?
-4. **The longest run.** Marked on the wall as a slightly warmer stretch (§4), or
-   no emphasis at all?
-5. **The tree.** Glide only (§3), open the habits panel as the desk tree does,
-   or not interactive?
+1. **The space is the hall** (§2), not a night courtyard.
+2. **The history is one year-long line per habit** (§4), not a 53 × 7 block each.
+3. **Archived habits are on the wall**, after the active ones, treated the same.
+4. **The longest run is marked** as a slightly warmer stretch of its line.
+5. **The tree is glide only** — no panel.
 
 ---
 

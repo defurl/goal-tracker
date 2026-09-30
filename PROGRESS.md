@@ -16,7 +16,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 2 | done — A2.1–A2.6, gate TRUE | **done locally — B2.1–B2.9, gate TRUE** (AC-3.2 dump test, both agents usable with the provider network-blocked, `/text` free of three.js). Migrations 017–021 **not yet on the hosted project**. See the 2026-09-25 entry |
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
-| Phase 5 | **in progress** — A5.1–A5.6 done (window, focus timer, mug steam, daylit window, bonsai rewired and moved); A5.7–A5.9, the door scene, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
+| Phase 5 | **in progress** — A5.1–A5.7 done (window, focus timer, mug steam, daylit window, bonsai rewired and moved, door-scene note approved); A5.8–A5.9, the door scene's build, to go (D-24) | **done** — B5.1 (plans, 025 local only) and B5.2 (account deletion) (D-24) |
 
 **CI is green with five jobs** (run 36564302228): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -32,9 +32,12 @@ looks like; this file stays the state.
 ### Next session
 
 **Phase 5 is under way** (2026-09-30): Track B is done (B5.1, B5.2); Track A
-has A5.1–A5.6 done. **A5.7's design note is written and awaits the owner**:
-`design-system/13-door-scene.md` and `13-hall-lighting-plan.svg`, both
-PROPOSED, with five questions in §9. No door-scene code before it is approved.
+has A5.1–A5.7 done. **A5.7's design note is approved** (2026-09-30):
+`design-system/13-door-scene.md` and `13-hall-lighting-plan.svg`. The owner
+chose the hall, a year line per habit with the longest run marked, archived
+habits on the wall after the active ones, and a glide-only tree. Its numbers
+stay PROPOSED until A5.8 tunes them against its §5 test. Next: A5.8, the
+build.
 The note also fixes two gaps the research found: the store has no per-habit
 history (only the combined day grid, which includes archived habits' days
 while `habits` excludes them), and the stored `streak` is stale after a missed
