@@ -32,11 +32,9 @@ looks like; this file stays the state.
 
 **The build plan is finished.** `spec/06-build-plan.md` stops at Phase 4 and
 there is no Phase 5. What comes next is the owner's call; until then:
-1. **Owner action: push migrations 022–024 to the hosted project**
-   (`supabase db push`). Until then the hosted database still has the
-   owner-writable logs, the unbounded goal award and no `prompt_version`
-   column — and the deployed agents write `prompt_version`, so **deploy the
-   app only after the push**.
+1. **Migrations 022–024 are on the hosted project** (pushed 2026-09-30 at the
+   owner's request; `db push --dry-run` now reports it up to date, and
+   `prompt_version` answers on both tables). The app can be deployed.
 2. **Owner review:** the wording of `GENTLE_SUPPORT_REFLECTION`
    (`lib/prompts/fallbacks.ts`), shown only when the journal agent flagged
    distress but its words quoted the entry. PROPOSED; D-13 wants the owner's eye
