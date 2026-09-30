@@ -103,7 +103,7 @@ closes on completion.
 
 A daily checklist whose completions visibly grow the room.
 
-**Room binding:** the bonsai (`[-0.8, 0, 0.1]`) accumulates leaves; the back
+**Room binding:** the bonsai (`[-0.6, 0, 0.2]`, D-11 amended) accumulates leaves; the back
 wall panel grid (centre `x = -0.75, y ≈ 0.493`) shows the daily calendar.
 
 ### User stories

@@ -276,6 +276,18 @@ rest pose without the lighting risk.
 **Consequence.** The plant is retired. The door spill stays free for the Phase 2
 streak-history scene.
 
+> **Amendment, 2026-09-30 (owner decision, D-24 §5, A5.6).** The bonsai is at
+> **`[-0.6, 0, 0.2]`**, right of the lamp and forward, beside the headphones;
+> the mug moves to `[-0.46, 0, -0.06]`, behind them both. At `[-0.8, 0, 0.1]`
+> the tree stood in the lamp pool, its top leaves ~8 cm under the bulb were the
+> pool's hottest pixels (peak 0.940), and its pot covered part of the pool's
+> probe. Now, at rest, the pool is 0.250 against 0.248 before the tree
+> existed, the keyboard is 20.4 % of it as it was, and the peak is 0.682. The
+> mug could not simply take the old spot: its pale liner under the bulb clipped
+> to 1.0. Chosen from measured candidates on the owner's screenshot; still on
+> the desk, under the 0.35 m cap, with no light of its own. D-23 §1's accepted
+> exception is closed.
+
 ---
 
 ### D-12 · Icons are minimal and DOM-only — **LOCKED**

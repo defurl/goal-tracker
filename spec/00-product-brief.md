@@ -103,7 +103,7 @@ brief stands alone.
 | Monitor 2 "terminal" (cyan) | `[0.5, 0.27, -0.4]` | **Goal Dashboard.** Goals with progress and target dates. |
 | Phone | `[0.7, 0, -0.1]` | **Article Import.** URL → AI extraction → challenge. |
 | Notebook | `[-0.4, 0, 0.05]` | **Smart Journal.** Mood, tags, opt-in AI reflection. |
-| Bonsai (replaces plant) | `[-0.8, 0, 0.1]` | **Glow-up Points.** One leaf per threshold. Never wilts. Capped 0.35 m. |
+| Bonsai (replaces plant) | `[-0.6, 0, 0.2]` (D-11 amended, A5.6) | **Glow-up Points.** One leaf per threshold. Never wilts. Capped 0.35 m. |
 | Back wall panel grid | centre `x = -0.75, y ≈ 0.493` | **Habit Tracker.** 7 × N emissive quads, one per day. |
 | Headphones | `[0.85, 0.045, 0.15]` | **Focus Mode toggle.** Two-minute timer. |
 | Window | `[1.98, 1.0, -0.3]` | **Time of day.** Sky plane keyed to local time. |
