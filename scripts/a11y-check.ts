@@ -72,6 +72,18 @@ async function checkRoom(browser: Browser): Promise<void> {
   await page.context().close();
 }
 
+/** The hall behind the door (design-system/13): at rest, and with its history panel open. */
+async function checkHall(browser: Browser): Promise<void> {
+  const page = await open(browser, '/?scene=hall', DESKTOP);
+  await page.waitForSelector('[data-room-ready][data-scene="hall"]', { timeout: 90000 });
+  await scan(page, 'the hall at rest');
+  await page.getByRole('button', { name: 'the year', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', { name: 'back to the hall' }).waitFor();
+  await scan(page, 'the hall with the history panel open');
+  await page.context().close();
+}
+
 async function checkPage(browser: Browser, route: string, viewport: typeof DESKTOP, name: string): Promise<void> {
   const page = await open(browser, route, viewport);
   await scan(page, name);
@@ -88,6 +100,7 @@ async function main(): Promise<void> {
   });
   try {
     await checkRoom(browser);
+    await checkHall(browser);
     for (const route of ['/text', '/login', '/signup', '/privacy']) {
       await checkPage(browser, route, DESKTOP, `${route} desktop`);
       await checkPage(browser, route, MOBILE, `${route} mobile`);

@@ -40,7 +40,7 @@ function check(ok: boolean, what: string, detail = ''): void {
   if (!ok) failures.push(what);
 }
 
-async function openRoom(browser: Browser, reduced: boolean, hour?: number): Promise<Page> {
+async function openRoom(browser: Browser, reduced: boolean, hour?: number, scene: 'room' | 'hall' = 'room'): Promise<Page> {
   const context = await browser.newContext({
     viewport: VIEWPORT,
     deviceScaleFactor: 1,
@@ -49,8 +49,8 @@ async function openRoom(browser: Browser, reduced: boolean, hour?: number): Prom
     ...(hour === undefined ? {} : { timezoneId: zoneForHour(hour) }),
   });
   const page = await context.newPage();
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-room-ready]', { timeout: 60000 });
+  await page.goto(`${BASE_URL}/${scene === 'hall' ? '?scene=hall' : ''}`, { waitUntil: 'networkidle' });
+  await page.waitForSelector(`[data-room-ready][data-scene="${scene}"]`, { timeout: 90000 });
   // A few settled frames, so a first-frame texture upload is not mistaken for
   // motion.
   await page.waitForTimeout(1500);
@@ -107,6 +107,11 @@ async function reducedMotion(browser: Browser): Promise<void> {
   const dawn = await openRoom(browser, true, 6);
   check(await stillOverOneSecond(dawn), 'the room at dawn, the steam band, does not move');
   await dawn.context().close();
+
+  // The hall behind the door (design-system/13): nothing there moves either.
+  const hall = await openRoom(browser, true, undefined, 'hall');
+  check(await stillOverOneSecond(hall), 'the hall at rest does not move');
+  await hall.context().close();
 }
 
 async function control(browser: Browser): Promise<void> {

@@ -19,6 +19,10 @@
  * Usage:
  *   pnpm lighting:test                                    effects on
  *   pnpm lighting:test local room-rest-desktop-reduced-motion   effects off
+ *   pnpm lighting:test local hall-noon-desktop             the hall (13 §5)
+ *
+ * A capture named `hall-…` is measured against the hall's own five criteria
+ * (design-system/13 §5), with its own regions: the same roles, another room.
  */
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -46,7 +50,7 @@ interface Box {
  * Sample regions. Fractions, not pixels, so a change of capture size does not
  * silently move every probe off its subject.
  */
-const REGIONS: Record<string, Box> = {
+const ROOM_REGIONS: Record<string, Box> = {
   // The desk top under the lamp, left of the monitors.
   lampPool: { x0: 0.24, y0: 0.6, x1: 0.33, y1: 0.7 },
   // Left and right thirds, for the warm/cool split.
@@ -61,6 +65,30 @@ const REGIONS: Record<string, Box> = {
   monitor1: { x0: 0.36, y0: 0.42, x1: 0.5, y1: 0.54 },
   monitor2: { x0: 0.56, y0: 0.43, x1: 0.69, y1: 0.54 },
 };
+
+/**
+ * The hall at its arrival pose (13 §5, §6), placed on a 1600x1000 capture and
+ * checked against it, 2026-09-30. The tree stands left of centre under its
+ * pendant; the doorway back to the room is the warm opening at the left edge;
+ * the history band crosses the wall at eye height; the clerestory is the slot
+ * at the right edge.
+ */
+const HALL_REGIONS: Record<string, Box> = {
+  // The tree and the floor under the pendant: the key light's subject.
+  treePool: { x0: 0.33, y0: 0.42, x1: 0.58, y1: 0.92 },
+  // The floor inside the doorway, where the room's light lands (criterion 3).
+  doorwayFloor: { x0: 0.0, y0: 0.73, x1: 0.07, y1: 0.82 },
+  // The doorway itself: its lit jamb and the passage beyond.
+  doorway: { x0: 0.0, y0: 0.25, x1: 0.07, y1: 0.7 },
+  // The history band at rest (criterion 4).
+  band: { x0: 0.11, y0: 0.37, x1: 0.82, y1: 0.4 },
+  clerestory: { x0: 0.94, y0: 0.16, x1: 0.99, y1: 0.5 },
+  leftThird: { x0: 0.0, y0: 0.0, x1: 0.33, y1: 1.0 },
+  rightThird: { x0: 0.67, y0: 0.0, x1: 1.0, y1: 1.0 },
+};
+
+const HALL = STATE.startsWith('hall-');
+const REGIONS = HALL ? HALL_REGIONS : ROOM_REGIONS;
 
 interface Sample {
   /** Mean relative luminance, 0..1. */
@@ -153,6 +181,80 @@ async function main(): Promise<void> {
     return s;
   };
 
+  const results = HALL ? hallResults(r, frameMax) : roomResults(r, frameMax);
+
+  let failed = 0;
+  for (const [i, res] of results.entries()) {
+    const mark = res.pass ? 'TRUE ' : 'FALSE';
+    if (!res.pass) failed += 1;
+    console.log(`  ${i + 1}. ${mark}  ${res.criterion}`);
+    console.log(`            ${res.evidence}`);
+  }
+
+  if (failed > 0) {
+    console.error(`\nlighting:test: ${failed} of 5 criteria FAILED.`);
+    process.exit(1);
+  }
+  console.log('\nlighting:test: all five criteria read TRUE.');
+}
+
+interface Result {
+  criterion: string;
+  pass: boolean;
+  evidence: string;
+}
+
+/**
+ * The hall's five (13 §5). The room's first three and fifth carry over with
+ * the hall's subjects; the fourth replaces the keyboard, which has no subject
+ * here: the history band must be texture at rest, at most 40 % of the pool.
+ * Its legibility up close needs a signed-in history, which CI does not have,
+ * so that is measured on a seeded local walk and recorded in PROGRESS.md.
+ */
+function hallResults(r: (name: string) => Sample, frameMax: number): Result[] {
+  const pool = r('treePool');
+  const doorwayFloor = r('doorwayFloor');
+  const doorway = r('doorway');
+  const band = r('band');
+  const clerestory = r('clerestory');
+  const left = r('leftThird');
+  const right = r('rightThird');
+  return [
+    {
+      criterion: "the tree's pool is the brightest area in frame",
+      pass:
+        pool.lum > band.lum &&
+        pool.lum > clerestory.lum &&
+        pool.lum > doorway.lum &&
+        pool.lum > doorwayFloor.lum,
+      evidence:
+        `pool ${pool.lum.toFixed(4)} vs band ${band.lum.toFixed(4)}, clerestory ${clerestory.lum.toFixed(4)}, ` +
+        `doorway ${doorway.lum.toFixed(4)} and its floor ${doorwayFloor.lum.toFixed(4)}; frame peak ${frameMax.toFixed(3)}`,
+    },
+    {
+      criterion: 'the right edge reads cooler than the left',
+      pass: right.warmth < left.warmth,
+      evidence: `warmth left ${left.warmth.toFixed(1)} vs right ${right.warmth.toFixed(1)} (R-B)`,
+    },
+    {
+      criterion: 'a warm rectangle lies on the floor at camera-left, the doorway back',
+      pass: doorwayFloor.lum > 0.002 && doorwayFloor.warmth > 0,
+      evidence: `doorway floor lum ${doorwayFloor.lum.toFixed(4)}, warmth ${doorwayFloor.warmth.toFixed(1)}`,
+    },
+    {
+      criterion: 'the history wall is texture at rest (the band at most 40% of the pool)',
+      pass: band.lum <= 0.4 * pool.lum,
+      evidence: `band ${pct(band.lum / pool.lum)} of the pool`,
+    },
+    {
+      criterion: 'no object is pure black and none is ambient-flooded',
+      pass: pool.lum > 0 && clerestory.lum > 0 && pool.peak < 1,
+      evidence: `clerestory lum ${clerestory.lum.toFixed(4)}, pool peak ${pool.peak.toFixed(3)}`,
+    },
+  ];
+}
+
+function roomResults(r: (name: string) => Sample, frameMax: number): Result[] {
   const lampPool = r('lampPool');
   const monitor1 = r('monitor1');
   const monitor2 = r('monitor2');
@@ -164,7 +266,7 @@ async function main(): Promise<void> {
   // 4: the lamp's outer falloff. The spec says "~20%", of the lamp pool.
   const falloff = keyboard.lum / lampPool.lum;
 
-  const results: { criterion: string; pass: boolean; evidence: string }[] = [
+  return [
     {
       // Compared by MEAN, not by peak. The brightest single pixel in the frame
       // is a specular highlight on a brass drawer handle, which is a line, not
@@ -201,20 +303,6 @@ async function main(): Promise<void> {
       evidence: `keyboard lum ${keyboard.lum.toFixed(4)}, pool peak ${lampPool.peak.toFixed(3)}`,
     },
   ];
-
-  let failed = 0;
-  for (const [i, res] of results.entries()) {
-    const mark = res.pass ? 'TRUE ' : 'FALSE';
-    if (!res.pass) failed += 1;
-    console.log(`  ${i + 1}. ${mark}  ${res.criterion}`);
-    console.log(`            ${res.evidence}`);
-  }
-
-  if (failed > 0) {
-    console.error(`\nlighting:test: ${failed} of 5 criteria FAILED.`);
-    process.exit(1);
-  }
-  console.log('\nlighting:test: all five criteria read TRUE.');
 }
 
 await main();

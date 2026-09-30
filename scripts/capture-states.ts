@@ -71,6 +71,12 @@ const STATES: SceneState[] = [
   { name: 'room-midnight-desktop-reduced-motion', route: '/', viewport: { width: 1600, height: 1000 }, hour: 0, reducedMotion: true },
   // At rest only the city strip is in frame; this is where the day sky shows.
   { name: 'room-window-noon-desktop', route: '/', viewport: { width: 1600, height: 1000 }, activate: 'window', hour: 12 },
+  // The hall behind the door (design-system/13), at its arrival pose: the
+  // daylit extremes, effects on and off, as the room's (13 §5).
+  { name: 'hall-noon-desktop', route: '/?scene=hall', viewport: { width: 1600, height: 1000 }, hour: 12 },
+  { name: 'hall-noon-desktop-reduced-motion', route: '/?scene=hall', viewport: { width: 1600, height: 1000 }, hour: 12, reducedMotion: true },
+  { name: 'hall-midnight-desktop', route: '/?scene=hall', viewport: { width: 1600, height: 1000 }, hour: 0 },
+  { name: 'hall-midnight-desktop-reduced-motion', route: '/?scene=hall', viewport: { width: 1600, height: 1000 }, hour: 0, reducedMotion: true },
   { name: 'text-surface-desktop', route: '/text', viewport: { width: 1600, height: 1000 } },
   { name: 'text-surface-mobile', route: '/text', viewport: { width: 390, height: 844 } },
 ];
@@ -114,15 +120,17 @@ async function capture(browser: Browser, state: SceneState): Promise<void> {
   // a capture before that is a black rectangle that looks like a lighting bug.
   // The canvas must also have been sized: R3F leaves it at the 300x150 default
   // until its parent measures non-zero. SwiftShader compiles slowly, hence the
-  // generous timeout.
-  if (state.route === '/') {
+  // generous timeout. `/?scene=hall` compiles the room first, then the hall:
+  // the capture waits for the scene it asked for.
+  if (state.route === '/' || state.route.startsWith('/?')) {
+    const scene = state.route.includes('scene=hall') ? 'hall' : 'room';
     await page.waitForFunction(
-      () => {
+      (want) => {
         const c = document.querySelector('canvas');
-        return !!c && c.width > 300 && !!document.querySelector('[data-room-ready]');
+        return !!c && c.width > 300 && !!document.querySelector(`[data-room-ready][data-scene="${want}"]`);
       },
-      undefined,
-      { timeout: 60000 },
+      scene,
+      { timeout: 90000 },
     );
   }
 
