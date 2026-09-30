@@ -19,7 +19,7 @@
 import { chromium, type Browser } from 'playwright';
 
 const BASE_URL = process.env.CAPTURE_BASE_URL ?? 'http://localhost:3000';
-const SECTIONS = ['Today’s challenge', 'Import', 'Habits', 'Journal', 'Goals'];
+const SECTIONS = ['Today’s challenge', 'Import', 'Habits', 'Journal', 'Goals', 'Focus', 'History'];
 
 const failures: string[] = [];
 
