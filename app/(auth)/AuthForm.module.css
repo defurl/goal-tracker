@@ -106,3 +106,16 @@
   color: var(--ink-muted);
   max-width: 34ch;
 }
+
+/* The phone scale takes --step-1 down to 0.7rem, 11.2 px, under Lighthouse's
+   12 px legible minimum, and on this page the mono labels are most of the
+   text. Owner decision 2026-09-30 (D-22): the auth form keeps the desktop
+   rung on phones. Nothing else changes. */
+@media (max-width: 768px) {
+  .label,
+  .submit,
+  .secondary,
+  .switch {
+    font-size: 0.75rem;
+  }
+}
