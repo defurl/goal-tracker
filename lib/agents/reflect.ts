@@ -54,7 +54,8 @@ export interface ReflectDeps {
   reflectionEnabled: boolean;
 }
 
-export const ReflectInput = z.object({
+/** Strict, like ExtractInput: an unknown field is a 400. The client sends none (lib/data/journal.ts). */
+export const ReflectInput = z.strictObject({
   entry_text: z.string().trim().min(1).max(MAX_ENTRY_CHARS),
   mood: z.enum(MOOD_KEYS),
   tags: z.array(z.enum(TOPIC_TAGS as [string, ...string[]])).max(TOPIC_TAGS.length).default([]),

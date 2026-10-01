@@ -41,9 +41,15 @@ export interface ExtractDeps {
   fetchPage?: (url: string) => Promise<{ html: string }>;
 }
 
-/** Pasted text beyond the cap is truncated after validation, not refused. */
+/**
+ * The request body. Strict: a field this schema does not name is refused with
+ * a 400, not silently dropped. The client sends none (lib/data/challenge.ts),
+ * so an extra one — a user_id, a plan — is a forged request, and is answered
+ * as one rather than half-processed. Pasted text beyond the source cap is
+ * truncated after validation, not refused.
+ */
 export const ExtractInput = z
-  .object({
+  .strictObject({
     url: z.string().trim().min(1).max(AGENT_LIMITS.urlMaxChars).optional(),
     text: z.string().trim().min(1).max(AGENT_LIMITS.pastedTextMaxChars).optional(),
   })
