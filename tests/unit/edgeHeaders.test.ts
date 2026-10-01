@@ -2,17 +2,58 @@
 // No server: the config is imported and read the way Next reads it. A live
 // deployment adds its own on top (Vercel's HSTS, and its CORS default on
 // static files), which only a running server can show.
+//
+// Each rule's source is compiled by Next's own route builder, giving the regex
+// `next start` matches and Vercel's build turns into its header routes. That
+// builder is a next/dist internal: next is pinned to 14 (D-06), and an upgrade
+// that moves it fails here rather than letting a rule silently stop matching.
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
 import type { NextConfig } from 'next';
+import { buildCustomRoute } from 'next/dist/lib/build-custom-route.js';
 
 async function loadConfig(): Promise<NextConfig> {
   // A computed specifier: the config is plain .mjs, outside the type-checked tree.
   const mod = (await import(new URL('../../next.config.mjs', import.meta.url).href)) as { default: NextConfig };
   return mod.default;
 }
+
+/** The headers next.config gives a request for `path`, keys lower-cased. A later rule wins, as in Next. */
+async function headersFor(path: string): Promise<Map<string, string>> {
+  const rules = (await (await loadConfig()).headers?.()) ?? [];
+  const out = new Map<string, string>();
+  for (const rule of rules) {
+    if (!new RegExp(buildCustomRoute('header', rule).regex).test(path)) continue;
+    for (const { key, value } of rule.headers) out.set(key.toLowerCase(), value);
+  }
+  return out;
+}
+
+/** One of every kind of response the app serves. */
+const PATHS = [
+  '/',
+  '/text',
+  '/login',
+  '/privacy',
+  '/no-such-page',
+  '/api/agent/reflect',
+  '/api/account',
+  '/auth/callback',
+  '/manifest.webmanifest',
+  '/sw.js',
+  '/fonts/DepartureMono-Regular.woff2',
+  '/_next/static/chunks/main-app.js',
+];
+
+describe('next.config — headers on every response', () => {
+  for (const path of PATHS) {
+    it(`${path}: nosniff`, async () => {
+      assert.equal((await headersFor(path)).get('x-content-type-options'), 'nosniff');
+    });
+  }
+});
 
 describe('next.config — surfaces that stay off', () => {
   it('turns the image optimizer off, so /_next/image is a 404', async () => {

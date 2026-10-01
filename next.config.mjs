@@ -1,3 +1,14 @@
+/**
+ * Sent with every response: pages, route handlers, public/ and /_next/static.
+ * tests/unit/edgeHeaders.test.ts holds this list to account.
+ */
+const securityHeaders = [
+  // A response is only ever what its Content-Type says: a JSON or text body is
+  // never sniffed into script or HTML. Every route already sends the right
+  // type, sw.js (application/javascript) included.
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -15,6 +26,9 @@ const nextConfig = {
     // `next start` answers it with a 404 and Vercel provisions no optimizer.
     // Several next@14 advisories live in that code path.
     unoptimized: true,
+  },
+  async headers() {
+    return [{ source: '/:path*', headers: securityHeaders }];
   },
 };
 
