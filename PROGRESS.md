@@ -53,13 +53,15 @@ committed) and republish the board to the same artifact URL.
   visible).
 - **Deployed** (2026-10-01) at https://be-better-everyday-one.vercel.app
   (Vercel, auto-deploys from `main`; `be-better-everyday.vercel.app` belongs
-  to someone else). The first build ran without the Supabase variables: the
-  client bundle carries the Supabase library but no project URL, and the
-  corner's sign-in, drawn only when Supabase is configured, is missing — so
-  nobody can sign in yet. **The owner's:** add the variables for Production
-  and redeploy; set Supabase's Site URL to the domain and add
-  `<domain>/auth/callback` to its Redirect URLs. Then confirm sign-in
-  appears, and run the signed-out checks against the live URL.
+  to someone else). The first builds ran without the Supabase variables
+  (the corner's sign-in, drawn only when Supabase is configured, was
+  missing); after the owner set them for Production and redeployed, the
+  project URL is in the bundle and the corner offers "sign in". Signed out
+  against the live URL: `a11y:check` 17 views clean, `offline:check` and
+  `motion:check` pass, `lh:check mobile` holds every budget (/text 0.99, LCP
+  1.5 s, CLS 0; /login 1.0; /signup 0.99). **The owner's:** Supabase's Site
+  URL set to the domain and `<domain>/auth/callback` in its Redirect URLs
+  (not checked here — it needs a sign-up), then the first signed-in walk.
 
 **Phase 5 is done** (2026-09-30): Track A (A5.1–A5.9) and Track B (B5.1,
 B5.2), gate TRUE. Reminders stay unsent.
