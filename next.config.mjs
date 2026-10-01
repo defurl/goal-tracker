@@ -7,6 +7,10 @@ const securityHeaders = [
   // never sniffed into script or HTML. Every route already sends the right
   // type, sw.js (application/javascript) included.
   { key: 'X-Content-Type-Options', value: 'nosniff' },
+  // Other origins (Supabase, Google's sign-in) learn the origin, never a path
+  // or query. Today's browsers already default to this; stated, it holds for
+  // older ones too.
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
 ];
 
 /** @type {import('next').NextConfig} */

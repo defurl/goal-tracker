@@ -52,6 +52,10 @@ describe('next.config — headers on every response', () => {
     it(`${path}: nosniff`, async () => {
       assert.equal((await headersFor(path)).get('x-content-type-options'), 'nosniff');
     });
+
+    it(`${path}: only the origin leaves for another site`, async () => {
+      assert.equal((await headersFor(path)).get('referrer-policy'), 'strict-origin-when-cross-origin');
+    });
   }
 });
 
