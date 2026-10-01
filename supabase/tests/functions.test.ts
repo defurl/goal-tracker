@@ -200,12 +200,14 @@ describe('owner decisions 2026-09-24 — 015 and 016', () => {
 
   it('un-archiving a habit respects the cap (016)', async () => {
     const u = await nineActiveHabits();
-    const { data: old } = await u.client.from('habits')
-      .insert({ user_id: u.id, name: 'old', type: 'build', archived_at: new Date().toISOString() })
-      .select().single();
+    // Seeded as the service role: the app never creates a habit already
+    // archived, and since 026 a user cannot — archived_at is update-only.
+    const old = await seed<{ id: string }>('habits', {
+      user_id: u.id, name: 'old', type: 'build', archived_at: new Date().toISOString(),
+    });
     await u.client.from('habits').insert({ user_id: u.id, name: 'tenth', type: 'build' });
 
-    const revived = await u.client.from('habits').update({ archived_at: null }).eq('id', old?.id);
+    const revived = await u.client.from('habits').update({ archived_at: null }).eq('id', old.id);
     assert.match(revived.error?.message ?? '', /habit_cap_reached/);
     assert.equal(await activeCount(u.id), 10);
   });

@@ -9,6 +9,7 @@
 // SERVICE_ROLE_KEY); `pnpm test:db` loads them. SUPABASE_URL and friends are
 // accepted too, so CI can pass them explicitly.
 
+import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
@@ -88,6 +89,24 @@ export async function seed<T extends Record<string, unknown>>(
 
 /** Postgres' insufficient_privilege — what an RLS violation surfaces as. */
 export const RLS_DENIED = '42501';
+
+/** The local stack's database container, named from project_id in supabase/config.toml. */
+export const DB_CONTAINER = 'supabase_db_be-better-everyday';
+
+/**
+ * Runs SQL as postgres inside the local database container and parses the one
+ * JSON value it prints. For reading the catalog, which PostgREST does not
+ * expose. Anything a query creates, it rolls back itself; seeding goes through
+ * `admin`, never here.
+ */
+export function catalog<T>(query: string): T {
+  const out = execFileSync(
+    'docker',
+    ['exec', '-i', DB_CONTAINER, 'psql', '-U', 'postgres', '-d', 'postgres', '-X', '-q', '-A', '-t', '-v', 'ON_ERROR_STOP=1'],
+    { input: query, encoding: 'utf8' },
+  );
+  return JSON.parse(out.trim()) as T;
+}
 
 /**
  * Every table that holds a user's rows, and the column naming the user. The

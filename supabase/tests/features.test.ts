@@ -180,7 +180,8 @@ describe('the owner cannot write their own history — 022, D-23 §13', () => {
     assert.equal(insertLog.error?.code, RLS_DENIED);
     assert.equal(insertChallenge.error?.code, RLS_DENIED);
 
-    // UPDATE and DELETE are not errors under RLS: they match no rows.
+    // Under RLS alone these matched no rows; since 026 the owner holds neither
+    // privilege and they fail outright. Either way, the rows are read back below.
     await u.client.from('daily_challenges').update({ roll_count: 3 }).eq('id', challenge.id);
     await u.client.from('habit_logs').delete().eq('id', log.id);
     const { data: kept } = await admin.from('habit_logs').select('id').eq('id', log.id);

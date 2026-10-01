@@ -12,7 +12,10 @@
 //
 // Inserts must be refused for the RIGHT reason. Each insert payload is a valid
 // row, so a check constraint or a missing column cannot masquerade as
-// isolation: the test asserts the RLS error code, not merely an error.
+// isolation: the test asserts 42501, not merely an error. Since 026 that code
+// comes from RLS where the role may write the columns, and from the missing
+// privilege where it may not — both are access control, neither a constraint.
+// Where a column is writable, the patch below uses it, so RLS is what's tested.
 //
 // This is the kind of thing that silently regresses when someone adds a policy
 // for a new feature. It runs in CI against a fresh `supabase start`.
@@ -100,7 +103,8 @@ before(async () => {
     {
       table: 'habits', owner: 'user_id', key: { id: habit.id },
       insert: { user_id: b.id, name: 'Planted by A', type: 'build' },
-      patch: { name: 'Renamed by A' },
+      // archived_at is the one column a user may update on a habit (026).
+      patch: { archived_at: '2026-01-03T00:00:00Z' },
     },
     {
       table: 'habit_logs', owner: 'user_id', key: { id: log.id },
@@ -207,7 +211,7 @@ describe('cross-user isolation: A attempts every table as B', () => {
       assert.ok(inserted.error, `${table}: A inserted a row in B's name`);
       assert.equal(
         inserted.error.code, RLS_DENIED,
-        `${table}: insert failed, but not on RLS — ${inserted.error.message}`,
+        `${table}: insert failed, but not on access control — ${inserted.error.message}`,
       );
 
       // update B's row — touches nothing
