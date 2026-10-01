@@ -64,7 +64,7 @@ async function refreshSession(
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet, headers) {
         // Read the jar before this batch lands: the policy re-arms the chunks
         // the library left out because their value did not change.
         const writes = sessionCookieWrites(cookiesToSet, request.cookies.getAll(), { secure });
@@ -73,6 +73,10 @@ async function refreshSession(
         for (const { name, value, options } of writes) {
           response.cookies.set(name, value, options);
         }
+        // Cache-Control: private, no-store (and Expires, Pragma) from the
+        // library. A response carrying someone's session must never be stored
+        // by a CDN or proxy and handed to the next visitor.
+        for (const [key, value] of Object.entries(headers)) response.headers.set(key, value);
       },
     },
   });
