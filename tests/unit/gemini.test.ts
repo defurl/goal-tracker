@@ -68,6 +68,31 @@ describe('GeminiProvider', () => {
     assert.equal(body?.contents[0]?.parts[0]?.text, 'SENTINEL-ARTICLE-TEXT');
   });
 
+  it('declares no tools and sends one user turn, apart from the system instruction', async () => {
+    let sent: Record<string, unknown> = {};
+    const p = provider(async (_url, init) => {
+      sent = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      return answer('{"action":"x"}');
+    });
+    await p.complete(REQUEST);
+    // No `tools`, no `toolConfig`: the model has nothing it could call.
+    assert.deepEqual(Object.keys(sent).sort(), ['contents', 'generationConfig', 'systemInstruction']);
+    const contents = sent.contents as { role: string; parts: { text: string }[] }[];
+    assert.equal(contents.length, 1, 'no earlier turns for an input to impersonate');
+    assert.equal(contents[0]?.role, 'user');
+    assert.ok(!JSON.stringify(contents).includes(REQUEST.system), 'the rules never travel in the user turn');
+  });
+
+  it('never turns a function call the model makes up into content', async () => {
+    const call = { functionCall: { name: 'award_points', args: { points: 1000, user_id: 'someone-else' } } };
+    const only = Response.json({ candidates: [{ content: { parts: [call] }, finishReason: 'STOP' }] });
+    assert.equal((await failure(provider(async () => only))).code, 'PARSE_FAIL');
+
+    const mixed = Response.json({ candidates: [{ content: { parts: [call, { text: '{"action":"x"}' }] }, finishReason: 'STOP' }] });
+    const result = await provider(async () => mixed).complete(REQUEST);
+    assert.equal(result.content, '{"action":"x"}');
+  });
+
   it('maps a 429 to RATE_LIMIT — the free tier’s per-minute limit', async () => {
     const error = await failure(provider(async () => new Response('slow down', { status: 429 })));
     assert.equal(error.code, 'RATE_LIMIT');
