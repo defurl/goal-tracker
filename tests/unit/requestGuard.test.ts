@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
-import { GUARDED, checkOrigin, screen, trustedOrigins } from '../../lib/security/requestGuard.ts';
+import { GUARDED, checkOrigin, isJsonContentType, screen, trustedOrigins } from '../../lib/security/requestGuard.ts';
 
 const SITE = 'https://bbe.test';
 const FAKE_SESSION = 'sb-test-auth-token=fake-session';
@@ -111,6 +111,44 @@ describe('checkOrigin()', () => {
     assert.equal(screen(trusted, GUARDED.account, env), null);
     assert.equal(screen(trusted, GUARDED.account, {})?.status, 403);
     assert.deepEqual(trustedOrigins({}), []);
+  });
+});
+
+describe('screen() — a JSON route takes only JSON', () => {
+  it('refuses a same-origin text/plain body shaped like JSON with 415', async () => {
+    const smuggled = request(
+      '/api/agent/reflect',
+      { origin: SITE, 'content-type': 'text/plain' },
+      { body: JSON.stringify({ entry_text: 'x', mood: 'calm', tags: [] }) },
+    );
+    const refused = screen(smuggled, GUARDED.reflect, {});
+    assert.equal(refused?.status, 415);
+    assert.deepEqual(await refused?.json(), { error: 'unsupported_media_type' });
+  });
+
+  it('refuses the other form encodings, and a body with no type', () => {
+    for (const type of ['application/x-www-form-urlencoded', 'multipart/form-data; boundary=x', null]) {
+      const headers: Record<string, string> = { origin: SITE };
+      if (type) headers['content-type'] = type;
+      assert.equal(screen(request('/api/agent/extract', headers, { body: '{}' }), GUARDED.extract, {})?.status, 415, String(type));
+    }
+  });
+
+  it('reads the media type the way a browser writes it', () => {
+    assert.ok(isJsonContentType('application/json'));
+    assert.ok(isJsonContentType('Application/JSON; charset=UTF-8'));
+    assert.ok(isJsonContentType('application/json;charset="utf-8"'));
+    assert.ok(!isJsonContentType('application/json; charset=iso-8859-1'));
+    assert.ok(!isJsonContentType('application/jsonx'));
+    assert.ok(!isJsonContentType('text/json'));
+    assert.ok(!isJsonContentType(''));
+    assert.ok(!isJsonContentType(null));
+  });
+
+  it('asks for no content type where no body is read', () => {
+    assert.equal(screen(request('/api/account', { origin: SITE }, { method: 'DELETE' }), GUARDED.account, {}), null);
+    const form = request('/auth/signout', { origin: SITE, 'content-type': 'application/x-www-form-urlencoded' });
+    assert.equal(screen(form, GUARDED.signOut, {}), null);
   });
 });
 

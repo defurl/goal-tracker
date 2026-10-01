@@ -15,6 +15,11 @@
 // Router has nothing of the kind for route handlers, and no token is added
 // because nothing a cross-site page can send gets past this.
 //
+// A JSON route also requires Content-Type: application/json (415 otherwise),
+// so a cross-site <form enctype="text/plain"> cannot deliver a JSON-shaped
+// body, and a cross-origin fetch that sets the type needs a CORS preflight
+// that no route answers.
+//
 // Not guarded, because each has its own verification and neither acts on a
 // cookie a cross-site page could ride:
 //   GET /api/cron/seed-challenges  a bearer CRON_SECRET; it reads no session
@@ -28,14 +33,17 @@
 export interface GuardPolicy {
   /** The route as logged and documented — a constant, never the request's own path. */
   route: string;
+  /** The route reads a JSON body, so it requires Content-Type: application/json. */
+  json: boolean;
 }
 
 /** Every cookie-authenticated, state-changing handler — and tests/unit/requestGuard.test.ts checks there are no others. */
 export const GUARDED = {
-  extract: { route: '/api/agent/extract' },
-  reflect: { route: '/api/agent/reflect' },
-  account: { route: '/api/account' },
-  signOut: { route: '/auth/signout' },
+  extract: { route: '/api/agent/extract', json: true },
+  reflect: { route: '/api/agent/reflect', json: true },
+  // Neither reads a body. Sign-out is a plain form post.
+  account: { route: '/api/account', json: false },
+  signOut: { route: '/auth/signout', json: false },
 } as const satisfies Record<string, GuardPolicy>;
 
 type Env = Readonly<Record<string, string | undefined>>;
@@ -111,14 +119,30 @@ export function checkOrigin(request: Request, trusted: readonly string[] = trust
   return { ok: false, reason: 'origin_missing' };
 }
 
+/** application/json, with no charset or UTF-8's. Anything else is a body this app never sends. */
+export function isJsonContentType(value: string | null): boolean {
+  if (value === null) return false;
+  const [type, ...params] = value.split(';');
+  if (type?.trim().toLowerCase() !== 'application/json') return false;
+  return params.every((param) => {
+    const [name, raw = ''] = param.split('=');
+    if (name?.trim().toLowerCase() !== 'charset') return true;
+    const charset = raw.trim().replace(/^"(.*)"$/, '$1').toLowerCase();
+    return charset === 'utf-8' || charset === 'utf8';
+  });
+}
+
 /** A refusal in the shape of app/api/_lib/server.ts's json(): a plain code, never cached. */
 function refusal(status: number, error: string): Response {
   return Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
 /** Null when the request may proceed; otherwise the response that refuses it. */
-export function screen(request: Request, _policy: GuardPolicy, env: Env = process.env): Response | null {
+export function screen(request: Request, policy: GuardPolicy, env: Env = process.env): Response | null {
   const origin = checkOrigin(request, trustedOrigins(env));
   if (!origin.ok) return refusal(403, 'forbidden');
+  if (policy.json && !isJsonContentType(request.headers.get('content-type'))) {
+    return refusal(415, 'unsupported_media_type');
+  }
   return null;
 }
