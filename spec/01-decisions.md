@@ -20,9 +20,10 @@
 D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
-Phase 4 raised. D-23 settles what Phase 3 left open. D-24 sets the scope of Phase 5.
+Phase 4 raised. D-23 settles what Phase 3 left open. D-24 sets the scope of Phase 5. D-25 sets
+how Phase 6, the UI rework, runs.
 
-All twenty-four are **LOCKED**. There are no open questions.
+All twenty-five are **LOCKED**. There are no open questions.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -697,6 +698,44 @@ entry.
 **Consequence.** spec/00 §4's "second 3D scene … Phase 2" and the "Phase 2
 candidate" daylit window are Phase 5 through this entry. D-11 and D-22 §6 are
 read through it until their amendment notes land.
+
+---
+
+### D-25 · Phase 6, the UI rework — **LOCKED** (owner-approved 2026-10-01)
+
+**Context.** D-24 kept the UI rework out of Phase 5 as its own phase, in which
+the owner reviews every panel and designs some of them by hand. The owner set
+how that review runs and what it covers. `06-build-plan.md` Phase 6 is read
+through this entry.
+
+**Rulings**
+1. **The review runs on a board.** The agent captures every in-scope surface
+   and state, on phone and desktop, signed out and signed in as a throwaway
+   seeded local user, into one private review page. For each item the owner
+   records *keep*, *change* (with a note) or *I'll design it*. The agent reads
+   the verdicts back and plans from them; nothing is restyled before its
+   verdict.
+2. **In scope:** the room's panels (challenge, import, goals, journal, habits,
+   the hall's history), `/text`, the corner and the labels (sound and
+   countdown, the account controls, hover labels, "step through"), and the
+   auth pages and `/privacy`.
+3. **Within the system.** D-01, D-02, D-04 and D-21 stand: CSS Modules, the
+   three typefaces, no cards, the palette and its role names. The rework
+   changes layout, spacing, copy and components inside them. A change that
+   would need one of them amended is raised first and gets a dated note under
+   that entry.
+4. **The owner's designs arrive as Figma links, sketches or screenshots, or in
+   words.** The agent builds from them and answers with captures from a
+   production build.
+5. **D-07 holds:** a change to a shared component lands on the room and
+   `/text` in the same task.
+
+**Out of scope**
+- **The 3D scene:** its lighting, objects, poses and the hall. The scene's
+  PROPOSED values still waiting for the owner's eye (PROGRESS.md) are on the
+  board so they can be settled; a change to one is scene work and re-runs the
+  lighting test.
+- **Reminders and payment** (D-24).
 
 ---
 
