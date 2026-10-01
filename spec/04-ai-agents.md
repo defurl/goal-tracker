@@ -398,3 +398,33 @@ case, which is the one that matters.
 > (`NEXT_PUBLIC_AI_REFLECT`). The full note is under D-19 in
 > `01-decisions.md`. The model named in §2, §3 and §5 is V1's; the active
 > prompts are `_V2`, identical but for the model.
+
+---
+
+## 9. Prompt injection
+
+> **Note, 2026-10-01 (security hardening, item 9) — PROPOSED, for the owner
+> to ratify.** Injection cannot be blocked: the model reads the text, and the
+> text can say anything. The design limits what a successful one reaches.
+>
+> | agent | tools | what it reads | its output is written as | what limits an injection |
+> |---|---|---|---|---|
+> | `content_extraction_agent` | none: the request declares none, and a function call the model invents is dropped | the article (SSRF-guarded fetch, Readability's text only, 6000 characters) or the pasted text | the caller, through their own client under RLS, to their own `user_actions` | V3 sends the article as one JSON field (§2 note); the output is two capped strings, unknown keys dropped, the 40-word rule; a miss is retried once, then a curated action |
+> | `journal_analysis_agent` (off in production) | none | the entry the caller just wrote | the caller, to their own `journal_entries` row | four capped strings and a boolean; a reflection quoting the entry is replaced (§3 note); the support flag is never stored (D-13) |
+> | `challenge_generator_agent` | — | no model: SQL (§4) | — | — |
+>
+> Model output never reaches the service role, which touches `rate_limits`
+> (through `consume_rate_limit()`), `user_plans` (read only) and `agent_logs`
+> (codes and counts). The user id on every query is the session's. Points
+> move only through the database functions a user's own action calls, and
+> neither agent calls one. Nothing a model writes is rendered as markup or
+> used as a link. No secret and no other user's data is ever in a prompt.
+> `tests/unit/injection.test.ts` holds all of this against known injection
+> strings and hostile output: extra fields, HTML, markdown links,
+> `javascript:` URLs, function-call-shaped JSON.
+>
+> What an injection can still do is choose the words of the one action or
+> reflection the caller sees: misleading text, shown as plain text, to the
+> person who imported the page. The journal prompt is unchanged, because its
+> input is the caller's own entry; fencing it would be a V4 of a prompt D-13
+> governs, and is the owner's call.
