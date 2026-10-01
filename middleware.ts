@@ -1,6 +1,7 @@
 // SSR session handling (B1.1). Refreshes the Supabase session cookie on every
 // page request so server code never sees an expired token, and so the browser
-// and the server agree on who is signed in.
+// and the server agree on who is signed in. A refresh re-arms the cookie's
+// idle window; its flags come from lib/supabase/cookies.ts.
 //
 // It does NOT gate on sign-in: a signed-out visitor gets the default room
 // (owner decision 2026-09-24, spec/05 §7).
@@ -13,6 +14,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import { isHttps, sessionCookieWrites } from './lib/supabase/cookies';
 import { supabaseAnonKey, supabaseConfigured, supabaseUrl } from './lib/supabase/env';
 
 const ROOM_COOKIE = 'bbe_room';
@@ -33,10 +35,15 @@ export async function middleware(request: NextRequest) {
   }
 
   let response = NextResponse.next({ request });
+  // Cookies are Secure only when this page came over https (lib/supabase/cookies.ts).
+  const secure = isHttps({
+    forwardedProto: request.headers.get('x-forwarded-proto'),
+    protocol: request.nextUrl.protocol,
+  });
 
   // No backend configured (a fresh checkout, CI's capture job): serve the room.
   if (supabaseConfigured) {
-    response = await refreshSession(request, response);
+    response = await refreshSession(request, response, secure);
   }
 
   // Set last: refreshSession() may replace the response object.
@@ -46,7 +53,11 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-async function refreshSession(request: NextRequest, initial: NextResponse): Promise<NextResponse> {
+async function refreshSession(
+  request: NextRequest,
+  initial: NextResponse,
+  secure: boolean,
+): Promise<NextResponse> {
   let response = initial;
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
@@ -54,9 +65,12 @@ async function refreshSession(request: NextRequest, initial: NextResponse): Prom
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
+        // Read the jar before this batch lands: the policy re-arms the chunks
+        // the library left out because their value did not change.
+        const writes = sessionCookieWrites(cookiesToSet, request.cookies.getAll(), { secure });
         for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
         response = NextResponse.next({ request });
-        for (const { name, value, options } of cookiesToSet) {
+        for (const { name, value, options } of writes) {
           response.cookies.set(name, value, options);
         }
       },
