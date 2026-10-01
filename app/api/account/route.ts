@@ -4,18 +4,25 @@
 // The id comes from the verified session, never from the request, so this can
 // only ever delete the caller. DELETE rather than POST: a cross-site page
 // cannot send one without a CORS preflight this route never answers, so a form
-// elsewhere cannot delete someone's account.
+// elsewhere cannot delete someone's account — and screen() refuses one that
+// names another origin, or none (lib/security/requestGuard.ts).
 //
 // The service role deletes the auth user and the schema removes the rest —
 // every user table cascades, and agent_logs keeps its rows with no user
 // (supabase/tests/account.test.ts). Nothing is logged.
 
+import { GUARDED, screen } from '../../../lib/security/requestGuard.ts';
 import { json, serviceClient, signedInUser } from '../_lib/server.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function DELETE() {
+const ROUTE = GUARDED.account;
+
+export async function DELETE(request: Request) {
+  const refused = screen(request, ROUTE);
+  if (refused) return refused;
+
   const caller = await signedInUser();
   if (!caller) return json({ error: 'signed_out' }, 401);
 

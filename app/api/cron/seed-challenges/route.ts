@@ -6,6 +6,9 @@
 //
 // Guarded by CRON_SECRET as a bearer token, so it cannot be triggered by
 // anyone who finds the URL. No secret configured → nothing can call it.
+// Exempt from the origin check that guards the cookie-authenticated writes
+// (lib/security/requestGuard.ts): it reads no session cookie, so a cross-site
+// page has nothing to ride, and a forged request has no secret.
 
 import { timingSafeEqual } from 'node:crypto';
 

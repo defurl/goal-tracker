@@ -9,17 +9,24 @@
 // agent_logs. That is all the debugging this route gets.
 // ─────────────────────────────────────────────────────────────────────────
 //
-// Wiring only; the pipeline is lib/agents/reflect.ts.
+// Wiring only; the pipeline is lib/agents/reflect.ts. screen() is the shared
+// guard for cookie-authenticated writes (lib/security/requestGuard.ts).
 
 import { reflectOnEntry } from '../../../../lib/agents/reflect.ts';
 import { aiReflectEnabled } from '../../../../lib/flags.ts';
+import { GUARDED, screen } from '../../../../lib/security/requestGuard.ts';
 import { json, provider, readJson, serviceClient, signedInUser } from '../../_lib/server.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
+const ROUTE = GUARDED.reflect;
+
 export async function POST(request: Request) {
+  const refused = screen(request, ROUTE);
+  if (refused) return refused;
+
   const caller = await signedInUser();
   if (!caller) return json({ error: 'signed_out' }, 401);
 

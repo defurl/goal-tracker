@@ -1,7 +1,9 @@
 // POST /api/agent/extract — content_extraction_agent (spec/04-ai-agents.md §2).
-// Wiring only; the pipeline is lib/agents/extract.ts.
+// Wiring only; the pipeline is lib/agents/extract.ts. screen() is the shared
+// guard for cookie-authenticated writes (lib/security/requestGuard.ts).
 
 import { extractAction } from '../../../../lib/agents/extract.ts';
+import { GUARDED, screen } from '../../../../lib/security/requestGuard.ts';
 import { json, provider, readJson, serviceClient, signedInUser } from '../../_lib/server.ts';
 
 export const runtime = 'nodejs';
@@ -9,7 +11,12 @@ export const dynamic = 'force-dynamic';
 // 8 s article fetch + two model attempts. Vercel's default would cut it short.
 export const maxDuration = 30;
 
+const ROUTE = GUARDED.extract;
+
 export async function POST(request: Request) {
+  const refused = screen(request, ROUTE);
+  if (refused) return refused;
+
   const caller = await signedInUser();
   if (!caller) return json({ error: 'signed_out' }, 401);
 
