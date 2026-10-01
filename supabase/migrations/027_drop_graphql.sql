@@ -1,0 +1,22 @@
+-- 027 · no GraphQL API — pre-launch security hardening, 2026-10-01. PROPOSED.
+--
+-- The product talks to its database through PostgREST (/rest/v1) and nothing
+-- else; no file in app/, lib/ or scene/ sends a GraphQL query. pg_graphql
+-- would still answer one at /graphql/v1, with an introspection schema of every
+-- table and function the caller can reach — a second door to the same rooms,
+-- and one nobody tests. 026 narrowed what both doors open; this closes the one
+-- the product does not use.
+--
+-- `if exists`: the local stack has never installed pg_graphql, so here this is
+-- a no-op; on a project where it is enabled, it removes it. Supabase's own
+-- event trigger then leaves graphql_public.graphql() as a placeholder that
+-- answers "pg_graphql extension is not enabled." — which is what /graphql/v1
+-- says on the local stack today. No cascade: if anything did depend on it, the
+-- migration should stop and say so, not drop that too.
+--
+-- In its own file so that, if the hosted project refuses the drop, 026 has
+-- already applied without it. To undo: `create extension pg_graphql;`
+--
+-- Asserted in supabase/tests/exposure.test.ts.
+
+drop extension if exists pg_graphql;
