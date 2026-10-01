@@ -301,6 +301,27 @@ the history view. Every row of spec/05 §3, old and new, is wired.
 
 ---
 
+### Phase 6 — The UI rework · scope set by D-25
+
+Owner-led. The agent captures before the review and builds after it; the
+review between is the owner's. Values below are **PROPOSED** unless they cite
+a decision.
+
+| # | Task |
+|---|---|
+| 6.1 | **The review board** (D-25 §1). Every in-scope surface and state, captured from a production build against the local stack — signed out, and signed in as a throwaway user with a seeded year — at 1600 × 1000 and 390 × 844. Each item names the doc that governs it and any PROPOSED value still open. One private page, where the owner marks each item *keep*, *change* or *I'll design it*, with notes |
+| 6.2 | **Reading the verdicts.** The board's marks, grouped into tasks 6.3 onward: one surface or one shared component each, smallest first. Items marked *I'll design it* wait for the owner's design (D-25 §4) |
+| 6.3+ | **The changes,** one task per group, each answered on the board with captures from before and after |
+
+**Gate:** every board item has a verdict and every verdict is closed — kept,
+changed and re-captured, or built from the owner's design and approved on its
+screenshot. D-07 holds on every change. `a11y:check`, `motion:check`,
+`offline:check`, `lh:check` and `bundle:check` pass. The lighting test is
+re-run for any change that touches the canvas or a token that drives an
+emissive surface (D-20, D-21).
+
+---
+
 ## 3. Definition of done
 
 A task is not done until **all** of these hold. This list is the single most
