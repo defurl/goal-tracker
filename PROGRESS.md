@@ -17,6 +17,7 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
 | Phase 5 | **done — A5.1–A5.9, gate TRUE** (the window, the timer, the steam, the daylit window, the bonsai rewired and moved, the hall behind the door with its history, and that history on /text; every sky band pinned in CI) (D-24) | **done** — B5.1 (plans) and B5.2 (account deletion) (D-24); 025 on the hosted project 2026-10-01 |
+| Phase 6 | **in progress** — 6.1 done: the review board is published; 6.2 waits on the owner's marks (D-25) | (shared) |
 
 **CI is green with five jobs** (run 36737013095, A5.8): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -31,10 +32,37 @@ looks like; this file stays the state.
 
 ### Next session
 
+**Phase 6, the UI rework, is under way** (2026-10-01, D-25). 6.1 is done:
+the review board is published, private to the owner, at
+https://claude.ai/artifact/Hr1ZgKWVMvQhMeoqjdmJ7b (30 items, 58 captures).
+The owner marks each item keep, change or I'll design it. **6.2 starts when
+the marks are in:** read them with `ArtifactData` `list` on the collection
+`verdicts` (one document per item id: `verdict`, `note`, `updatedAt`), then
+group them into tasks, smallest first. Re-capture with `pnpm review:capture`
+(a production build on the local stack; writes `captures/review/`, not
+committed) and republish the board to the same artifact URL.
+- **6.1, the board.** Captured from a production build against the local
+  stack, signed in as a throwaway user with a seeded year (deleted after),
+  and pinned to 22:00 so the room wears its night look. Panels were opened
+  from the keyboard, so each title shows its focus ring. The scene's open
+  PROPOSED values are a group of their own. Store checked: one probe
+  verdict written, read back and deleted. **Seen while capturing, left for
+  the owner's marks rather than fixed:** on a phone the sound control sits
+  over an open panel and "back to the desk" shows through the panel's bottom
+  edge; the armed delete label runs into the sound control (B5.2's note, now
+  visible).
+- **Deployed** (2026-10-01) at https://be-better-everyday-one.vercel.app
+  (Vercel, auto-deploys from `main`; `be-better-everyday.vercel.app` belongs
+  to someone else). The first build ran without the Supabase variables: the
+  client bundle carries the Supabase library but no project URL, and the
+  corner's sign-in, drawn only when Supabase is configured, is missing — so
+  nobody can sign in yet. **The owner's:** add the variables for Production
+  and redeploy; set Supabase's Site URL to the domain and add
+  `<domain>/auth/callback` to its Redirect URLs. Then confirm sign-in
+  appears, and run the signed-out checks against the live URL.
+
 **Phase 5 is done** (2026-09-30): Track A (A5.1–A5.9) and Track B (B5.1,
-B5.2), gate TRUE. What is left is the owner's: deploy, and look over the
-PROPOSED values below. Then the UI phase,
-which the owner reviews and partly designs. Reminders stay unsent.
+B5.2), gate TRUE. Reminders stay unsent.
 - **The Phase 5 gate.** Lighting TRUE in all five sky bands: dusk (18:00) and
   the evening (21:00) are now pinned captures, lighting-tested in CI beside
   dawn, noon and midnight. In every room state the pool peak is at most 0.687,
