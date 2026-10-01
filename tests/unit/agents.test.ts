@@ -11,7 +11,7 @@ import { MAX_SOURCE_CHARS, capSource, readableText } from '../../lib/agents/read
 import { AgentError, type AgentProvider, type CompletionRequest, type CompletionResult } from '../../lib/agents/provider.ts';
 import { ReflectInput, reflectOnEntry } from '../../lib/agents/reflect.ts';
 import { MAX_ATTEMPTS, runAgent } from '../../lib/agents/run.ts';
-import { CONTENT_EXTRACTION_V1, withinWordLimit } from '../../lib/prompts/contentExtraction.ts';
+import { CONTENT_EXTRACTION_V1, CONTENT_EXTRACTION_V3, withinWordLimit } from '../../lib/prompts/contentExtraction.ts';
 
 function scripted(...steps: (string | AgentError)[]): AgentProvider & { calls: number } {
   const p = {
@@ -69,6 +69,19 @@ describe('runAgent() — retry once, then a code', () => {
     const run = await runAgent(p, CONTENT_EXTRACTION_V1, 'text');
     assert.equal(run.ok, false);
     if (!run.ok) assert.equal(run.code, 'PROVIDER_ERROR');
+  });
+
+  it('frames the input as the prompt says, on every attempt, and sends an unframed prompt as it is', async () => {
+    const framed = recording('not json');
+    await runAgent(framed, CONTENT_EXTRACTION_V3, 'An "article".');
+    assert.equal(framed.requests.length, MAX_ATTEMPTS);
+    for (const request of framed.requests) {
+      assert.deepEqual(JSON.parse(request.user), { article: 'An "article".' });
+      assert.equal(request.system, CONTENT_EXTRACTION_V3.systemPrompt);
+    }
+    const plain = recording();
+    await runAgent(plain, CONTENT_EXTRACTION_V1, 'An "article".');
+    assert.equal(plain.requests[0]?.user, 'An "article".');
   });
 });
 

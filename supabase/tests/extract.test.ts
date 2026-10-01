@@ -43,7 +43,8 @@ describe('extraction agent', () => {
 
     assert.equal(result.status, 200);
     if (result.status === 200) assert.equal(result.body.fallback, false);
-    assert.equal(p.requests[0]?.user, 'PASTED-ARTICLE-BODY');
+    // V3 sends the text as the "article" field of a JSON object (spec/04 §2 note, 2026-10-01).
+    assert.deepEqual(JSON.parse(p.requests[0]?.user ?? ''), { article: 'PASTED-ARTICLE-BODY' });
 
     const log = await lastLog(u.id, 'content_extraction_agent');
     assert.deepEqual(

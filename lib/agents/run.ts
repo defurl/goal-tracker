@@ -21,6 +21,12 @@ export interface AgentPrompt<T> {
   temperature: number;
   maxTokens: number;
   systemPrompt: string;
+  /**
+   * Turns the input into the user turn; absent, the input is sent as it is. A
+   * prompt that reads third-party text fences it off here, so the framing is
+   * versioned with the rule that explains it to the model (04 §7).
+   */
+  userMessage?: (input: string) => string;
   schema: OutputSchema<T>;
 }
 
@@ -62,6 +68,7 @@ export async function runAgent<T>(
   let inputTokens: number | null = null;
   let outputTokens: number | null = null;
   let code: AgentErrorCode = 'PROVIDER_ERROR';
+  const user = prompt.userMessage ? prompt.userMessage(input) : input;
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     try {
@@ -70,7 +77,7 @@ export async function runAgent<T>(
         temperature: prompt.temperature,
         maxTokens: prompt.maxTokens,
         system: prompt.systemPrompt,
-        user: input,
+        user,
       });
       inputTokens = add(inputTokens, result.inputTokens);
       outputTokens = add(outputTokens, result.outputTokens);

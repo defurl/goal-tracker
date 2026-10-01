@@ -3,12 +3,12 @@
 // here, so moving an agent to a _V2 prompt is one line, and the version logged
 // with a result is always the version that produced it.
 
-import { CONTENT_EXTRACTION_V2 } from './contentExtraction.ts';
+import { CONTENT_EXTRACTION_V3 } from './contentExtraction.ts';
 import { JOURNAL_ANALYSIS_V3 } from './journalAnalysis.ts';
 
 // Earlier versions stay in their files as the record of what produced earlier rows.
 export const AGENTS = {
-  content_extraction_agent: { prompt: CONTENT_EXTRACTION_V2 },
+  content_extraction_agent: { prompt: CONTENT_EXTRACTION_V3 },
   journal_analysis_agent: { prompt: JOURNAL_ANALYSIS_V3 },
 } as const;
 
