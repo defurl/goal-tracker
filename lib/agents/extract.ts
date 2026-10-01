@@ -41,6 +41,28 @@ export interface ExtractDeps {
   fetchPage?: (url: string) => Promise<{ html: string }>;
 }
 
+function withoutCredentials(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * An http(s) URL with no credentials in it: the only kind fetchPage.ts will
+ * try, so the only kind worth storing as a source. A javascript: or data: URL
+ * is refused here rather than kept in source_url, where a later link to the
+ * source would turn it into script. Which hosts may be reached is the fetch's
+ * question, not this one's: a private address is a page that cannot be read.
+ */
+const ArticleUrl = z
+  .url({ protocol: /^https?$/ })
+  .trim()
+  .max(AGENT_LIMITS.urlMaxChars)
+  .refine(withoutCredentials, 'no credentials in the URL');
+
 /**
  * The request body. Strict: a field this schema does not name is refused with
  * a 400, not silently dropped. The client sends none (lib/data/challenge.ts),
@@ -50,7 +72,7 @@ export interface ExtractDeps {
  */
 export const ExtractInput = z
   .strictObject({
-    url: z.string().trim().min(1).max(AGENT_LIMITS.urlMaxChars).optional(),
+    url: ArticleUrl.optional(),
     text: z.string().trim().min(1).max(AGENT_LIMITS.pastedTextMaxChars).optional(),
   })
   .refine((v) => Boolean(v.url) !== Boolean(v.text), 'exactly one of url or text');

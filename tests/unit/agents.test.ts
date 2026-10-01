@@ -225,6 +225,42 @@ describe('the agent routes refuse unknown fields — mass assignment', () => {
   });
 });
 
+describe('ExtractInput — the URL is checked for its form at the boundary', () => {
+  it('takes an http(s) URL, trimmed', () => {
+    for (const url of ['https://example.com/a', 'http://example.com/a?b=c#d', ' https://example.com/a ', 'HTTPS://EXAMPLE.COM/A']) {
+      assert.ok(ExtractInput.safeParse({ url }).success, url);
+    }
+  });
+
+  it('refuses any other scheme, a bare host, and a URL carrying credentials', () => {
+    const refused = [
+      'javascript:alert(1)', 'data:text/html,<script>x()</script>', 'ftp://example.com/', 'file:///etc/passwd',
+      'example.com/a', 'https://user:pass@example.com/', 'https://user@example.com/',
+    ];
+    for (const url of refused) assert.equal(ExtractInput.safeParse({ url }).success, false, url);
+  });
+
+  it('leaves where a URL may go to the fetch: a private address is a page that cannot be read, not a 400', () => {
+    assert.ok(ExtractInput.safeParse({ url: 'http://169.254.169.254/latest/meta-data/' }).success);
+  });
+
+  it('answers a refused URL with a 400: no fetch, no model call, nothing stored', async () => {
+    const ops: Op[] = [];
+    const provider = recording();
+    let fetched = false;
+    const fetchPage = async () => {
+      fetched = true;
+      return { html: '' };
+    };
+    const result = await extractAction({ ...deps(provider, ops), fetchPage }, { url: 'javascript:alert(document.cookie)' });
+
+    assert.equal(result.status, 400);
+    assert.equal(fetched, false);
+    assert.equal(provider.requests.length, 0);
+    assert.ok(!ops.some((op) => op.table === 'user_actions'), 'nothing stored');
+  });
+});
+
 // ── AI usage caps ────────────────────────────────────────────────────────────
 
 describe('AI usage caps — per user, per plan, per local day', () => {
