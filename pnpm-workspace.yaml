@@ -1,0 +1,10 @@
+# pnpm settings. Since pnpm 11 they live here, not in package.json's "pnpm"
+# field, which pnpm 11 no longer reads. There are no workspace packages: the
+# repository is one project, so there is no `packages` list.
+
+overrides:
+  # postcss before 8.5.23 can be made to read arbitrary .map files named in a
+  # CSS comment (GHSA-6g55-p6wh-862q, GHSA-r28c-9q8g-f849, GHSA-fxqj-rqcc-2cmp).
+  # Only next@14 pulls it in, pinned to 8.4.31, and only at build time. next
+  # stays on 14 (D-06), so its copy is lifted here, within major 8.
+  'postcss@<8.5.23': '^8.5.23'
