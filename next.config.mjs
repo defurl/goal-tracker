@@ -11,6 +11,12 @@ const securityHeaders = [
   // or query. Today's browsers already default to this; stated, it holds for
   // older ones too.
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  // No other site may frame a page, so none can lay the account controls
+  // under a decoy and steal the click (the arm-then-fire delete included).
+  // frame-ancestors is the standard; X-Frame-Options covers older browsers.
+  // This policy holds that one directive and constrains nothing else.
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
 ];
 
 /** @type {import('next').NextConfig} */

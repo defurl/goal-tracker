@@ -56,6 +56,13 @@ describe('next.config — headers on every response', () => {
     it(`${path}: only the origin leaves for another site`, async () => {
       assert.equal((await headersFor(path)).get('referrer-policy'), 'strict-origin-when-cross-origin');
     });
+
+    it(`${path}: no site may frame it`, async () => {
+      const h = await headersFor(path);
+      assert.equal(h.get('x-frame-options'), 'DENY');
+      // frame-ancestors alone: a fuller policy needs its own report-only trial.
+      assert.equal(h.get('content-security-policy'), "frame-ancestors 'none'");
+    });
   }
 });
 
