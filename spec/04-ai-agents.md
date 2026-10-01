@@ -350,6 +350,31 @@ The number to watch is not the per-call cost but the **extraction input size**.
 The 6000-character cap in §2 is the actual cost control; without it a user
 pasting a long document repeatedly is the one realistic path to the cap. Keep it.
 
+> **Note, 2026-10-01 (security hardening, item 10) — PROPOSED.** The
+> per-request bounds are named once, in `lib/agents/limits.ts`, and tested
+> with the caps in `tests/unit/agents.test.ts`. Two multipliers matter when
+> sizing a global ceiling. A failed attempt is retried once, so the free caps
+> allow up to 46 model calls a user a day (20 × 2 + 3 × 2). And the "local
+> day" follows `profiles.timezone`, which the user can write, so moving
+> between zones opens up to about four local days inside one real one.
+>
+> **Today the free tier is the global ceiling:** no billing account is
+> attached, so nothing can be charged (D-22 §7), and Google's own project
+> limits answer with a 429 that ends in the curated fallback. **The day
+> billing is attached**, in the Google Cloud project behind `GEMINI_API_KEY`
+> (manual):
+>
+> 1. *Billing → Budgets & alerts*: a monthly budget for the project (COST-1's
+>    $20 a day is about $600 a month), alerting the owner at 50 %, 90 % and
+>    100 %. A budget alerts; it does not stop spend.
+> 2. *APIs & Services → Generative Language API → Quotas*: lower the
+>    per-day request quota for the model the prompts name to the most the caps
+>    allow (users × 46), so a bug that defeats the app's limits meets Google's.
+> 3. For a hard stop, Google's documented pattern: send budget notifications to
+>    Pub/Sub, with a function that disables billing on the project at 100 %.
+> 4. Alert on a spike: a daily count of `agent_logs` rows per agent, beside the
+>    security log's quota events.
+
 ---
 
 ## 7. Prompt versioning
