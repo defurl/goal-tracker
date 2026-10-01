@@ -51,3 +51,6 @@ public/fonts/DepartureMono-*/
 
 # CI writes its captures here; only captures/local is the committed record.
 captures/ci/
+# The Phase 6 review board's screens (review:capture): published on the board,
+# seeded with a throwaway account, never committed.
+captures/review/

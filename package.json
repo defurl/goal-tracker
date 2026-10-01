@@ -22,6 +22,7 @@
     "a11y:check": "node scripts/a11y-check.ts",
     "motion:check": "node scripts/motion-check.ts",
     "offline:check": "node scripts/offline-check.ts",
+    "review:capture": "node scripts/review-capture.ts",
     "test": "node --test tests/unit/*.test.ts",
     "test:db": "node scripts/test-db.ts",
     "db:types": "supabase gen types typescript --local > lib/supabase/database.types.ts"
