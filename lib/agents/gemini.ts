@@ -16,18 +16,17 @@
 // here unless the owner switches it on deliberately — see README, "Getting the
 // keys".
 
+import { AGENT_LIMITS } from './limits.ts';
 import { AgentError, type AgentProvider, type CompletionRequest, type CompletionResult } from './provider.ts';
 
 export interface GeminiProviderOptions {
   apiKey: string;
   /** Injected in tests to simulate a blocked or failing network. */
   fetch?: typeof fetch;
+  /** The model call's own ceiling, AGENT_LIMITS.providerTimeoutMs; the article fetch has its own (04 §2). */
   timeoutMs?: number;
   baseUrl?: string;
 }
-
-/** The model call's own ceiling; the article fetch has its separate 8 s (04 §2). */
-const DEFAULT_TIMEOUT_MS = 8000;
 
 interface GenerateContentResponse {
   candidates?: { content?: { parts?: { text?: unknown }[] }; finishReason?: string }[];
@@ -43,7 +42,7 @@ export class GeminiProvider implements AgentProvider {
   constructor(options: GeminiProviderOptions) {
     this.apiKey = options.apiKey;
     this.fetchImpl = options.fetch ?? fetch;
-    this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+    this.timeoutMs = options.timeoutMs ?? AGENT_LIMITS.providerTimeoutMs;
     this.baseUrl = options.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta';
   }
 

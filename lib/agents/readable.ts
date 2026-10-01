@@ -11,7 +11,9 @@
 import { Readability } from '@mozilla/readability';
 import { parseHTML } from 'linkedom';
 
-export const MAX_SOURCE_CHARS = 6000;
+import { AGENT_LIMITS } from './limits.ts';
+
+export const MAX_SOURCE_CHARS = AGENT_LIMITS.sourceMaxChars;
 
 export function capSource(text: string): string {
   return text.replace(/\s+/g, ' ').trim().slice(0, MAX_SOURCE_CHARS);

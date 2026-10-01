@@ -18,6 +18,7 @@ import { request as httpsRequest } from 'node:https';
 import { isIP, type LookupFunction } from 'node:net';
 import { createBrotliDecompress, createGunzip, createInflate } from 'node:zlib';
 
+import { AGENT_LIMITS } from './limits.ts';
 import { isPublicAddress } from './ssrf.ts';
 
 export type PageFetchErrorCode = 'INVALID_URL' | 'BLOCKED' | 'TIMEOUT' | 'NOT_HTML' | 'HTTP_ERROR' | 'NETWORK';
@@ -32,10 +33,7 @@ export class PageFetchError extends Error {
   }
 }
 
-export const FETCH_TIMEOUT_MS = 8000;
-const MAX_REDIRECTS = 3;
-/** Decompressed. Readability only needs the article, and the model gets 6000 chars of it. */
-const MAX_BYTES = 2 * 1024 * 1024;
+// Timeout, redirect hops and the decompressed byte cap: AGENT_LIMITS (limits.ts).
 const HTML_TYPES = ['text/html', 'application/xhtml+xml'];
 
 type Resolve = (
@@ -148,7 +146,7 @@ async function readBody(response: IncomingMessage): Promise<Buffer> {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of stream as AsyncIterable<Buffer>) {
-    const remaining = MAX_BYTES - size;
+    const remaining = AGENT_LIMITS.fetchMaxBytes - size;
     if (chunk.length >= remaining) {
       // Enough of the page; the lead is what the model reads anyway.
       chunks.push(chunk.subarray(0, remaining));
@@ -189,7 +187,7 @@ export async function fetchPage(
     allowedPorts: options.allowedPorts ?? ['', '80', '443'],
     resolve: options.resolve ?? systemResolve,
   };
-  const signal = AbortSignal.timeout(options.timeoutMs ?? FETCH_TIMEOUT_MS);
+  const signal = AbortSignal.timeout(options.timeoutMs ?? AGENT_LIMITS.fetchTimeoutMs);
   let url = checkUrl(rawUrl, policy);
 
   try {
@@ -199,7 +197,7 @@ export async function fetchPage(
 
       if (status >= 300 && status < 400 && response.headers.location) {
         response.resume();
-        if (hop >= MAX_REDIRECTS) throw new PageFetchError('HTTP_ERROR');
+        if (hop >= AGENT_LIMITS.fetchMaxRedirects) throw new PageFetchError('HTTP_ERROR');
         url = checkUrl(response.headers.location, policy, url);
         continue;
       }

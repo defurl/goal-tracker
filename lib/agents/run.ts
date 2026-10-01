@@ -4,6 +4,7 @@
 // code — the caller turns it into a curated fallback (FALLBACK-1). Nothing
 // here throws, logs, or keeps the input past the call.
 
+import { AGENT_LIMITS } from './limits.ts';
 import { AgentError, type AgentErrorCode, type AgentProvider } from './provider.ts';
 
 /**
@@ -45,7 +46,7 @@ function parseJson(text: string): unknown {
   }
 }
 
-export const MAX_ATTEMPTS = 2;
+export const MAX_ATTEMPTS = AGENT_LIMITS.providerAttempts;
 
 /**
  * `accept` is a rule the schema cannot express (the 40-word limit); output it

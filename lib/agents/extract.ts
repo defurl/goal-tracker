@@ -20,6 +20,7 @@ import { FALLBACK_SOURCE_SUMMARY, pickFallbackAction } from '../prompts/fallback
 import { AGENTS } from '../prompts/index.ts';
 import type { Database } from '../supabase/database.types.ts';
 import { fetchPage as guardedFetch } from './fetchPage.ts';
+import { AGENT_LIMITS } from './limits.ts';
 import { consumeRateLimit, logAgentCall, retryAfterSeconds, type LoggedErrorCode } from './ops.ts';
 import type { AgentProvider } from './provider.ts';
 import { capSource, readableText } from './readable.ts';
@@ -43,8 +44,8 @@ export interface ExtractDeps {
 /** Pasted text beyond the cap is truncated after validation, not refused. */
 export const ExtractInput = z
   .object({
-    url: z.string().trim().min(1).max(2048).optional(),
-    text: z.string().trim().min(1).max(50_000).optional(),
+    url: z.string().trim().min(1).max(AGENT_LIMITS.urlMaxChars).optional(),
+    text: z.string().trim().min(1).max(AGENT_LIMITS.pastedTextMaxChars).optional(),
   })
   .refine((v) => Boolean(v.url) !== Boolean(v.text), 'exactly one of url or text');
 

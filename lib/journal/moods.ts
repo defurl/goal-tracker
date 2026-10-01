@@ -7,6 +7,8 @@
 // No mood is labelled good or bad. The score only orders them for the
 // calendar, which renders warmth present or absent, not a verdict.
 
+import { AGENT_LIMITS } from '../agents/limits.ts';
+
 export interface Mood {
   key: string;
   emoji: string;
@@ -36,5 +38,8 @@ export const TOPIC_TAGS: readonly string[] = [
   'work', 'health', 'relationships', 'learning', 'rest', 'money', 'creativity', 'home',
 ];
 
-/** FR-3.1 — prevented at input with a visible counter (AC-3.4), and checked again server-side. */
-export const MAX_ENTRY_CHARS = 2000;
+/**
+ * FR-3.1 — prevented at input with a visible counter (AC-3.4), and checked
+ * again server-side. Named with the agent layer's other limits.
+ */
+export const MAX_ENTRY_CHARS = AGENT_LIMITS.entryMaxChars;
