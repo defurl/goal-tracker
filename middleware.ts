@@ -14,7 +14,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-import { isHttps, sessionCookieWrites } from './lib/supabase/cookies';
+import { isHttps, roomCookieOptions, sessionCookieWrites } from './lib/supabase/cookies';
 import { supabaseAnonKey, supabaseConfigured, supabaseUrl } from './lib/supabase/env';
 
 const ROOM_COOKIE = 'bbe_room';
@@ -46,9 +46,10 @@ export async function middleware(request: NextRequest) {
     response = await refreshSession(request, response, secure);
   }
 
-  // Set last: refreshSession() may replace the response object.
+  // Set last: refreshSession() may replace the response object. HttpOnly:
+  // only this file ever reads it.
   if (choseRoom) {
-    response.cookies.set(ROOM_COOKIE, '1', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    response.cookies.set(ROOM_COOKIE, '1', roomCookieOptions(secure));
   }
   return response;
 }
