@@ -337,6 +337,10 @@ describe('the write paths act only on the caller’s own rows', () => {
     assert.deepEqual(data, { roll_count: 0, completed_at: null });
     const logs = await admin.from('habit_logs').select('id').eq('habit_id', bHabit.id);
     assert.equal(logs.data?.length, 0);
+    const milestone = await admin.from('milestones').select('completed_at').eq('id', bMilestone.id).single();
+    assert.equal(milestone.data?.completed_at, null, 'A ticked B’s milestone');
+    const goal = await admin.from('goals').select('completed_at').eq('id', bGoal.id).single();
+    assert.equal(goal.data?.completed_at, null, 'A completed B’s goal');
   });
 
   it('a signed-out caller reaches none of them', async () => {
