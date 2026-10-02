@@ -16,6 +16,8 @@ import { json, serviceClient, signedInUser } from '../_lib/server.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+// Two auth calls. A ceiling well under the platform's 300 s default.
+export const maxDuration = 30;
 
 const ROUTE = GUARDED.account;
 

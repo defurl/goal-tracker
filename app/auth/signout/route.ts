@@ -7,6 +7,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { GUARDED, screen } from '@/lib/security/requestGuard';
 import { createClient } from '@/lib/supabase/server';
 
+// One auth call. A ceiling well under the platform's 300 s default.
+export const maxDuration = 30;
+
 const ROUTE = GUARDED.signOut;
 
 export async function POST(request: NextRequest) {
