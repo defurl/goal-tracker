@@ -82,6 +82,11 @@ describe('next.config — headers left to the platform', () => {
     it(`${path}: no HSTS of its own, which would replace Vercel's preload value`, async () => {
       assert.equal((await headersFor(path)).has('strict-transport-security'), false);
     });
+
+    it(`${path}: grants no other origin anything`, async () => {
+      const cors = [...(await headersFor(path)).keys()].filter((k) => k.startsWith('access-control-'));
+      assert.deepEqual(cors, []);
+    });
   }
 });
 

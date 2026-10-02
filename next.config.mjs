@@ -9,6 +9,14 @@
  * http://localhost. A custom domain gets only `max-age=63072000` from Vercel;
  * add includeSubDomains for it, scoped with `has: [{ type: 'host', ... }]`,
  * once every subdomain is HTTPS-only, starting at max-age=300.
+ *
+ * No Access-Control-* either: the app only ever calls itself, so no route
+ * grants another origin a read. Vercel's CDN adds `Access-Control-Allow-Origin:
+ * *` to static files and prerendered pages by itself (/, /text, /signup,
+ * /privacy, the 404 page, the manifest, public/ and /_next/static). That is
+ * build output, the same for every visitor, never with Allow-Credentials, so
+ * a browser will not read a cookie-bearing response through it. Route
+ * handlers and dynamic pages run as functions and carry no CORS header.
  */
 const securityHeaders = [
   // A response is only ever what its Content-Type says: a JSON or text body is
