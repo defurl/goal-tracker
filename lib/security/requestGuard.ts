@@ -1,6 +1,7 @@
 // The shared guard for every cookie-authenticated, state-changing route
-// (hardening item 2). Each guarded handler calls screen() before it does
-// anything else. Server only.
+// (hardening items 2 and 11). Each guarded handler calls screen() before it
+// does anything else and, if it takes a body, readJson() once it knows the
+// caller. Server only.
 //
 // CSRF. The session lives in Supabase's SameSite=Lax cookies, which a browser
 // leaves off a cross-site POST or DELETE: that is the first line. This is the
@@ -20,6 +21,16 @@
 // body, and a cross-origin fetch that sets the type needs a CORS preflight
 // that no route answers.
 //
+// Size. A body is capped before it is parsed: a declared Content-Length over
+// the route's cap is refused at once, and a body without one (chunked) is read
+// with a running count and abandoned the moment it passes the cap — 413 either
+// way, and the JSON parser never runs. The caps are in lib/security/limits.ts.
+// Above the app: Vercel refuses a function body over 4.5 MB (413
+// FUNCTION_PAYLOAD_TOO_LARGE) and a header over 16 KB, or 32 KB of headers
+// (431), and stops a function at its maxDuration. Self-hosted, Node refuses
+// 16 KiB of headers, and Next 14 buffers a non-GET body for middleware.ts
+// before the route runs, so there a proxy's body limit bounds memory.
+//
 // Not guarded, because each has its own verification and neither acts on a
 // cookie a cross-site page could ride:
 //   GET /api/cron/seed-challenges  a bearer CRON_SECRET; it reads no session
@@ -29,21 +40,25 @@
 // Every other write goes from the browser to Supabase with a bearer JWT, which
 // a cross-site page cannot attach. There are no server actions.
 
+import { bodyLimit, type BodyLimit } from './limits.ts';
+
 /** How a guarded route is screened. */
 export interface GuardPolicy {
   /** The route as logged and documented — a constant, never the request's own path. */
   route: string;
   /** The route reads a JSON body, so it requires Content-Type: application/json. */
   json: boolean;
+  /** Which byte cap its body is held to (lib/security/limits.ts). */
+  limit: BodyLimit;
 }
 
 /** Every cookie-authenticated, state-changing handler — and tests/unit/requestGuard.test.ts checks there are no others. */
 export const GUARDED = {
-  extract: { route: '/api/agent/extract', json: true },
-  reflect: { route: '/api/agent/reflect', json: true },
+  extract: { route: '/api/agent/extract', json: true, limit: 'extract' },
+  reflect: { route: '/api/agent/reflect', json: true, limit: 'reflect' },
   // Neither reads a body. Sign-out is a plain form post.
-  account: { route: '/api/account', json: false },
-  signOut: { route: '/auth/signout', json: false },
+  account: { route: '/api/account', json: false, limit: 'other' },
+  signOut: { route: '/auth/signout', json: false, limit: 'other' },
 } as const satisfies Record<string, GuardPolicy>;
 
 type Env = Readonly<Record<string, string | undefined>>;
@@ -137,6 +152,12 @@ function refusal(status: number, error: string): Response {
   return Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
+/** Content-Length as a number; null when absent or unreadable, where the running count still holds. */
+export function declaredLength(request: Request): number | null {
+  const raw = request.headers.get('content-length')?.trim();
+  return raw && /^\d+$/.test(raw) ? Number(raw) : null;
+}
+
 /** Null when the request may proceed; otherwise the response that refuses it. */
 export function screen(request: Request, policy: GuardPolicy, env: Env = process.env): Response | null {
   const origin = checkOrigin(request, trustedOrigins(env));
@@ -144,5 +165,69 @@ export function screen(request: Request, policy: GuardPolicy, env: Env = process
   if (policy.json && !isJsonContentType(request.headers.get('content-type'))) {
     return refusal(415, 'unsupported_media_type');
   }
+  const declared = declaredLength(request);
+  if (declared !== null && declared > bodyLimit(policy.limit, env)) return refusal(413, 'too_large');
   return null;
+}
+
+export type BodyRead = { ok: true; bytes: Uint8Array } | { ok: false; reason: 'too_large' | 'unreadable' };
+
+/**
+ * The body, counted as it arrives and abandoned the moment it passes `limit`
+ * bytes, so no more than `limit` is ever held. A declared Content-Length over
+ * the limit is refused before a byte is read.
+ */
+export async function readBodyWithin(request: Request, limit: number): Promise<BodyRead> {
+  const declared = declaredLength(request);
+  if (declared !== null && declared > limit) return { ok: false, reason: 'too_large' };
+  if (request.body === null) return { ok: true, bytes: new Uint8Array(0) };
+
+  const chunks: Uint8Array[] = [];
+  let received = 0;
+  try {
+    const reader = request.body.getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.byteLength;
+      if (received > limit) {
+        await reader.cancel().catch(() => undefined);
+        return { ok: false, reason: 'too_large' };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { ok: false, reason: 'unreadable' };
+  }
+
+  const bytes = new Uint8Array(received);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return { ok: true, bytes };
+}
+
+/** JSON, or undefined for a body that is not — never echoed back or logged. */
+export function parseJson(bytes: Uint8Array): unknown {
+  try {
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    return undefined;
+  }
+}
+
+export type JsonRead = { ok: true; value: unknown } | { ok: false; response: Response };
+
+/**
+ * The route's JSON body, read within its cap. Over the cap: a 413 to return,
+ * and the parser never runs. A body that is not JSON, or that broke off,
+ * reads as undefined, which the route's schema refuses (400).
+ */
+export async function readJson(request: Request, policy: GuardPolicy, env: Env = process.env): Promise<JsonRead> {
+  const body = await readBodyWithin(request, bodyLimit(policy.limit, env));
+  if (body.ok) return { ok: true, value: parseJson(body.bytes) };
+  if (body.reason === 'unreadable') return { ok: true, value: undefined };
+  return { ok: false, response: refusal(413, 'too_large') };
 }

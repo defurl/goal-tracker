@@ -9,13 +9,14 @@
 // agent_logs. That is all the debugging this route gets.
 // ─────────────────────────────────────────────────────────────────────────
 //
-// Wiring only; the pipeline is lib/agents/reflect.ts. screen() is the shared
-// guard for cookie-authenticated writes (lib/security/requestGuard.ts).
+// Wiring only; the pipeline is lib/agents/reflect.ts. screen() and readJson()
+// are the shared guard for cookie-authenticated writes: origin, content type,
+// and the body's byte cap (lib/security/requestGuard.ts).
 
 import { reflectOnEntry } from '../../../../lib/agents/reflect.ts';
 import { aiReflectEnabled } from '../../../../lib/flags.ts';
-import { GUARDED, screen } from '../../../../lib/security/requestGuard.ts';
-import { json, provider, readJson, serviceClient, signedInUser } from '../../_lib/server.ts';
+import { GUARDED, readJson, screen } from '../../../../lib/security/requestGuard.ts';
+import { json, provider, serviceClient, signedInUser } from '../../_lib/server.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,6 +31,9 @@ export async function POST(request: Request) {
   const caller = await signedInUser();
   if (!caller) return json({ error: 'signed_out' }, 401);
 
+  const input = await readJson(request, ROUTE);
+  if (!input.ok) return input.response;
+
   const result = await reflectOnEntry(
     {
       provider: provider(),
@@ -39,7 +43,7 @@ export async function POST(request: Request) {
       // Off by default: the free Gemini tier is no place for a journal entry.
       reflectionEnabled: aiReflectEnabled,
     },
-    await readJson(request),
+    input.value,
   );
 
   const headers: Record<string, string> =

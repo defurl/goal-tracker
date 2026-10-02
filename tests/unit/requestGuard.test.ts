@@ -2,12 +2,28 @@
 // writes (hardening item 2). Requests are built the way a browser sends them;
 // the cookie values are fake.
 
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
-import { GUARDED, checkOrigin, isJsonContentType, screen, trustedOrigins } from '../../lib/security/requestGuard.ts';
+import { ExtractInput } from '../../lib/agents/extract.ts';
+import { ReflectInput } from '../../lib/agents/reflect.ts';
+import { MAX_ENTRY_CHARS, MOOD_KEYS, TOPIC_TAGS } from '../../lib/journal/moods.ts';
+import {
+  DEFAULT_BODY_LIMITS,
+  EXTRACT_TEXT_MAX_CHARS,
+  EXTRACT_URL_MAX_CHARS,
+  bodyLimit,
+} from '../../lib/security/limits.ts';
+import {
+  GUARDED,
+  checkOrigin,
+  isJsonContentType,
+  readJson,
+  screen,
+  trustedOrigins,
+} from '../../lib/security/requestGuard.ts';
 
 const SITE = 'https://bbe.test';
 const FAKE_SESSION = 'sb-test-auth-token=fake-session';
@@ -149,6 +165,180 @@ describe('screen() — a JSON route takes only JSON', () => {
     assert.equal(screen(request('/api/account', { origin: SITE }, { method: 'DELETE' }), GUARDED.account, {}), null);
     const form = request('/auth/signout', { origin: SITE, 'content-type': 'application/x-www-form-urlencoded' });
     assert.equal(screen(form, GUARDED.signOut, {}), null);
+  });
+});
+
+const bytesOf = (text: string) => new TextEncoder().encode(text).byteLength;
+
+/** `{"text":"aaa…"}` of exactly `bytes` bytes. */
+function jsonOfBytes(bytes: number): string {
+  const [head, tail] = ['{"text":"', '"}'];
+  return head + 'a'.repeat(bytes - head.length - tail.length) + tail;
+}
+
+interface Tap {
+  pulls: number;
+  cancelled: boolean;
+}
+
+/** A chunked body that never ends: 1 KB a pull, pulled only when read. */
+function endless(tap: Tap): ReadableStream<Uint8Array> {
+  return new ReadableStream<Uint8Array>(
+    {
+      pull(controller) {
+        tap.pulls++;
+        controller.enqueue(new Uint8Array(1024).fill(0x61));
+      },
+      cancel() {
+        tap.cancelled = true;
+      },
+    },
+    { highWaterMark: 0 },
+  );
+}
+
+/** `text` as a chunked body, with no Content-Length. */
+function chunked(text: string): ReadableStream<Uint8Array> {
+  const bytes = new TextEncoder().encode(text);
+  let offset = 0;
+  return new ReadableStream<Uint8Array>(
+    {
+      pull(controller) {
+        if (offset >= bytes.byteLength) return controller.close();
+        controller.enqueue(bytes.slice(offset, offset + 512));
+        offset += 512;
+      },
+    },
+    { highWaterMark: 0 },
+  );
+}
+
+function jsonPost(headers: Record<string, string>, body: BodyInit): Request {
+  // `duplex` is required for a stream body; the DOM's RequestInit type lacks it.
+  return new Request(`${SITE}/api/agent/extract`, {
+    method: 'POST',
+    headers: { origin: SITE, 'content-type': 'application/json', ...headers },
+    body,
+    duplex: 'half',
+  } as RequestInit);
+}
+
+/** Runs `read` with JSON.parse watched; returns how often it ran. */
+async function parsesDuring(read: () => Promise<unknown>): Promise<number> {
+  const parse = mock.method(JSON, 'parse');
+  try {
+    await read();
+    return parse.mock.callCount();
+  } finally {
+    parse.mock.restore();
+  }
+}
+
+describe('body caps — derived from the schemas they guard', () => {
+  it('mirrors ExtractInput’s maxima', () => {
+    assert.ok(ExtractInput.safeParse({ text: 'a'.repeat(EXTRACT_TEXT_MAX_CHARS) }).success);
+    assert.ok(!ExtractInput.safeParse({ text: 'a'.repeat(EXTRACT_TEXT_MAX_CHARS + 1) }).success);
+    assert.ok(ExtractInput.safeParse({ url: 'a'.repeat(EXTRACT_URL_MAX_CHARS) }).success);
+    assert.ok(!ExtractInput.safeParse({ url: 'a'.repeat(EXTRACT_URL_MAX_CHARS + 1) }).success);
+  });
+
+  it('never refuses a body its schema accepts, even one of six-byte escapes', () => {
+    // JSON.stringify writes a control character as \u0001: six bytes for one character.
+    const extract = JSON.stringify({ text: '\u0001'.repeat(EXTRACT_TEXT_MAX_CHARS) });
+    assert.ok(ExtractInput.safeParse(JSON.parse(extract)).success);
+    assert.ok(bytesOf(extract) <= DEFAULT_BODY_LIMITS.extract);
+
+    const longestMood = [...MOOD_KEYS].sort((a, b) => b.length - a.length)[0];
+    const reflect = JSON.stringify({ entry_text: '\u0001'.repeat(MAX_ENTRY_CHARS), mood: longestMood, tags: [...TOPIC_TAGS] });
+    assert.ok(ReflectInput.safeParse(JSON.parse(reflect)).success);
+    assert.ok(bytesOf(reflect) <= DEFAULT_BODY_LIMITS.reflect);
+  });
+
+  it('holds the numbers its comments state', () => {
+    assert.equal(DEFAULT_BODY_LIMITS.extract, 313_312);
+    assert.equal(DEFAULT_BODY_LIMITS.reflect, 13_408);
+    assert.equal(DEFAULT_BODY_LIMITS.other, 1024);
+  });
+
+  it('takes an override from the environment, and ignores one that is not a positive integer', () => {
+    assert.equal(bodyLimit('extract', { BODY_LIMIT_EXTRACT_BYTES: '5000' }), 5000);
+    assert.equal(bodyLimit('other', { BODY_LIMIT_DEFAULT_BYTES: ' 2048 ' }), 2048);
+    for (const bad of ['0', '-1', 'abc', '1e6', '12.5', '', ' ', '99999999999999999999']) {
+      assert.equal(bodyLimit('reflect', { BODY_LIMIT_REFLECT_BYTES: bad }), DEFAULT_BODY_LIMITS.reflect, bad);
+    }
+    assert.equal(bodyLimit('other', {}), 1024);
+  });
+});
+
+describe('the byte cap — refused before the parser runs', () => {
+  const LIMIT = 4096;
+  const env = { BODY_LIMIT_EXTRACT_BYTES: String(LIMIT) };
+
+  it('screen() refuses a declared Content-Length over the cap with 413, reading nothing', async () => {
+    const tap: Tap = { pulls: 0, cancelled: false };
+    const oversized = jsonPost({ 'content-length': String(LIMIT + 1) }, endless(tap));
+    const refused = screen(oversized, GUARDED.extract, env);
+    assert.equal(refused?.status, 413);
+    assert.deepEqual(await refused?.json(), { error: 'too_large' });
+    assert.equal(tap.pulls, 0);
+  });
+
+  it('screen() holds a body-less route to the small default cap', () => {
+    const own = { origin: SITE, 'content-length': String(DEFAULT_BODY_LIMITS.other + 1) };
+    assert.equal(screen(request('/auth/signout', own), GUARDED.signOut, {})?.status, 413);
+    assert.equal(screen(request('/auth/signout', { origin: SITE, 'content-length': '0' }), GUARDED.signOut, {}), null);
+  });
+
+  it('readJson() refuses a declared length over the cap without reading or parsing', async () => {
+    const tap: Tap = { pulls: 0, cancelled: false };
+    let status = 0;
+    const parses = await parsesDuring(async () => {
+      const read = await readJson(jsonPost({ 'content-length': String(LIMIT + 1) }, endless(tap)), GUARDED.extract, env);
+      status = read.ok ? 200 : read.response.status;
+    });
+    assert.equal(status, 413);
+    assert.equal(parses, 0);
+    assert.equal(tap.pulls, 0);
+  });
+
+  it('readJson() refuses a chunked body (no Content-Length) once it passes the cap, stops reading, and never parses', async () => {
+    const tap: Tap = { pulls: 0, cancelled: false };
+    const endlessBody = jsonPost({}, endless(tap));
+    assert.equal(endlessBody.headers.get('content-length'), null);
+    let status = 0;
+    const parses = await parsesDuring(async () => {
+      const read = await readJson(endlessBody, GUARDED.extract, env);
+      status = read.ok ? 200 : read.response.status;
+    });
+    assert.equal(status, 413);
+    assert.equal(parses, 0);
+    assert.ok(tap.cancelled, 'the stream is cancelled');
+    assert.ok(tap.pulls <= LIMIT / 1024 + 2, `read ${tap.pulls} KB of a ${LIMIT / 1024} KB cap`);
+  });
+
+  it('readJson() catches a body longer than its Content-Length claims', async () => {
+    const tap: Tap = { pulls: 0, cancelled: false };
+    const read = await readJson(jsonPost({ 'content-length': '10' }, endless(tap)), GUARDED.extract, env);
+    assert.equal(read.ok ? 200 : read.response.status, 413);
+  });
+
+  it('readJson() accepts a body of exactly the cap, declared or chunked, and parses it', async () => {
+    const atCap = jsonOfBytes(LIMIT);
+    assert.equal(bytesOf(atCap), LIMIT);
+    const declared = await readJson(jsonPost({ 'content-length': String(LIMIT) }, atCap), GUARDED.extract, env);
+    assert.deepEqual(declared, { ok: true, value: JSON.parse(atCap) });
+    const streamed = await readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, env);
+    assert.deepEqual(streamed, { ok: true, value: JSON.parse(atCap) });
+    // The control for the "never parses" checks above: the watch does see a parse.
+    assert.equal(await parsesDuring(() => readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, env)), 1);
+
+    const overCap = await readJson(jsonPost({}, chunked(jsonOfBytes(LIMIT + 1))), GUARDED.extract, env);
+    assert.equal(overCap.ok ? 200 : overCap.response.status, 413);
+  });
+
+  it('readJson() reads a body that is not JSON, or none, as undefined for the schema to refuse', async () => {
+    assert.deepEqual(await readJson(jsonPost({}, 'not json'), GUARDED.extract, env), { ok: true, value: undefined });
+    assert.deepEqual(await readJson(jsonPost({}, ''), GUARDED.extract, env), { ok: true, value: undefined });
   });
 });
 

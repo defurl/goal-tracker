@@ -38,14 +38,9 @@ export async function signedInUser() {
   return user ? { db, userId: user.id } : null;
 }
 
-/** JSON, or undefined for a body that is not — never echoed back or logged. */
-export async function readJson(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return undefined;
-  }
-}
+// A request body is read with readJson() from lib/security/requestGuard.ts,
+// which holds it to its route's byte cap before parsing. Nothing here reads
+// one: request.json() takes a body of any size.
 
 export function json(body: unknown, status = 200, headers: Record<string, string> = {}) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
