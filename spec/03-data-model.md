@@ -54,6 +54,20 @@ create table profiles (
 > `timezone` is why the daily seeder is an hourly sweep rather than a single
 > 00:00 UTC cron. See `04-ai-agents.md` §4.
 
+> **Amendment, 2026-10-01 — PROPOSED: the zone must be a real one.**
+> `028_valid_timezone.sql` refuses any value not in `pg_timezone_names`, for
+> every role. Free text let one unreadable zone fail the hourly sweep for all
+> users, and let a POSIX offset string (`'XYZ-160'`, seven days ahead) open a
+> fortnight of local days at once. The sweep also skips a zone it cannot read.
+>
+> **Still open, for the owner:** switching between *real* zones (UTC−12 to
+> UTC+14) still reaches up to three local dates at any moment. Every daily bound
+> is keyed to the local date and each date pays once, so this lets a user claim
+> a day early or catch up yesterday's, not multiply in the long run. The app
+> itself only ever writes the zone once, over the UTC default (`hydrate()`).
+> Recommended: refuse an owner's zone change unless the stored zone is `UTC`,
+> or allow one change per 7 days with a `timezone_changed_at` column.
+
 ### user_actions
 
 The library of extracted micro-actions.
