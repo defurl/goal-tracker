@@ -27,11 +27,26 @@ additional_redirect_urls = ["http://localhost:3000/auth/callback"]
 # passwords are 36-character UUIDs.
 minimum_password_length = 12
 password_requirements = ""
+# The defaults the hosted checklist keeps, written down. An access token lives
+# an hour, so a revoked session can still read the database for up to that
+# long; refresh tokens rotate, and one reused outside 10 s revokes its session.
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+# Not mirrored, on purpose:
+#   [auth.rate_limit]  the database tests sign in ~50 users from 127.0.0.1;
+#                      hosted limits are in the checklist.
+#   [auth.sessions]    time-box and inactivity timeout are Pro-plan on hosted
+#                      (D-17: Free), so setting them here would make local lie.
+#   max_frequency      a test may need two emails to one user in a minute.
 
 [auth.email]
 enable_signup = true
 # Local only: no mail server to confirm against. The hosted project confirms.
 enable_confirmations = false
+# As on hosted (secure email change, the CLI default): a new address must be
+# confirmed from the old one and the new one.
+double_confirm_changes = true
 # As on hosted (item 3): changing a password needs a session under 24 hours
 # old, or a reauthenticate() nonce. A test that signs in and then changes the
 # password is inside that window.
