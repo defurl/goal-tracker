@@ -46,6 +46,8 @@ export const admin: SupabaseClient = createClient(url, serviceKey, noSession);
 export interface TestUser {
   id: string;
   email: string;
+  /** Random and throwaway, for a test that signs the same user in twice. */
+  password: string;
   /** Signed in with the anon key — exactly what a browser holds. */
   client: SupabaseClient;
 }
@@ -67,7 +69,7 @@ export async function createUser(label: string): Promise<TestUser> {
   const { error: signInError } = await client.auth.signInWithPassword({ email, password });
   if (signInError) throw new Error(`signIn(${label}): ${signInError.message}`);
 
-  return { id: data.user.id, email, client };
+  return { id: data.user.id, email, password, client };
 }
 
 /** Deletes every user this run created; their rows go with them (on delete cascade). */
