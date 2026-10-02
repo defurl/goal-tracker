@@ -13,6 +13,7 @@ import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { googleAuthEnabled, supabaseConfigured } from '@/lib/supabase/env';
 
+import { AUTH_MESSAGES, authMessage } from './authMessages';
 import styles from './AuthForm.module.css';
 
 type Mode = 'login' | 'signup';
@@ -51,7 +52,8 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
     if (mode === 'login') {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setMessage(error.message);
+        // Never Supabase's own text: it tells an unknown email from a wrong password.
+        setMessage(authMessage('login', error));
         setBusy(false);
         return;
       }
@@ -67,7 +69,7 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
     });
     setBusy(false);
     if (error) {
-      setMessage(error.message);
+      setMessage(authMessage('signup', error));
       return;
     }
     if (data.session) {
@@ -75,8 +77,9 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
       router.refresh();
       return;
     }
-    // Email confirmation is on: no session until the link is followed.
-    setMessage('Check your inbox — the link there finishes signing you up.');
+    // Email confirmation is on: no session until the link is followed. An
+    // address that already has an account lands here too, by design.
+    setMessage(AUTH_MESSAGES.checkInbox);
   }
 
   async function google() {
@@ -86,7 +89,7 @@ export function AuthForm({ mode, notice }: { mode: Mode; notice?: string }) {
       options: { redirectTo: callback() },
     });
     if (error) {
-      setMessage(error.message);
+      setMessage(authMessage('google', error));
       setBusy(false);
     }
   }
