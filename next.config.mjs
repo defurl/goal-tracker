@@ -17,6 +17,10 @@ const securityHeaders = [
   // This policy holds that one directive and constrains nothing else.
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+  // Device and payment features nothing here uses, refused outright, so an
+  // injected script cannot ask for them either. Web Audio, which the ambient
+  // sound uses, is not policy-controlled; autoplay is left at its default.
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
 ];
 
 /** @type {import('next').NextConfig} */

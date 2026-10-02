@@ -63,6 +63,17 @@ describe('next.config — headers on every response', () => {
       // frame-ancestors alone: a fuller policy needs its own report-only trial.
       assert.equal(h.get('content-security-policy'), "frame-ancestors 'none'");
     });
+
+    it(`${path}: unused device features are refused`, async () => {
+      const policy = new Map(
+        ((await headersFor(path)).get('permissions-policy') ?? '')
+          .split(',')
+          .map((d) => d.trim().split('=') as [string, string]),
+      );
+      for (const feature of ['camera', 'microphone', 'geolocation', 'payment', 'usb']) {
+        assert.equal(policy.get(feature), '()', `${feature} is not refused`);
+      }
+    });
   }
 });
 
