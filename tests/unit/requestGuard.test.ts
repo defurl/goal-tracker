@@ -244,8 +244,13 @@ describe('body caps — derived from the schemas they guard', () => {
   it('mirrors ExtractInput’s maxima', () => {
     assert.ok(ExtractInput.safeParse({ text: 'a'.repeat(EXTRACT_TEXT_MAX_CHARS) }).success);
     assert.ok(!ExtractInput.safeParse({ text: 'a'.repeat(EXTRACT_TEXT_MAX_CHARS + 1) }).success);
-    assert.ok(ExtractInput.safeParse({ url: 'a'.repeat(EXTRACT_URL_MAX_CHARS) }).success);
-    assert.ok(!ExtractInput.safeParse({ url: 'a'.repeat(EXTRACT_URL_MAX_CHARS + 1) }).success);
+    // The schema takes only a real http(s) URL, so pad a valid one to the length under test.
+    const urlOf = (length: number) => {
+      const base = 'https://example.com/';
+      return base + 'a'.repeat(length - base.length);
+    };
+    assert.ok(ExtractInput.safeParse({ url: urlOf(EXTRACT_URL_MAX_CHARS) }).success);
+    assert.ok(!ExtractInput.safeParse({ url: urlOf(EXTRACT_URL_MAX_CHARS + 1) }).success);
   });
 
   it('never refuses a body its schema accepts, even one of six-byte escapes', () => {
