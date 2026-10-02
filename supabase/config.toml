@@ -36,6 +36,12 @@ enable_confirmations = false
 # old, or a reauthenticate() nonce. A test that signs in and then changes the
 # password is inside that window.
 secure_password_change = true
+# As on hosted (item 4): every email link and code — confirmation, reset, email
+# change — lapses after 30 minutes, inside lib/supabase/cookies.ts's one-hour
+# PKCE verifier. Ten-digit codes, the most Supabase allows: the emails carry
+# links, so nobody types them, and a guessed code gets 10^4 times rarer.
+otp_expiry = 1800
+otp_length = 10
 
 [auth.external.google]
 # Needs a Google OAuth client. Enabled on the hosted project; locally the email
