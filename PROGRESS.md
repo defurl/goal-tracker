@@ -32,6 +32,21 @@ looks like; this file stays the state.
 
 ### Next session
 
+**Security hardening is merged locally and NOT pushed** (2026-10-02). The 20
+controls in `spec/security-hardening-prompt.md` were worked by five agents in
+parallel; the report, in the prompt's format, is
+`spec/security-hardening-report.md`. On local `main`: 45 commits, every gate
+green (unit 322, test:db 106, bundle shell 188.4 KB), `security:headers` and
+`offline:check` pass on a production build. Migrations 026–028 are on the
+local stack only. **Before pushing:** set `ENABLE_EXPERIMENTAL_COREPACK=1` on
+Vercel (the postcss override lives in `pnpm-workspace.yaml`, which pnpm 9
+ignores). **With the push:** `supabase db push` for 026–028, then the
+dashboard checklist (report §4) — custom SMTP is a launch blocker. **Never
+`supabase config push`.** PROPOSED, for the owner: extraction prompt V3 and
+the spec/04 §2/§6/§9 notes, the 026 grant matrix, and /privacy's deletion
+paragraph, which no longer covers the ~1 h deletion log line. Open decision:
+Next 14 is out of support (23 advisories; report §5, D-06).
+
 **Phase 6, the UI rework, is under way** (2026-10-01, D-25). 6.1 is done:
 the review board is published, private to the owner, at
 https://claude.ai/artifact/Hr1ZgKWVMvQhMeoqjdmJ7b (30 items, 58 captures).
