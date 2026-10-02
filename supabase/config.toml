@@ -32,6 +32,10 @@ password_requirements = ""
 enable_signup = true
 # Local only: no mail server to confirm against. The hosted project confirms.
 enable_confirmations = false
+# As on hosted (item 3): changing a password needs a session under 24 hours
+# old, or a reauthenticate() nonce. A test that signs in and then changes the
+# password is inside that window.
+secure_password_change = true
 
 [auth.external.google]
 # Needs a Google OAuth client. Enabled on the hosted project; locally the email
