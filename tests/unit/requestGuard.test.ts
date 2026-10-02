@@ -2,7 +2,7 @@
 // writes (hardening item 2). Requests are built the way a browser sends them;
 // the cookie values are fake.
 
-import { describe, it, mock } from 'node:test';
+import { after, before, beforeEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, sep } from 'node:path';
@@ -24,6 +24,12 @@ import {
   screen,
   trustedOrigins,
 } from '../../lib/security/requestGuard.ts';
+
+// Every refusal writes a security event with console.log: collected here, not printed.
+const logged: string[] = [];
+before(() => mock.method(console, 'log', (line: string) => void logged.push(line)));
+after(() => mock.restoreAll());
+beforeEach(() => void logged.splice(0));
 
 const SITE = 'https://bbe.test';
 const FAKE_SESSION = 'sb-test-auth-token=fake-session';
@@ -293,7 +299,7 @@ describe('the byte cap — refused before the parser runs', () => {
     const tap: Tap = { pulls: 0, cancelled: false };
     let status = 0;
     const parses = await parsesDuring(async () => {
-      const read = await readJson(jsonPost({ 'content-length': String(LIMIT + 1) }, endless(tap)), GUARDED.extract, env);
+      const read = await readJson(jsonPost({ 'content-length': String(LIMIT + 1) }, endless(tap)), GUARDED.extract, null, env);
       status = read.ok ? 200 : read.response.status;
     });
     assert.equal(status, 413);
@@ -307,7 +313,7 @@ describe('the byte cap — refused before the parser runs', () => {
     assert.equal(endlessBody.headers.get('content-length'), null);
     let status = 0;
     const parses = await parsesDuring(async () => {
-      const read = await readJson(endlessBody, GUARDED.extract, env);
+      const read = await readJson(endlessBody, GUARDED.extract, null, env);
       status = read.ok ? 200 : read.response.status;
     });
     assert.equal(status, 413);
@@ -318,27 +324,92 @@ describe('the byte cap — refused before the parser runs', () => {
 
   it('readJson() catches a body longer than its Content-Length claims', async () => {
     const tap: Tap = { pulls: 0, cancelled: false };
-    const read = await readJson(jsonPost({ 'content-length': '10' }, endless(tap)), GUARDED.extract, env);
+    const read = await readJson(jsonPost({ 'content-length': '10' }, endless(tap)), GUARDED.extract, null, env);
     assert.equal(read.ok ? 200 : read.response.status, 413);
   });
 
   it('readJson() accepts a body of exactly the cap, declared or chunked, and parses it', async () => {
     const atCap = jsonOfBytes(LIMIT);
     assert.equal(bytesOf(atCap), LIMIT);
-    const declared = await readJson(jsonPost({ 'content-length': String(LIMIT) }, atCap), GUARDED.extract, env);
+    const declared = await readJson(jsonPost({ 'content-length': String(LIMIT) }, atCap), GUARDED.extract, null, env);
     assert.deepEqual(declared, { ok: true, value: JSON.parse(atCap) });
-    const streamed = await readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, env);
+    const streamed = await readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, null, env);
     assert.deepEqual(streamed, { ok: true, value: JSON.parse(atCap) });
     // The control for the "never parses" checks above: the watch does see a parse.
-    assert.equal(await parsesDuring(() => readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, env)), 1);
+    assert.equal(await parsesDuring(() => readJson(jsonPost({}, chunked(atCap)), GUARDED.extract, null, env)), 1);
 
-    const overCap = await readJson(jsonPost({}, chunked(jsonOfBytes(LIMIT + 1))), GUARDED.extract, env);
+    const overCap = await readJson(jsonPost({}, chunked(jsonOfBytes(LIMIT + 1))), GUARDED.extract, null, env);
     assert.equal(overCap.ok ? 200 : overCap.response.status, 413);
   });
 
   it('readJson() reads a body that is not JSON, or none, as undefined for the schema to refuse', async () => {
-    assert.deepEqual(await readJson(jsonPost({}, 'not json'), GUARDED.extract, env), { ok: true, value: undefined });
-    assert.deepEqual(await readJson(jsonPost({}, ''), GUARDED.extract, env), { ok: true, value: undefined });
+    assert.deepEqual(await readJson(jsonPost({}, 'not json'), GUARDED.extract, null, env), { ok: true, value: undefined });
+    assert.deepEqual(await readJson(jsonPost({}, ''), GUARDED.extract, null, env), { ok: true, value: undefined });
+  });
+});
+
+describe('security events — one line per refusal, nothing from the request but four headers', () => {
+  const only = () => {
+    assert.equal(logged.length, 1, logged.join('\n'));
+    return JSON.parse(logged[0] ?? '') as Record<string, unknown>;
+  };
+
+  it('logs a forged origin, a wrong content type and both kinds of oversized body, once each', async () => {
+    screen(request('/auth/signout', { origin: 'https://evil.test' }), GUARDED.signOut, {});
+    assert.deepEqual(
+      [only().event, only().reason, only().status, only().route],
+      ['csrf.refused', 'origin_mismatch', 403, '/auth/signout'],
+    );
+
+    logged.splice(0);
+    screen(request('/api/agent/reflect', { origin: SITE, 'content-type': 'text/plain' }, { body: '{}' }), GUARDED.reflect, {});
+    assert.deepEqual([only().event, only().reason, only().status], ['request.unsupported_media_type', 'content_type', 415]);
+
+    logged.splice(0);
+    screen(jsonPost({ 'content-length': '999999999' }, '{}'), GUARDED.extract, {});
+    assert.deepEqual([only().event, only().reason, only().status], ['request.too_large', 'declared_length', 413]);
+
+    logged.splice(0);
+    const tap: Tap = { pulls: 0, cancelled: false };
+    await readJson(jsonPost({}, endless(tap)), GUARDED.extract, 'user-1', { BODY_LIMIT_EXTRACT_BYTES: '2048' });
+    assert.deepEqual([only().event, only().reason, only().user_id], ['request.too_large', 'body_length', 'user-1']);
+  });
+
+  it('logs nothing for a request that passes', async () => {
+    assert.equal(screen(request('/api/account', { origin: SITE }, { method: 'DELETE' }), GUARDED.account, {}), null);
+    await readJson(jsonPost({}, '{"text":"fine"}'), GUARDED.extract, 'user-1', {});
+    assert.equal(logged.length, 0);
+  });
+
+  it('writes no cookie, Authorization header, query string, body or body length — on the journal route too', async () => {
+    const MARKERS = ['COOKIE_MARKER_7f3a', 'AUTH_MARKER_91c2', 'QUERY_MARKER_55e1', 'BODY_MARKER_d00d'];
+    const reflectEnv = { BODY_LIMIT_REFLECT_BYTES: '256' };
+    const body = JSON.stringify({ entry_text: `BODY_MARKER_d00d ${'x'.repeat(400)}`, mood: 'calm', tags: [] });
+    const marked = (origin: string, init: { contentLength?: boolean; stream?: boolean } = {}) =>
+      new Request(`${SITE}/api/agent/reflect?token=QUERY_MARKER_55e1`, {
+        method: 'POST',
+        headers: {
+          origin,
+          cookie: 'sb-test-auth-token=COOKIE_MARKER_7f3a',
+          authorization: 'Bearer AUTH_MARKER_91c2',
+          'content-type': 'application/json',
+          'user-agent': 'Mozilla/5.0',
+          ...(init.contentLength ? { 'content-length': String(bytesOf(body)) } : {}),
+        },
+        body: init.stream ? chunked(body) : body,
+        duplex: 'half',
+      } as RequestInit);
+
+    screen(marked('https://evil.test'), GUARDED.reflect, reflectEnv); // 403
+    screen(marked(SITE, { contentLength: true }), GUARDED.reflect, reflectEnv); // 413, declared
+    await readJson(marked(SITE, { stream: true }), GUARDED.reflect, 'user-1', reflectEnv); // 413, counted
+
+    assert.equal(logged.length, 3);
+    const output = logged.join('\n');
+    for (const marker of MARKERS) assert.ok(!output.includes(marker), marker);
+    assert.ok(!output.includes(String(bytesOf(body))), 'the body length');
+    assert.ok(!output.includes('calm'), 'the mood');
+    for (const line of logged) assert.doesNotThrow(() => JSON.parse(line));
   });
 });
 

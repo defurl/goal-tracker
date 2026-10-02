@@ -31,6 +31,10 @@
 // 16 KiB of headers, and Next 14 buffers a non-GET body for middleware.ts
 // before the route runs, so there a proxy's body limit bounds memory.
 //
+// Every refusal here writes one security event (lib/security/securityLog.ts):
+// the route, the status, a fixed reason code, the address and browser —
+// never the body, its length, a cookie or a header value beyond those.
+//
 // Not guarded, because each has its own verification and neither acts on a
 // cookie a cross-site page could ride:
 //   GET /api/cron/seed-challenges  a bearer CRON_SECRET; it reads no session
@@ -41,6 +45,7 @@
 // a cross-site page cannot attach. There are no server actions.
 
 import { bodyLimit, type BodyLimit } from './limits.ts';
+import { logSecurityEvent, type SecurityEventName, type SecurityReason } from './securityLog.ts';
 
 /** How a guarded route is screened. */
 export interface GuardPolicy {
@@ -147,10 +152,37 @@ export function isJsonContentType(value: string | null): boolean {
   });
 }
 
-/** A refusal in the shape of app/api/_lib/server.ts's json(): a plain code, never cached. */
-function refusal(status: number, error: string): Response {
-  return Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
+interface Refusal {
+  status: 403 | 413 | 415;
+  error: 'forbidden' | 'too_large' | 'unsupported_media_type';
+  event: SecurityEventName;
+  reason: SecurityReason;
 }
+
+/**
+ * Logs the refusal as one security event — its outcome and reason code, never
+ * the body or anything read from it (lib/security/securityLog.ts) — and
+ * returns it in the shape of app/api/_lib/server.ts's json(): a plain code,
+ * never cached.
+ */
+function refuse(request: Request, policy: GuardPolicy, refusal: Refusal, userId: string | null = null): Response {
+  logSecurityEvent(request, {
+    event: refusal.event,
+    route: policy.route,
+    outcome: 'refused',
+    status: refusal.status,
+    reason: refusal.reason,
+    userId,
+  });
+  return Response.json({ error: refusal.error }, { status: refusal.status, headers: { 'Cache-Control': 'no-store' } });
+}
+
+const tooLarge = (reason: 'declared_length' | 'body_length'): Refusal => ({
+  status: 413,
+  error: 'too_large',
+  event: 'request.too_large',
+  reason,
+});
 
 /** Content-Length as a number; null when absent or unreadable, where the running count still holds. */
 export function declaredLength(request: Request): number | null {
@@ -161,16 +193,27 @@ export function declaredLength(request: Request): number | null {
 /** Null when the request may proceed; otherwise the response that refuses it. */
 export function screen(request: Request, policy: GuardPolicy, env: Env = process.env): Response | null {
   const origin = checkOrigin(request, trustedOrigins(env));
-  if (!origin.ok) return refusal(403, 'forbidden');
+  if (!origin.ok) {
+    return refuse(request, policy, { status: 403, error: 'forbidden', event: 'csrf.refused', reason: origin.reason });
+  }
   if (policy.json && !isJsonContentType(request.headers.get('content-type'))) {
-    return refusal(415, 'unsupported_media_type');
+    return refuse(request, policy, {
+      status: 415,
+      error: 'unsupported_media_type',
+      event: 'request.unsupported_media_type',
+      reason: 'content_type',
+    });
   }
   const declared = declaredLength(request);
-  if (declared !== null && declared > bodyLimit(policy.limit, env)) return refusal(413, 'too_large');
+  if (declared !== null && declared > bodyLimit(policy.limit, env)) {
+    return refuse(request, policy, tooLarge('declared_length'));
+  }
   return null;
 }
 
-export type BodyRead = { ok: true; bytes: Uint8Array } | { ok: false; reason: 'too_large' | 'unreadable' };
+export type BodyRead =
+  | { ok: true; bytes: Uint8Array }
+  | { ok: false; reason: 'declared_length' | 'body_length' | 'unreadable' };
 
 /**
  * The body, counted as it arrives and abandoned the moment it passes `limit`
@@ -179,7 +222,7 @@ export type BodyRead = { ok: true; bytes: Uint8Array } | { ok: false; reason: 't
  */
 export async function readBodyWithin(request: Request, limit: number): Promise<BodyRead> {
   const declared = declaredLength(request);
-  if (declared !== null && declared > limit) return { ok: false, reason: 'too_large' };
+  if (declared !== null && declared > limit) return { ok: false, reason: 'declared_length' };
   if (request.body === null) return { ok: true, bytes: new Uint8Array(0) };
 
   const chunks: Uint8Array[] = [];
@@ -192,7 +235,7 @@ export async function readBodyWithin(request: Request, limit: number): Promise<B
       received += value.byteLength;
       if (received > limit) {
         await reader.cancel().catch(() => undefined);
-        return { ok: false, reason: 'too_large' };
+        return { ok: false, reason: 'body_length' };
       }
       chunks.push(value);
     }
@@ -222,12 +265,18 @@ export type JsonRead = { ok: true; value: unknown } | { ok: false; response: Res
 
 /**
  * The route's JSON body, read within its cap. Over the cap: a 413 to return,
- * and the parser never runs. A body that is not JSON, or that broke off,
- * reads as undefined, which the route's schema refuses (400).
+ * logged with the caller's verified id, and the parser never runs. A body
+ * that is not JSON, or that broke off, reads as undefined, which the route's
+ * schema refuses (400).
  */
-export async function readJson(request: Request, policy: GuardPolicy, env: Env = process.env): Promise<JsonRead> {
+export async function readJson(
+  request: Request,
+  policy: GuardPolicy,
+  userId: string | null,
+  env: Env = process.env,
+): Promise<JsonRead> {
   const body = await readBodyWithin(request, bodyLimit(policy.limit, env));
   if (body.ok) return { ok: true, value: parseJson(body.bytes) };
   if (body.reason === 'unreadable') return { ok: true, value: undefined };
-  return { ok: false, response: refusal(413, 'too_large') };
+  return { ok: false, response: refuse(request, policy, tooLarge(body.reason), userId) };
 }

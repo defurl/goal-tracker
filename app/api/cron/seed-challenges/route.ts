@@ -8,25 +8,33 @@
 // anyone who finds the URL. No secret configured → nothing can call it.
 // Exempt from the origin check that guards the cookie-authenticated writes
 // (lib/security/requestGuard.ts): it reads no session cookie, so a cross-site
-// page has nothing to ride, and a forged request has no secret.
+// page has nothing to ride, and a forged request has no secret. A refused call
+// is logged as a security event; the Authorization header it sent never is.
 
 import { timingSafeEqual } from 'node:crypto';
 
+import { logSecurityEvent } from '../../../../lib/security/securityLog.ts';
 import { json, serviceClient } from '../../_lib/server.ts';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function authorised(request: Request): boolean {
+const ROUTE = '/api/cron/seed-challenges';
+
+function authorise(request: Request): 'ok' | 'secret_unset' | 'bad_credentials' {
   const secret = process.env.CRON_SECRET ?? '';
-  if (!secret) return false;
+  if (!secret) return 'secret_unset';
   const given = Buffer.from(request.headers.get('authorization') ?? '');
   const expected = Buffer.from(`Bearer ${secret}`);
-  return given.length === expected.length && timingSafeEqual(given, expected);
+  return given.length === expected.length && timingSafeEqual(given, expected) ? 'ok' : 'bad_credentials';
 }
 
 export async function GET(request: Request) {
-  if (!authorised(request)) return json({ error: 'unauthorised' }, 401);
+  const verdict = authorise(request);
+  if (verdict !== 'ok') {
+    logSecurityEvent(request, { event: 'cron.unauthorised', route: ROUTE, outcome: 'refused', status: 401, reason: verdict });
+    return json({ error: 'unauthorised' }, 401);
+  }
 
   const { data, error } = await serviceClient().rpc('run_challenge_sweep');
   if (error) return json({ error: 'sweep_failed' }, 500);

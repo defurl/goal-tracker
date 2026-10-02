@@ -10,6 +10,10 @@
 //   - "delete account" deletes the auth user (app/api/account), which cascades
 //     to every table; agent_logs rows are kept with user_id set to null (the
 //     `on delete` clauses; supabase/tests/account.test.ts)
+//   - a refused request (forged origin, wrong content type, too large, over a
+//     daily limit, a bad cron secret), a sign-out and an account deletion each
+//     write one server log line with the address and browser, and never a
+//     body, cookie, token or query string (lib/security/securityLog.ts)
 // If one of those changes, this page changes in the same commit.
 //
 // The AI Reflect paragraph follows the same flag the button does, so the page
@@ -29,7 +33,7 @@ export const metadata: Metadata = {
   title: 'Privacy · Be Better Everyday',
 };
 
-const UPDATED = '30 September 2026';
+const UPDATED = '1 October 2026';
 
 /** Where requests to see your data go (D-22 §6); deleting is in the app (B5.2). */
 const CONTACT = 'amorelyn.work@gmail.com';
@@ -88,6 +92,11 @@ export default function PrivacyPage() {
           <li className={styles.quiet}>
             A count of how often you used the AI helpers, so each has a daily limit, and a record of each call&rsquo;s
             size, speed and whether it worked. Never what was sent or what came back.
+          </li>
+          <li className={styles.quiet}>
+            The network address and browser behind any request the server refuses — one that looks forged, is too
+            large or is over a daily limit — and behind each sign-out and account deletion, noted to spot abuse and
+            kept only as long as Vercel keeps its logs.
           </li>
         </ul>
         <p className={styles.quiet}>
