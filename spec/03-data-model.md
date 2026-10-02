@@ -466,6 +466,70 @@ regresses when someone adds a policy for a new feature.
 > Supabase grants it to both by default, which would make §4's "the client can
 > never write its own score" false. Do not remove the revokes.
 
+> **Note, 2026-10-01 — the gate covers thirteen tables.** `user_plans` (025)
+> joined it, so `isolation.test.ts` makes 26 attempts, not 24. 012's header
+> still says twelve; it predates 025.
+
+### Table privileges — PROPOSED, 2026-10-01 (pre-launch hardening)
+
+RLS decides **whose rows** a statement reaches. Table and column privileges
+decide **which verbs and which columns** it may use at all. Supabase's default
+privileges gave `anon`, `authenticated` and `service_role` ALL on every table in
+`public` — including TRUNCATE, which RLS does not govern — so until
+`026_least_privilege.sql` the policies were the only control, a signed-in user
+could write server-owned columns (a habit's `streak` and `type`, an action's
+`status`, `completed_at` on goals and milestones), and the anon key's OpenAPI
+root listed every table and column. 026 grants what the code's call sites use:
+
+| table | authenticated | anon | service_role |
+|---|---|---|---|
+| `profiles` | SELECT · UPDATE (`timezone`) | — | CRUD |
+| `user_actions` | SELECT · INSERT (`user_id, action_text, source_url, source_summary, prompt_version`) | — | CRUD |
+| `daily_challenges` | SELECT | — | CRUD |
+| `habits` | SELECT · INSERT (`user_id, name, type, frequency`) · UPDATE (`archived_at`) | — | CRUD |
+| `habit_logs` | SELECT | — | CRUD |
+| `point_ledger` | SELECT | — | CRUD |
+| `glow_points` | SELECT | — | CRUD |
+| `journal_entries` | SELECT · INSERT (`user_id, date, mood, mood_score, tags`) · UPDATE (those five, plus `ai_summary, ai_emotion, ai_strength, ai_next_action, prompt_version`) | — | CRUD |
+| `goals` | SELECT · INSERT (`user_id, title, category, description, start_date, target_date`) | — | CRUD |
+| `milestones` | SELECT · INSERT (`goal_id, user_id, title, sort_order`) | — | CRUD |
+| `agent_logs` | SELECT | — | CRUD |
+| `rate_limits` | — | — | CRUD |
+| `user_plans` | SELECT | — | CRUD |
+
+CRUD is SELECT, INSERT, UPDATE and DELETE. No role but the owner (`postgres`,
+which runs the migrations) holds TRUNCATE, REFERENCES, TRIGGER or MAINTAIN, and
+`authenticated` deletes nothing: habits are archived (§2) and an account is
+deleted by the service role and the cascades. `journal_entries` needs UPDATE on
+its conflict key because PostgREST's upsert sets every column it was sent.
+Writes made inside the security-definer functions (019–021) run as the owner
+and need no grant.
+
+**The rule for every later migration.** 026 also changes the default
+privileges, so nothing created in `public` arrives open:
+
+- A **new table** grants nothing to `anon` or `authenticated`. Its migration
+  grants `authenticated` exactly what the app does with it — SELECT, and
+  column-level INSERT/UPDATE — and `anon` nothing. `service_role` still gets
+  CRUD by default.
+- A **new column** the app writes needs its own column grant; until it has one,
+  the write fails with `42501`.
+- A **new function** is executable by its owner and `service_role` only: PUBLIC
+  no longer gets EXECUTE by default. A function the browser calls still needs
+  `grant execute ... to authenticated`, as 019–021 have.
+- Objects `supabase_admin` creates in `public` keep Supabase's broad defaults,
+  which `postgres` cannot change — install extensions into `extensions`.
+
+Asserted in `supabase/tests/privileges.test.ts`, which reads the matrix from the
+catalog, probes what a new table and function receive, drives every write path
+the app has through a signed-in client, and refuses the columns it never writes.
+
+**No GraphQL.** The app reaches its data through PostgREST alone.
+`027_drop_graphql.sql` drops `pg_graphql` wherever it is installed, so
+`/graphql/v1` answers only Supabase's "not enabled" placeholder. Asserted, with
+what the OpenAPI root shows the anon key (nothing), in
+`supabase/tests/exposure.test.ts`.
+
 ---
 
 ## 8. Generated types
