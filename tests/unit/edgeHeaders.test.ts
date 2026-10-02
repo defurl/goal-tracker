@@ -77,6 +77,14 @@ describe('next.config — headers on every response', () => {
   }
 });
 
+describe('next.config — headers left to the platform', () => {
+  for (const path of PATHS) {
+    it(`${path}: no HSTS of its own, which would replace Vercel's preload value`, async () => {
+      assert.equal((await headersFor(path)).has('strict-transport-security'), false);
+    });
+  }
+});
+
 describe('next.config — surfaces that stay off', () => {
   it('turns the image optimizer off, so /_next/image is a 404', async () => {
     assert.equal((await loadConfig()).images?.unoptimized, true);

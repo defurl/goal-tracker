@@ -1,6 +1,14 @@
 /**
  * Sent with every response: pages, route handlers, public/ and /_next/static.
  * tests/unit/edgeHeaders.test.ts holds this list to account.
+ *
+ * No Strict-Transport-Security, on purpose. Vercel sends `max-age=63072000;
+ * includeSubDomains; preload` on *.vercel.app, a domain already on the
+ * browsers' preload list, and answers plain HTTP with a 308. A header here
+ * would replace that stronger value, and `next start` would send it over
+ * http://localhost. A custom domain gets only `max-age=63072000` from Vercel;
+ * add includeSubDomains for it, scoped with `has: [{ type: 'host', ... }]`,
+ * once every subdomain is HTTPS-only, starting at max-age=300.
  */
 const securityHeaders = [
   // A response is only ever what its Content-Type says: a JSON or text body is
