@@ -2,6 +2,11 @@
 #
 # The hosted project (see .env.example) is configured in its dashboard, not
 # here. Anything omitted takes the CLI's default.
+#
+# Never `supabase config push` this file: it would switch email confirmation
+# off on the hosted project and point its site URL at localhost. Where a value
+# below mirrors the hosted auth hardening (security items 3, 4, 12, 17), its
+# comment says so; the rest of that checklist lives in the dashboard.
 
 project_id = "be-better-everyday"
 
@@ -16,6 +21,12 @@ enabled = false
 site_url = "http://localhost:3000"
 # The OAuth and email-confirmation return path — app/auth/callback/route.ts.
 additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+# As on hosted: 12 characters, no composition rules — length does more than a
+# required symbol (NIST SP 800-63B). Existing users still sign in; Supabase
+# only checks a password when it is set. Safe for the tests, whose throwaway
+# passwords are 36-character UUIDs.
+minimum_password_length = 12
+password_requirements = ""
 
 [auth.email]
 enable_signup = true
