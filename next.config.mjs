@@ -1,6 +1,7 @@
 /**
  * Sent with every response: pages, route handlers, public/ and /_next/static.
- * tests/unit/edgeHeaders.test.ts holds this list to account.
+ * tests/unit/edgeHeaders.test.ts holds this list to account, and
+ * `pnpm security:headers` checks what a running server really sends.
  *
  * No Strict-Transport-Security, on purpose. Vercel sends `max-age=63072000;
  * includeSubDomains; preload` on *.vercel.app, a domain already on the

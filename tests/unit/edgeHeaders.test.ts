@@ -1,7 +1,7 @@
 // next.config.mjs — what every response is sent with, and what nothing is.
 // No server: the config is imported and read the way Next reads it. A live
 // deployment adds its own on top (Vercel's HSTS, and its CORS default on
-// static files), which only a running server can show.
+// static files), which `pnpm security:headers` checks on a running server.
 //
 // Each rule's source is compiled by Next's own route builder, giving the regex
 // `next start` matches and Vercel's build turns into its header routes. That
