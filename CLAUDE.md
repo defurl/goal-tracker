@@ -3,6 +3,17 @@
 A personal-growth PWA whose interface is a dark 3D room reused from the owner's
 portfolio project. Each feature is a physical object on a desk.
 
+> **Redesign under way (D-26, 2026-10-29).** `spec/01-decisions.md` D-26
+> replaces the dark desk with a warm room, five modules (Today, Journal, Growth
+> Map, Self Care, Skills) and a points shop. The visual contract is now
+> `design-system/v2/`; `design-system/00`-`13` are the night room's record.
+> **Where this file and D-26 disagree, D-26 wins.** In particular: Inter is the
+> body face (D-02), the room is no longer nocturnal (D-03), a top menu and
+> boards of cards are the interface (D-04), journal text is stored only on the
+> user's device (FR-3.6), and points can be spent (D-08). The lighting rules
+> below govern the current room until stage P4 replaces it. This file's
+> non-negotiables are rewritten in stage P6 (`spec/06-build-plan.md`, Phase 7).
+
 **Two contracts govern this project and you need both:**
 
 | folder | governs | entry point |
