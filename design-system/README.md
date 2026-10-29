@@ -1,5 +1,12 @@
 # The Room — 3D Design System
 
+> **Superseded as the visual contract, 2026-10-29 (`../spec/01-decisions.md`
+> D-26).** The redesign's rules are in `v2/`. Documents 00-13 here are the
+> record of the night room the product shipped through Phase 5: read them for
+> history, and for the numbers behind the current code until stage P4 replaces
+> it, not as rules for new work. `references/` also holds the design team's two
+> specifications.
+
 **Extracted from:** `D:\CODE\portfolio` (the "Night Desk" scene, Layer 1)
 **Extracted on:** 2026-09-17
 **For:** the habit tracker project
