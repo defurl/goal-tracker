@@ -21,9 +21,10 @@ D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
 Phase 4 raised. D-23 settles what Phase 3 left open. D-24 sets the scope of Phase 5. D-25 sets
-how Phase 6, the UI rework, runs.
+how Phase 6, the UI rework, runs. D-26 sets the redesign that followed it.
 
-All twenty-five are **LOCKED**. There are no open questions.
+All twenty-six are **LOCKED**. D-26 raised six questions it did not settle; they
+are listed under Open questions below.
 
 ### D-01 · Styling: no Tailwind, no shadcn/ui — **LOCKED**
 
@@ -67,6 +68,13 @@ prohibited explicitly and not by accident.
 globally. See `02-typography.md` for the full scale and the label CSS to copy
 verbatim.
 
+> **Amendment, 2026-10-29 (D-26 §10).** Inter for body and UI text; an upright
+> serif for display, named by the design team; no italic headings; normal
+> letter-spacing. Inter leaves the anti-pattern list
+> (`../design-system/v2/06-anti-patterns.md`). Fraunces and Departure Mono retire
+> with the night room. Numbers stay tabular. Scale and rules:
+> `../design-system/v2/02-type.md`.
+
 ---
 
 ### D-03 · No light mode — **LOCKED**
@@ -89,6 +97,11 @@ whole proposition is one warm key light in a very dark space.
 **Consequence.** Onboarding copy should not offer a theme choice. The window's
 sky plane is where time of day is acknowledged; see `00-product-brief.md` §1.
 
+> **Amendment, 2026-10-29 (D-26 §3).** The room is no longer nocturnal: it is a
+> warm room lit by one golden hour. There is still no theme toggle, because the
+> look belongs to the room, not to a preference. A room that follows the user's
+> clock is a later item, not a Phase 7 one.
+
 ---
 
 ### D-04 · No bento grid in the room — **LOCKED** · bento survives only in `/text`
@@ -108,6 +121,13 @@ can be the product. The room was chosen.
 
 **Consequence.** An early HTML mockup of BBE as a bento dashboard exists and is
 **superseded**. Do not use it as a reference.
+
+> **Amendment, 2026-10-29 (D-26 §4).** A top menu sits beside the room's
+> objects, and each module opens a board of cards over the blurred room. The
+> cards are near-opaque, so text contrast never depends on what is behind them
+> (`../design-system/v2/03-layout-and-shape.md`). `/text` uses the same boards
+> over a still of the room. The bento mockup this entry superseded stays
+> superseded; the design team's `dashboard.jpg` is the reference now.
 
 ---
 
@@ -194,6 +214,10 @@ Mobile users land on `/text` by default with a discoverable way into the room.
 Every feature ships to both surfaces in the same phase — `/text` is never
 allowed to lag, because a lagging fallback quietly becomes a broken one.
 
+> **Note, 2026-10-29 (D-26 §4).** Stands. Under the redesign the two surfaces
+> share one set of boards: over the live room on a desktop, over a still render
+> of it on `/text`, on phones and wherever WebGL is missing.
+
 ---
 
 ### D-08 · The relapse penalty is dropped — **LOCKED**
@@ -214,6 +238,12 @@ punishment" — and a points deduction is decay wearing a smaller number.
 
 **Consequence.** The points ledger in `03-data-model.md` §4 has no negative
 rows. `points_awarded` is a non-negative integer and the schema enforces it.
+
+> **Amendment, 2026-10-29 (D-26 §6).** Points can now be spent in the shop.
+> What this entry protects is lifetime points: they never fall, and every earning
+> row stays non-negative. The spendable balance never drops below zero, purchases
+> are recorded apart from the earning rows, and a purchase is never shown to the
+> user as a negative number.
 
 ---
 
@@ -255,6 +285,12 @@ here. `bundle:check` asserts both numbers separately.
 `/text` route must not transitively pull in three.js — assert this in CI, since
 it is very easy to break with a careless shared type import.
 
+> **Amendment, 2026-10-29 (D-26).** Three budgets join these two: the room's
+> assets for the first view, each shop item, and the poster still that is the
+> room's LCP element. They are not JavaScript, which is why this entry never
+> covered them. PROPOSED values: `../design-system/v2/05-room.md`; an
+> `assets:check` script will hold them.
+
 ---
 
 ### D-11 · Glow-up visual: bonsai tree on the desk — **LOCKED**
@@ -289,6 +325,10 @@ streak-history scene.
 > the desk, under the 0.35 m cap, with no light of its own. D-23 §1's accepted
 > exception is closed.
 
+> **Amendment, 2026-10-29 (D-26 §6).** The bonsai leaves the desk. It becomes a
+> decoration sold in the shop. Whether a bought bonsai still grows leaves with
+> lifetime points is open (Open questions).
+
 ---
 
 ### D-12 · Icons are minimal and DOM-only — **LOCKED**
@@ -299,6 +339,9 @@ lowercase mono text.
 
 **Decision.** No icons in the WebGL layer, ever. Lucide is permitted in the
 `/text` route and the DOM panels, line-style only, and used sparingly.
+
+> **Amendment, 2026-10-29 (D-26 §4).** Line icons appear in the room's hotspot
+> labels and on boards. Both are HTML, so the WebGL layer still draws no icon.
 
 ---
 
@@ -364,6 +407,16 @@ work: a proposal either puts evidence of action on the desk or it does not.
 The sentence above supersedes the original. `00-product-brief.md` §1 and
 `design-spec.jsonc` carry it.
 
+> **Amendment, 2026-10-29 (D-26).** The desk became a room. The operative thesis
+> is:
+>
+> > **"The habit tracking room: every object in it is evidence that you acted on
+> > something you saved."**
+>
+> The shop makes it literal: what fills the room is bought with points earned by
+> acting. `00-product-brief.md` §1 and `design-spec.jsonc` take the new sentence
+> when they are next edited.
+
 ---
 
 ### D-15 · "Roll Again" is capped at 3 per day — **LOCKED** (owner-approved 2026-09-18)
@@ -376,6 +429,9 @@ and erodes the commitment the feature exists to create. Three is enough to skip
 a challenge that genuinely does not fit today's energy — the stated purpose in
 US-1.4 — without letting the user shop for an easy one indefinitely.
 
+> **Amendment, 2026-10-29 (D-26).** "Roll Again" becomes the Today challenge's
+> "skip". The cap of 3 a day and the stated reason at the cap stand.
+
 ---
 
 ### D-16 · Journal AI stays opt-in — **LOCKED** (owner-approved 2026-09-18)
@@ -387,6 +443,11 @@ by save, by blur, or by any other event (FR-3.2, AC-3.6).
 not the user wanted it read, which is incompatible with the privacy posture the
 product is built on. Opt-in also makes the 3/day rate limit legible rather than
 mysterious.
+
+> **Amendment, 2026-10-29 (D-26 §5, §8).** Consent is per module, in Settings,
+> off by default and revocable. A journal reflection sends only the entries the
+> user selects, and its reply is kept on the device. In Growth Map, nothing the
+> agent drafts is saved until the user approves it.
 
 ---
 
@@ -477,12 +538,27 @@ minutes rather than instantly. The monitor is the ambient signal. The legible
 reward for completing a challenge is the points, the wall-grid cell and the
 bonsai — not the screen.
 
+> **Amendment, 2026-10-29 (D-26 §3).** Retires with monitor 1. The baked room
+> has no bloom pass, so no emissive range governs anything in it.
+
 ---
 
 ## Open questions
 
-**None currently open.** Every question raised during the spec pass has been
-decided; D-01 to D-23 are the complete set.
+**Open, raised by D-26 (2026-10-29).** Each has a recommendation. None is to be
+settled in code by whoever reaches it first.
+
+| question | recommendation |
+|---|---|
+| Does a bought bonsai keep growing leaves with lifetime points? | Yes: the one decoration that grows, through `leafCountForPoints` as today. Once bought it is never reset |
+| Who curates the Self Care, Skills, quote and shop catalogues? | One named owner per catalogue before P2 |
+| Which analytics tool? | A cookieless one (Plausible or Umami), so the app still needs no cookie banner; hosted in a region the privacy policy names |
+| Upgrade from Next 14 before the new scene? | Yes, in P1: Next 14 is unsupported, and current React Three Fiber needs React 19 |
+| Do the new boards sit over the old room until P4? | Yes, so D-07 holds throughout |
+| Is the Phase 6 review board closed? | Yes, with its copy and function notes carried into P1 |
+
+Before D-26, every question raised during the spec pass had been decided; D-01
+to D-25 settled them.
 
 Three things remain marked **PROPOSED** in other documents. They are reasoned
 defaults, not open questions — build against them, and flag them in your PR so
@@ -561,6 +637,14 @@ colour that never reaches a pixel would be motion without movement. **If a
 feature ever does need it, re-check it against `--signal` at that point** — the
 token stays in the palette so the check has something to check.
 
+> **Amendment, 2026-10-29 (D-26).** The palette is replaced by the design
+> team's: ivory canvas, parchment surface, botanical ink, a muted secondary,
+> sage for interaction and honey as the signal. Tokens stay named by role. Two
+> values are adjusted so small text clears 4.5 : 1 (D-22 §3). The values, the
+> contrast of each and its rules are in `../design-system/v2/01-color.md`. The
+> three mirrors and `lint:colors` move to it in P1. The luminance rule above
+> retires with bloom; D-22 §3's 4.5 : 1 is the rule that governs colour now.
+
 ### D-22 · Phase 4 hardening settlements — **LOCKED** (owner-approved 2026-09-30)
 
 **Context.** Phase 4 (`06-build-plan.md`) raised eight questions that the plan
@@ -599,6 +683,12 @@ signed-in room. Each is a rule from here on, not a one-off.
 > "delete account" sits beside sign-out on both surfaces, arms and fires per
 > §5, and calls `DELETE /api/account`. Requests to *see* your data still go to
 > the owner's address on /privacy.
+
+> **Amendment, 2026-10-29 (D-26 §5).** §6: exporting your data is now in the
+> app, in Settings beside deletion. §5 also covers signing out when the device
+> holds journal entries: the first press says the journal on this device will be
+> deleted and offers to export it first; a second press within `ARM_WINDOW_MS`
+> signs out and deletes.
 
 ### D-23 · Phase 3 settlements — **LOCKED** (owner-approved 2026-09-30)
 
@@ -652,6 +742,12 @@ listed as work is to be built.
 - the headphones' two-minute timer (spec/00)
 - the window as a glide-only object (08 §4)
 
+> **Amendment, 2026-10-29 (D-26).** 1, 5, 6, 7, 8, 11 and 12 close: their
+> objects retire or move. 2-4 wait on the bonsai's growth question (Open
+> questions). 13's rule, that every write goes through a server function, carries
+> over to Growth Map's repeating actions. 9, 10, 14, 15 and 17 stand. 16 is
+> revisited in P5, when AI replies move to the device.
+
 ---
 
 ### D-24 · Phase 5 scope — **LOCKED** (owner-approved 2026-09-30)
@@ -699,6 +795,11 @@ entry.
 candidate" daylit window are Phase 5 through this entry. D-11 and D-22 §6 are
 read through it until their amendment notes land.
 
+> **Amendment, 2026-10-29 (D-26).** §8: the hall retires, and its history moves
+> to Growth Map. §9: the room is no longer nocturnal (D-03's amendment). §1's
+> items are done or retire with their objects. Reminders and payment stay out of
+> scope.
+
 ---
 
 ### D-25 · Phase 6, the UI rework — **LOCKED** (owner-approved 2026-10-01)
@@ -736,6 +837,85 @@ through this entry.
   board so they can be settled; a change to one is scene work and re-runs the
   lighting test.
 - **Reminders and payment** (D-24).
+
+> **Amendment, 2026-10-29 (D-26).** §3 ("within the system") and the scene
+> being out of scope are superseded: the redesign changes the whole look,
+> scene included. Whether the review board is closed, with its copy and function
+> notes carried into P1, is open (Open questions).
+
+---
+
+### D-26 · The redesign — **LOCKED** (owner-approved 2026-10-29)
+
+**Context.** The Phase 6 review (D-25) found a new user overwhelmed, the
+objects unintuitive, the palette unwelcoming, the room unreal and the type "too
+AI". The owner and the design team answered with a full redesign: two reference
+images (`homescreen.jpg` and `dashboard.jpg`, in `../design-system/references/`) and two specifications,
+`../design-system/references/Personal_Growth_Space_Functional_Specification_EN.docx`
+and `…_UI_UX_Specification_EN.docx` (v1.0, 2026-10-29). Where they conflicted
+with this repo, the owner settled it on 2026-10-29. Where the specifications and
+this entry disagree, this entry wins.
+
+**Decision**
+
+1. **The product stays Be Better Everyday.** "Personal Growth Space" in the
+   specifications is a working title. The user can name their own space; its
+   title is editable (UI/UX §4).
+2. **Five modules:** Today, Journal, Growth Map, Self Care and Skills, as the
+   functional specification defines them. Its MUST lists are in scope; its LATER
+   items are not. Habits, goals and article import move into Growth Map. Self
+   Care and Skills are new.
+3. **One warm room, lit by one golden hour.** No night room and still no theme
+   toggle. A room that follows the user's clock is a later item.
+4. **Navigation is a top menu and the room's objects together.** Each module
+   has a camera anchor. The camera travels to it, then the room blurs behind
+   HTML boards of cards. No app interface appears on any screen in the room
+   (UI/UX §9).
+5. **Journal writing stays on the user's device.** The browser stores titles,
+   text, drafts and AI replies. The server keeps the date, mood, energy, tags,
+   the prompt used and that a check-in happened, and nothing the user wrote.
+   Export and import move a journal between devices. Signing out deletes the
+   journal from that device, and the user is warned first and offered an export
+   (D-22's amendment).
+6. **Points reward completions and are spent in a shop** of furniture and
+   decorations that appear in fixed spots in the room. Lifetime points never
+   fall; the balance never drops below zero. No real money, no random rewards,
+   no limited-time items, no leaderboards. The bonsai is sold in the shop as a
+   decoration.
+7. **Habits are repeating actions in Growth Map.** Build and break, the cap of
+   10 and silent streaks (D-09) carry over.
+8. **Nothing an AI makes is saved until the user approves it.** A source that
+   cannot be read says so and asks for pasted text; no silent fallback stands in
+   for it.
+9. **Curated content comes from a CMS:** Self Care activities, the Skills
+   library, the daily quotes and the shop catalogue. **Product analytics are
+   approved,** and never record journal content, private notes or AI inputs and
+   outputs (functional specification F-09).
+10. **Inter for body and UI,** an upright serif for display, no italic
+    headings, normal letter-spacing, smaller corner radii, no gradients.
+11. **The design team owns the room's 3D art:** models, bakes, anchors and
+    stills. None exists yet.
+12. **Reminders stay later** (D-24).
+
+**Superseded, each by a dated note under its entry:** D-02, D-03, D-04, D-08,
+D-10, D-11, D-12, D-14, D-15, D-16, D-20, D-21, D-22 §6, D-23 (in part), D-24
+§8-9 and D-25 §3; in `02-features.md`, FR-1.2, FR-1.3, AC-1.2, FR-3.6 and the
+room bindings. `../design-system/` 00-13 become the record of the night room;
+`../design-system/v2/` is the visual contract.
+
+**Stands:** the scene reads a store and never the network (spec/05 §1); nothing
+punishes the user; points are awarded server-side only, through
+`award_points()`; D-05, D-06, D-07, D-09, D-13, D-17, D-19, D-22 except §6,
+and the security hardening.
+
+**PROPOSED, to tune during the build:** the earning table and its daily caps,
+the launch catalogue and its prices, "Decorate" on the room overview, the asset
+budgets and the room's acceptance test. They are on the plan page and in
+`../design-system/v2/`.
+
+**Consequence.** `06-build-plan.md` Phase 7 runs the redesign in seven stages,
+P0-P6. CLAUDE.md's non-negotiables are read through this entry until P6
+rewrites them.
 
 ---
 
