@@ -17,7 +17,8 @@ in earlier entries of this file got that wrong — see the 2026-09-24 entry.
 | Phase 3 | **done — 3.1–3.8, gate TRUE** (every spec/05 §3 row wired and lerping; the wall reads as texture at rest). Several values are PROPOSED — see the 2026-09-28 entries | (shared — Phase 3 is one sequence) |
 | Phase 4 | **done — 4.1–4.6, pushed, CI green on a runner** (run 36564302228, all five jobs); 4.7 closed by D-22. See the 2026-09-29 entry | (shared) |
 | Phase 5 | **done — A5.1–A5.9, gate TRUE** (the window, the timer, the steam, the daylit window, the bonsai rewired and moved, the hall behind the door with its history, and that history on /text; every sky band pinned in CI) (D-24) | **done** — B5.1 (plans) and B5.2 (account deletion) (D-24); 025 on the hosted project 2026-10-01 |
-| Phase 6 | **in progress** — 6.1 done: the review board is published; 6.2 waits on the owner's marks (D-25) | (shared) |
+| Phase 6 | **superseded by Phase 7 before 6.2** (D-26). 6.1's review board is published; whether it closes is open | (shared) |
+| Phase 7 | **started 2026-10-29** — P0: D-26, its amendment notes and `design-system/v2/` written; three tests next | (shared) |
 
 **CI is green with five jobs** (run 36737013095, A5.8): `verify`, `database`,
 `colour-lint-self-test`, `scene-capture` (lighting gate with effects on and
@@ -31,6 +32,24 @@ Lighthouse assertion shows as an annotation, readable without admin rights.
 looks like; this file stays the state.
 
 ### Next session
+
+**Phase 7, the redesign, has started** (2026-10-29, D-26). The owner and the
+design team replace the dark desk with a warm room: the references
+`homescreen.jpg` and `dashboard.jpg` and the design team's functional and
+UI/UX specifications, all in `design-system/references/` (v1.0). The
+owner's plan page, private: https://claude.ai/artifact/SBQZbSq8pLzuyMWphfy7nV;
+its Vietnamese copy for the design team:
+https://claude.ai/artifact/WHn5ePb4cPC9SqmhuhGhoA (both v2; keep them in step).
+- **P0 so far, not committed:** D-26 and its dated notes under D-02 to D-25 in
+  `spec/01`; notes on Features 1-4 in `spec/02`; Phase 7 in `spec/06`;
+  `design-system/v2/` README and 01-06; pointer banners in CLAUDE.md and
+  `design-system/README.md`.
+- **Next in P0:** three one-week tests. 3D with a licensed stand-in baked room,
+  since the design team has no model yet; the board shell on `/text`; the device
+  journal, including the sign-out warning, in Chrome, Safari and Firefox.
+- **Open (D-26):** does a bought bonsai keep growing; who owns each catalogue;
+  which analytics tool; the Next upgrade; boards over the old room until P4;
+  closing the Phase 6 board.
 
 **Security hardening is merged locally and NOT pushed** (2026-10-02). The 20
 controls in `spec/security-hardening-prompt.md` were worked by five agents in
