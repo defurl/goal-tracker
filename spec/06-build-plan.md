@@ -320,6 +320,28 @@ screenshot. D-07 holds on every change. `a11y:check`, `motion:check`,
 re-run for any change that touches the canvas or a token that drives an
 emissive surface (D-20, D-21).
 
+> **Amendment, 2026-10-29 (D-26).** Superseded by Phase 7 before 6.2 began.
+> Whether the review board closes is an open question in `01-decisions.md`.
+
+---
+
+### Phase 7 — The redesign · scope set by D-26
+
+Seven stages, P0-P6, numbered as on the owner's plan page. The room's 3D art is
+the design team's (D-26 §11) and runs as its own track from P0; it blocks only
+P4. Values below are **PROPOSED** unless they cite a decision. The visual
+contract is `../design-system/v2/`; the night room's documents are its record.
+
+| stage | work | gate |
+|---|---|---|
+| **P0** Decide and test | D-26 and its amendment notes (2026-10-29); `design-system/v2/` started. Then three one-week tests. **3D:** a baked stand-in room under a licence that allows it, until the design team's blockout exists, through gltf-transform (meshopt + KTX2) into R3F: camera travel between two anchors, the blur, and one furniture spot swapping two items with their shadows, measured on a mid-range Android. **Boards:** v2 tokens, Inter, the board shell and the challenge card on `/text`. **Device journal:** storage, persistent storage, export, import and the sign-out warning, in Chrome, Safari and Firefox | the budgets in `v2/05-room.md` hold, and journal storage survives the tests; otherwise the plan changes before any art is made |
+| **P1** Foundation | the Next upgrade if chosen; the top menu, the board shell and the global states; the Today board from existing data; Settings (profile name, space title, AI consent per module, export, delete, motion, sound); analytics; the three token mirrors and `lint:colors` moved to the v2 palette; catalogue tables and their seed format. Until P4 the boards sit over the current room, blurred | every current feature reachable from a board on both surfaces; `a11y:check`, `offline:check`, `lh:check` and `bundle:check` pass |
+| **P2** The four modules | Journal on the device; Growth Map, with habits, goals and import moved in and the Inspiration Inbox's approval flow; Self Care; Skills. Each to the functional specification's MUST list. Existing users' habits and goals migrate | the functional specification's F-01 to F-09 pass on both surfaces |
+| **P3** Points, the shop and the loop | the earning table, lifetime points and balance, the catalogue, purchases, "your room" on `/text`, and the cross-module links that ask first | no path shows a negative number; purchases are one transaction and inside the isolation gate |
+| **P4** The room | the design team's baked room, the anchors and camera travel, the blur, spots filled from the inventory, the poster and per-anchor stills. The night room's objects and the hall retire | the acceptance test in `v2/05-room.md` passes, effects on and off |
+| **P5** AI pilot | the opt-in journal companion with its reply on the device; quality, safety and cost measured for it and the Inbox draft | D-13's support path holds; nothing from an entry reaches the server's storage or logs |
+| **P6** Harden and switch over | captures, every check in CI, export and deletion end to end, CLAUDE.md's non-negotiables rewritten, deployment | the definition of done below, read through D-26 |
+
 ---
 
 ## 3. Definition of done
