@@ -70,6 +70,15 @@ challenge. The Phone (`[0.7, 0, -0.1]`) is the import portal.
 - **AC-1.6** Roll Again is unavailable (disabled, with a reason) once
   `roll_count` reaches its cap.
 
+> **Amendment, 2026-10-29 (D-26 §2, §8).** Feature 1 moves into Growth Map's
+> Inspiration Inbox (functional specification G05-G06) and Today's challenge.
+> FR-1.2 and FR-1.3: the agent's output is a draft the user edits and approves;
+> nothing reaches `user_actions` before that. AC-1.2 is replaced: when the
+> source cannot be read or the agent fails, the user is told plainly and asked to
+> paste the relevant text, and no curated fallback stands in for it. FR-1.5's
+> "Roll Again" is the challenge's "skip" (D-15's amendment). The room bindings,
+> monitor 1 and the phone, retire.
+
 ### Room behaviour
 
 Monitor 1 renders its content as a **canvas texture** driven from the store —
@@ -154,6 +163,13 @@ wall panel grid (centre `x = -0.75, y ≈ 0.493`) shows the daily calendar.
 - **AC-2.7** A habit not due today does not count toward the Perfect Day
   denominator.
 
+> **Amendment, 2026-10-29 (D-26 §6, §7).** Habits become repeating actions in
+> Growth Map. FR-2.1 to FR-2.8 carry over to them unchanged: build and break, the
+> cap of 10, the point values, the Perfect Day bonus, silent streaks and the
+> < 100 ms check-off. FR-2.5's bonsai becomes a decoration sold in the shop
+> (D-11's amendment). Points earned here can now be spent (D-08's amendment).
+> The room bindings, the bonsai on the desk and the wall grid, retire.
+
 ### Room behaviour
 
 **The bonsai.** Leaves are an `InstancedMesh` with a per-instance matrix — one
@@ -219,6 +235,17 @@ Low-friction daily journaling with mood tagging and opt-in AI reflection.
 > trade-off, it is intentional, and onboarding copy must say so plainly rather
 > than letting a user discover it by losing something.
 
+> **Amendment, 2026-10-29 (D-26 §5).** FR-3.6 is kept and made more useful:
+> entry text is stored only on the user's device, never on the server. The
+> server's `journal_entries` keeps the date, mood, energy, tags and the prompt
+> used, and still has no column that can hold text; the `ai_*` columns retire
+> when the journal moves in P2, because AI replies are kept on the device too.
+> The user can now re-read and search their own entries on that device. Export
+> and import carry them to another. Signing out deletes the device's journal
+> after a warning that offers an export first (D-22's amendment). An AI
+> reflection sends only the entries the user selects, and only with consent
+> given in Settings (D-16's amendment).
+
 **FR-3.5 colour mapping.** The SRS specified green / yellow / orange. Those are
 not available for this purpose — `../design-system/01-color-palette.md` reserves
 `--data-green` and `--data-red` for live data and forbids using them as UI
@@ -280,6 +307,11 @@ A visual roadmap turning aspirations into milestones on a timeline.
 - **AC-4.4** An overdue goal renders in the same palette as any other.
 - **AC-4.5** Monitor 2's canvas texture is legible at rest pose — if it is not,
   it shows a summary and the detail lives in the panel.
+
+> **Amendment, 2026-10-29 (D-26 §2).** Goals become Growth Map journeys with
+> milestones (functional specification G01-G04). FR-4.4's +100 becomes the
+> journey-completed award, still at most once a day (D-23 §14). AC-4.5 retires
+> with monitor 2.
 
 ---
 
