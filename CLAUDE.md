@@ -95,6 +95,16 @@ longer the open proposal its earlier version was.
 
 ---
 
+## How we work (owner, 2026-10-30)
+
+Speed over ceremony. Work on `main`; commit small and push when `pnpm lint`,
+`pnpm typecheck` and `pnpm test` pass — Vercel deploys from `main`, and a failed
+build leaves production as it was. No stage gates, no amendment essays: when a
+change alters a decision, update the doc in a line or two in the same commit.
+Ask the owner only for real product decisions, the hosted database, downloads,
+and anything that deletes user data. Desktop first; phones get the boards over
+stills, so phone 3D performance waits.
+
 ## Build order
 
 `spec/06-build-plan.md` has the phases, the parallel tracks, the verification
