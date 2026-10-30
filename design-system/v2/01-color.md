@@ -18,7 +18,7 @@ values.
 | `--ink-faint` | `#8A7B68` | derived from `--ink` | 3.63 / 3.92 | input borders (non-text, 3 : 1), disabled text, decoration. Never informative text |
 | `--line` | `#E4D9C6` | new, for the spec's "1 px warm border" | 1.23 / 1.33 | decorative card borders and dividers only |
 | `--interactive` | `#587660` | spec "interactive sage" | 4.44 / 4.80 | filled buttons, icons, the focus ring, large text (24 px, or 18.66 px bold) |
-| `--interactive-ink` | `#557259` | spec sage, darkened | 4.71 / 5.09 | small sage text: links and text buttons |
+| `--interactive-ink` | `#4D6851` | spec sage, darkened (5.15 over the darkest card on the Today render) | 5.43 / 5.87 | small sage text: links and text buttons |
 | `--signal` | `#D6AA75` | spec "accent honey" | 1.88 / 2.03 | fills, markers, selected states, highlights. **Never text.** `--ink` on it is 5.77 |
 | `--sand` | `#D7C4A5` | handoff "sand" (D-27) | 1.47 / 1.63 | fills only: chips, selected rows, quiet panels. `--ink` on it is 6.60 |
 | `--sage` | `#AEBFA8` | handoff "sage" (D-27) | 1.71 / 1.85 | fills only. `--ink` on it is 5.79 |

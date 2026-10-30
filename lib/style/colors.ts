@@ -71,7 +71,7 @@ export const V2_INK_MUTED = '#6B5D4D';
 export const V2_INK_FAINT = '#8A7B68';
 export const V2_LINE = '#E4D9C6';
 export const V2_INTERACTIVE = '#587660';
-export const V2_INTERACTIVE_INK = '#557259';
+export const V2_INTERACTIVE_INK = '#4D6851';
 export const V2_SIGNAL = '#D6AA75';
 // D-27: fills only — 1.6 and 1.9 : 1 on cream, never text or a border.
 export const V2_SAND = '#D7C4A5';

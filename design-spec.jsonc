@@ -60,7 +60,7 @@
       "--v2-ink-faint":       "#8A7B68",   // input borders, disabled; never informative text
       "--v2-line":            "#E4D9C6",   // decorative borders and dividers
       "--v2-interactive":     "#587660",   // sage; buttons, icons, focus ring, large text
-      "--v2-interactive-ink": "#557259",   // sage for small text: links, text buttons
+      "--v2-interactive-ink": "#4D6851",   // sage for small text: links, text buttons
       "--v2-signal":          "#D6AA75",   // honey; fills and markers, never text
       "--v2-sand":            "#D7C4A5",   // D-27; fills only
       "--v2-sage":            "#AEBFA8"    // D-27; fills only
