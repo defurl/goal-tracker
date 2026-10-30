@@ -1,0 +1,881 @@
+{
+  "source": "Poly Haven (https://polyhaven.com), all assets CC0",
+  "note": "Downloaded for the P0 stand-in room only; stored under .p0/downloads (ignored by git).",
+  "assets": [
+    {
+      "id": "sofa_02",
+      "name": "Sofa 02",
+      "kind": "model (glTF, 1k textures)",
+      "role": "sofa (Self Care anchor)",
+      "url": "https://polyhaven.com/a/sofa_02",
+      "authors": [
+        "Kirill Sannikov"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 2728,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/sofa_02/sofa_02_1k.gltf",
+          "bytes": 4183
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_02/sofa_02_diff_1k.jpg",
+          "bytes": 86514
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_02/sofa_02_arm_1k.jpg",
+          "bytes": 121752
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/sofa_02/sofa_02_nor_gl_1k.jpg",
+          "bytes": 139858
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/sofa_02/sofa_02.bin",
+          "bytes": 74864
+        }
+      ]
+    },
+    {
+      "id": "modern_arm_chair_01",
+      "name": "Modern Arm Chair 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "armchair by the window",
+      "url": "https://polyhaven.com/a/modern_arm_chair_01",
+      "authors": [
+        "Vibrant Nordic"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 8916,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/modern_arm_chair_01/modern_arm_chair_01_1k.gltf",
+          "bytes": 5121
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_pillow_nor_gl_1k.jpg",
+          "bytes": 302377
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_legs_nor_gl_1k.jpg",
+          "bytes": 560864
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_pillow_arm_1k.jpg",
+          "bytes": 321223
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_legs_diff_1k.jpg",
+          "bytes": 460937
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_legs_arm_1k.jpg",
+          "bytes": 577931
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/modern_arm_chair_01/modern_arm_chair_01.bin",
+          "bytes": 240728
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_arm_chair_01/modern_arm_chair_01_pillow_diff_1k.jpg",
+          "bytes": 228851
+        }
+      ]
+    },
+    {
+      "id": "modern_coffee_table_01",
+      "name": "Modern Coffee Table 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "coffee table (Today and Journal anchors)",
+      "url": "https://polyhaven.com/a/modern_coffee_table_01",
+      "authors": [
+        "Amin"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 4504,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/modern_coffee_table_01/modern_coffee_table_01_1k.gltf",
+          "bytes": 2771
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/modern_coffee_table_01/modern_coffee_table_01.bin",
+          "bytes": 154864
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_coffee_table_01/modern_coffee_table_01_rough_1k.jpg",
+          "bytes": 403959
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_coffee_table_01/modern_coffee_table_01_diff_1k.jpg",
+          "bytes": 410569
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/modern_coffee_table_01/modern_coffee_table_01_nor_gl_1k.jpg",
+          "bytes": 359134
+        }
+      ]
+    },
+    {
+      "id": "small_wooden_table_01",
+      "name": "Small Wooden Table 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "desk on the right wall (scaled to desk height)",
+      "url": "https://polyhaven.com/a/small_wooden_table_01",
+      "authors": [
+        "Ulan Cabanilla"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 3410,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/small_wooden_table_01/small_wooden_table_01_1k.gltf",
+          "bytes": 2764
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/small_wooden_table_01/small_wooden_table_01_arm_1k.jpg",
+          "bytes": 154335
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/small_wooden_table_01/small_wooden_table_01.bin",
+          "bytes": 92428
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/small_wooden_table_01/small_wooden_table_01_diff_1k.jpg",
+          "bytes": 138301
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/small_wooden_table_01/small_wooden_table_01_nor_gl_1k.jpg",
+          "bytes": 26935
+        }
+      ]
+    },
+    {
+      "id": "gallinera_chair",
+      "name": "Gallinera Chair",
+      "kind": "model (glTF, 1k textures)",
+      "role": "desk chair",
+      "url": "https://polyhaven.com/a/gallinera_chair",
+      "authors": [
+        "Ulan Cabanilla"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 11560,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/gallinera_chair/gallinera_chair_1k.gltf",
+          "bytes": 2805
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gallinera_chair/gallinera_chair_nor_gl_1k.jpg",
+          "bytes": 798335
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gallinera_chair/gallinera_chair_diff_1k.jpg",
+          "bytes": 535971
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/gallinera_chair/gallinera_chair_arm_1k.jpg",
+          "bytes": 667863
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/gallinera_chair/gallinera_chair.bin",
+          "bytes": 353776
+        }
+      ]
+    },
+    {
+      "id": "side_table_01",
+      "name": "Side Table 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "side table by the armchair",
+      "url": "https://polyhaven.com/a/side_table_01",
+      "authors": [
+        "James Ray Cock"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 2756,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/side_table_01/side_table_01_1k.gltf",
+          "bytes": 2700
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/side_table_01/side_table_01.bin",
+          "bytes": 117784
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/side_table_01/side_table_01_diff_1k.jpg",
+          "bytes": 183315
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/side_table_01/side_table_01_nor_gl_1k.jpg",
+          "bytes": 71744
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/side_table_01/side_table_01_arm_1k.jpg",
+          "bytes": 129725
+        }
+      ]
+    },
+    {
+      "id": "Shelf_01",
+      "name": "Shelf 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "bookcase on the right wall",
+      "url": "https://polyhaven.com/a/Shelf_01",
+      "authors": [
+        "Gabriel Radi\u0107"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 182,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/Shelf_01/Shelf_01_1k.gltf",
+          "bytes": 2617
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_diff_1k.jpg",
+          "bytes": 153220
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/Shelf_01/Shelf_01.bin",
+          "bytes": 12676
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_nor_gl_1k.jpg",
+          "bytes": 231393
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_arm_1k.jpg",
+          "bytes": 205542
+        }
+      ]
+    },
+    {
+      "id": "potted_plant_01",
+      "name": "Potted Plant 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "large plant by the window",
+      "url": "https://polyhaven.com/a/potted_plant_01",
+      "authors": [
+        "Rico Cilliers"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 96030,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/potted_plant_01/potted_plant_01_1k.gltf",
+          "bytes": 7969
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_rough_1k.jpg",
+          "bytes": 173192
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_nor_gl_1k.jpg",
+          "bytes": 177105
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_diff_1k.jpg",
+          "bytes": 204900
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/potted_plant_01/potted_plant_01.bin",
+          "bytes": 5345188
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_rough_1k.jpg",
+          "bytes": 91706
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_nor_gl_1k.jpg",
+          "bytes": 200349
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_diff_1k.jpg",
+          "bytes": 124730
+        }
+      ]
+    },
+    {
+      "id": "potted_plant_02",
+      "name": "Potted Plant 02",
+      "kind": "model (glTF, 1k textures)",
+      "role": "furniture spot, item A",
+      "url": "https://polyhaven.com/a/potted_plant_02",
+      "authors": [
+        "Rico Cilliers"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 69806,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/potted_plant_02/potted_plant_02_1k.gltf",
+          "bytes": 6653
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_leaves_diff_1k.jpg",
+          "bytes": 167700
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/potted_plant_02/potted_plant_02.bin",
+          "bytes": 1852244
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_pot_rough_1k.jpg",
+          "bytes": 114886
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_leaves_rough_1k.jpg",
+          "bytes": 102396
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_pot_diff_1k.jpg",
+          "bytes": 155244
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_leaves_nor_gl_1k.jpg",
+          "bytes": 127232
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_02/potted_plant_02_pot_nor_gl_1k.jpg",
+          "bytes": 108343
+        }
+      ]
+    },
+    {
+      "id": "pachira_aquatica_01",
+      "name": "Pachira Aquatica 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "furniture spot, item B (one variant)",
+      "url": "https://polyhaven.com/a/pachira_aquatica_01",
+      "authors": [
+        "Rico Cilliers",
+        "Rob Tuytel"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 76914,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/pachira_aquatica_01/pachira_aquatica_01_1k.gltf",
+          "bytes": 13730
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_bark_nor_gl_1k.jpg",
+          "bytes": 723624
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_leaves_nor_gl_1k.jpg",
+          "bytes": 490166
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_leaves_diff_1k.jpg",
+          "bytes": 320484
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_bark_arm_1k.jpg",
+          "bytes": 588614
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_bark_diff_1k.jpg",
+          "bytes": 592488
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pachira_aquatica_01/pachira_aquatica_01_leaves_arm_1k.jpg",
+          "bytes": 372937
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/pachira_aquatica_01/pachira_aquatica_01.bin",
+          "bytes": 2036788
+        }
+      ]
+    },
+    {
+      "id": "planter_pot_clay",
+      "name": "Planter Pot Clay",
+      "kind": "model (glTF, 1k textures)",
+      "role": "pot for item B",
+      "url": "https://polyhaven.com/a/planter_pot_clay",
+      "authors": [
+        "Amal Kumar"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 3080,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/planter_pot_clay/planter_pot_clay_1k.gltf",
+          "bytes": 2813
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/planter_pot_clay/planter_pot_clay_diff_1k.jpg",
+          "bytes": 596319
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/planter_pot_clay/planter_pot_clay.bin",
+          "bytes": 78096
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/planter_pot_clay/planter_pot_clay_arm_1k.jpg",
+          "bytes": 613484
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/planter_pot_clay/planter_pot_clay_nor_gl_1k.jpg",
+          "bytes": 506446
+        }
+      ]
+    },
+    {
+      "id": "potted_plant_04",
+      "name": "Potted Plant 04",
+      "kind": "model (glTF, 1k textures)",
+      "role": "small succulent on the coffee table",
+      "url": "https://polyhaven.com/a/potted_plant_04",
+      "authors": [
+        "James Ray Cock"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 6097,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/potted_plant_04/potted_plant_04_1k.gltf",
+          "bytes": 7081
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/potted_plant_04/potted_plant_04.bin",
+          "bytes": 241800
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_04/potted_plant_04_nor_gl_1k.jpg",
+          "bytes": 817786
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_04/potted_plant_04_arm_1k.jpg",
+          "bytes": 478413
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_04/potted_plant_04_diff_1k.jpg",
+          "bytes": 577545
+        }
+      ]
+    },
+    {
+      "id": "calathea_orbifolia_01",
+      "name": "Calathea Orbifolia 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "plant on the desk (one variant)",
+      "url": "https://polyhaven.com/a/calathea_orbifolia_01",
+      "authors": [
+        "Rico Cilliers",
+        "Rob Tuytel"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 16688,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/calathea_orbifolia_01/calathea_orbifolia_01_1k.gltf",
+          "bytes": 9309
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/calathea_orbifolia_01/calathea_orbifolia_01_arm_1k.jpg",
+          "bytes": 421555
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/calathea_orbifolia_01/calathea_orbifolia_01_diff_1k.jpg",
+          "bytes": 455819
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/calathea_orbifolia_01/calathea_orbifolia_01.bin",
+          "bytes": 407968
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/calathea_orbifolia_01/calathea_orbifolia_01_nor_gl_1k.jpg",
+          "bytes": 581558
+        }
+      ]
+    },
+    {
+      "id": "book_encyclopedia_set_01",
+      "name": "Book Encyclopedia Set 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "books on the desk, bookcase and coffee table",
+      "url": "https://polyhaven.com/a/book_encyclopedia_set_01",
+      "authors": [
+        "John Malcolm"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 67306,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_1k.gltf",
+          "bytes": 55011
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_cover_diff_1k.jpg",
+          "bytes": 126794
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/book_encyclopedia_set_01/book_encyclopedia_set_01.bin",
+          "bytes": 2547932
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_paper_nor_gl_1k.jpg",
+          "bytes": 193390
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_cover_arm_1k.jpg",
+          "bytes": 189997
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_cover_nor_gl_1k.jpg",
+          "bytes": 19941
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_paper_diff_1k.jpg",
+          "bytes": 115297
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/book_encyclopedia_set_01/book_encyclopedia_set_01_paper_roughness_1k.jpg",
+          "bytes": 12684
+        }
+      ]
+    },
+    {
+      "id": "Camera_01",
+      "name": "Camera 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "camera on the coffee table",
+      "url": "https://polyhaven.com/a/Camera_01",
+      "authors": [
+        "Rajil Jose Macatangay"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 26987,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/Camera_01/Camera_01_1k.gltf",
+          "bytes": 9886
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_arm_1k.jpg",
+          "bytes": 163109
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_diff_1k.jpg",
+          "bytes": 175778
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_arm_1k.jpg",
+          "bytes": 159433
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_nor_gl_1k.jpg",
+          "bytes": 147816
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/Camera_01/Camera_01.bin",
+          "bytes": 845028
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_lens_body_diff_1k.jpg",
+          "bytes": 106198
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_nor_gl_1k.jpg",
+          "bytes": 271892
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_body_arm_1k.jpg",
+          "bytes": 228449
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_diff_1k.jpg",
+          "bytes": 132449
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Camera_01/Camera_01_strap_nor_gl_1k.jpg",
+          "bytes": 199844
+        }
+      ]
+    },
+    {
+      "id": "throw_pillows_01",
+      "name": "Throw Pillows 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "cushions on the sofa",
+      "url": "https://polyhaven.com/a/throw_pillows_01",
+      "authors": [
+        "Serhii Khromov"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 6362,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/throw_pillows_01/throw_pillows_01_1k.gltf",
+          "bytes": 4548
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/throw_pillows_01/throw_pillows_01_rough_1k.jpg",
+          "bytes": 339241
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/throw_pillows_01/throw_pillows_01_diff_1k.jpg",
+          "bytes": 299887
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/throw_pillows_01/throw_pillows_01.bin",
+          "bytes": 146012
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/throw_pillows_01/throw_pillows_01_nor_gl_1k.jpg",
+          "bytes": 404720
+        }
+      ]
+    },
+    {
+      "id": "ceramic_vase_01",
+      "name": "Ceramic Vase 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "vase on the window sill",
+      "url": "https://polyhaven.com/a/ceramic_vase_01",
+      "authors": [
+        "James Ray Cock"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 2548,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/ceramic_vase_01/ceramic_vase_01_1k.gltf",
+          "bytes": 2706
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_nor_gl_1k.jpg",
+          "bytes": 36504
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_diff_1k.jpg",
+          "bytes": 32351
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_arm_1k.jpg",
+          "bytes": 74240
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/ceramic_vase_01/ceramic_vase_01.bin",
+          "bytes": 272656
+        }
+      ]
+    },
+    {
+      "id": "hanging_picture_frame_02",
+      "name": "Hanging Picture Frame 02",
+      "kind": "model (glTF, 1k textures)",
+      "role": "wall art, right wall",
+      "url": "https://polyhaven.com/a/hanging_picture_frame_02",
+      "authors": [
+        "James Ray Cock"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 3678,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/hanging_picture_frame_02/hanging_picture_frame_02_1k.gltf",
+          "bytes": 6433
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_diff_1k.jpg",
+          "bytes": 146402
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_artwork_diff_1k.jpg",
+          "bytes": 138383
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_arm_1k.jpg",
+          "bytes": 113780
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_artwork_nor_gl_1k.jpg",
+          "bytes": 45035
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_artwork_roughness_1k.jpg",
+          "bytes": 74142
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/hanging_picture_frame_02/hanging_picture_frame_02.bin",
+          "bytes": 115080
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/hanging_picture_frame_02/hanging_picture_frame_02_nor_gl_1k.jpg",
+          "bytes": 56776
+        }
+      ]
+    },
+    {
+      "id": "fancy_picture_frame_01",
+      "name": "Fancy Picture Frame 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "wall art, right wall",
+      "url": "https://polyhaven.com/a/fancy_picture_frame_01",
+      "authors": [
+        "Rico Cilliers",
+        "Rob Tuytel"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 938,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/fancy_picture_frame_01/fancy_picture_frame_01_1k.gltf",
+          "bytes": 5059
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_nor_gl_1k.jpg",
+          "bytes": 216212
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_canvas_diff_1k.jpg",
+          "bytes": 100534
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/fancy_picture_frame_01/fancy_picture_frame_01.bin",
+          "bytes": 25948
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_canvas_rough_1k.jpg",
+          "bytes": 71299
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_canvas_nor_gl_1k.jpg",
+          "bytes": 52182
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_rough_1k.jpg",
+          "bytes": 119837
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fancy_picture_frame_01/fancy_picture_frame_01_diff_1k.jpg",
+          "bytes": 150435
+        }
+      ]
+    },
+    {
+      "id": "desk_lamp_arm_01",
+      "name": "Desk Lamp Arm 01",
+      "kind": "model (glTF, 1k textures)",
+      "role": "desk lamp (unlit prop)",
+      "url": "https://polyhaven.com/a/desk_lamp_arm_01",
+      "authors": [
+        "Kuutti Siitonen",
+        "Yann Kervran"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": 25710,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/desk_lamp_arm_01/desk_lamp_arm_01_1k.gltf",
+          "bytes": 4453
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/desk_lamp_arm_01/desk_lamp_arm_01_nor_gl_1k.jpg",
+          "bytes": 651826
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/desk_lamp_arm_01/desk_lamp_arm_01_arm_1k.jpg",
+          "bytes": 780379
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/desk_lamp_arm_01/desk_lamp_arm_01_diff_1k.jpg",
+          "bytes": 702522
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/desk_lamp_arm_01/desk_lamp_arm_01.bin",
+          "bytes": 736804
+        }
+      ]
+    },
+    {
+      "id": "laminate_floor_02",
+      "name": "Laminate Floor 02",
+      "kind": "texture (2k jpg)",
+      "role": "room surface",
+      "url": "https://polyhaven.com/a/laminate_floor_02",
+      "authors": [
+        "Charlotte Baglioni",
+        "Dario Barresi"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": null,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/laminate_floor_02/laminate_floor_02_diff_2k.jpg",
+          "bytes": 3225117
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/laminate_floor_02/laminate_floor_02_rough_2k.jpg",
+          "bytes": 2545321
+        }
+      ]
+    },
+    {
+      "id": "beige_wall_001",
+      "name": "Beige Wall 001",
+      "kind": "texture (1k jpg)",
+      "role": "room surface",
+      "url": "https://polyhaven.com/a/beige_wall_001",
+      "authors": [
+        "Dimitrios Savva",
+        "Rico Cilliers"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": null,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_diff_1k.jpg",
+          "bytes": 33074
+        }
+      ]
+    },
+    {
+      "id": "shanghai_riverside",
+      "name": "Shanghai Riverside",
+      "kind": "HDRI (4k hdr)",
+      "role": "golden-hour sky fill and the window's city view",
+      "url": "https://polyhaven.com/a/shanghai_riverside",
+      "authors": [
+        "Alex Radosnov"
+      ],
+      "licence": "CC0",
+      "licence_url": "https://polyhaven.com/license",
+      "polycount_source": null,
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/shanghai_riverside_4k.hdr",
+          "bytes": 25272079
+        }
+      ]
+    }
+  ]
+}

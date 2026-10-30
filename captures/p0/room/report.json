@@ -1,0 +1,1734 @@
+{
+  "generatedAt": "2026-10-29T19:30:47.401Z",
+  "browser": "Chromium 153.0.8010.12 (Playwright, headless)",
+  "machine": {
+    "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+    "cores": 12,
+    "memGB": 16
+  },
+  "gpu": {
+    "vendor": "Google Inc. (NVIDIA)",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 2060 (0x00001F11) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "firstView": {
+    "room.webp": {
+      "glbBytes": 3509176,
+      "ttffMsMedian": 310,
+      "ttffMsRuns": [
+        796,
+        310,
+        304
+      ],
+      "fetchParseMsMedian": 152,
+      "firstRenderMsMedian": 102,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      },
+      "itemLoads": {
+        "a": {
+          "bytes": 309516,
+          "ms": 69
+        },
+        "b": {
+          "bytes": 269808,
+          "ms": 33
+        }
+      }
+    },
+    "room.jpeg": {
+      "glbBytes": 4179496,
+      "ttffMsMedian": 347,
+      "ttffMsRuns": [
+        350,
+        320,
+        347
+      ],
+      "fetchParseMsMedian": 158,
+      "firstRenderMsMedian": 114,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      },
+      "itemLoads": {
+        "a": {
+          "bytes": 319888,
+          "ms": 51
+        },
+        "b": {
+          "bytes": 340748,
+          "ms": 25
+        }
+      }
+    },
+    "room.png": {
+      "glbBytes": 25562200,
+      "ttffMsMedian": 504,
+      "ttffMsRuns": [
+        545,
+        471,
+        504
+      ],
+      "fetchParseMsMedian": 245,
+      "firstRenderMsMedian": 191,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      },
+      "itemLoads": {
+        "a": {
+          "bytes": 1940224,
+          "ms": 121
+        },
+        "b": {
+          "bytes": 1761052,
+          "ms": 116
+        }
+      }
+    },
+    "room4k.webp": {
+      "glbBytes": 3676976,
+      "ttffMsMedian": 431,
+      "ttffMsRuns": [
+        431,
+        439,
+        426
+      ],
+      "fetchParseMsMedian": 176,
+      "firstRenderMsMedian": 195,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      }
+    },
+    "room4k.jpeg": {
+      "glbBytes": 4665736,
+      "ttffMsMedian": 412,
+      "ttffMsRuns": [
+        412,
+        491,
+        367
+      ],
+      "fetchParseMsMedian": 153,
+      "firstRenderMsMedian": 192,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      }
+    },
+    "room4k.png": {
+      "glbBytes": 36087664,
+      "ttffMsMedian": 607,
+      "ttffMsRuns": [
+        606,
+        607,
+        727
+      ],
+      "fetchParseMsMedian": 394,
+      "firstRenderMsMedian": 153,
+      "info": {
+        "calls": 9,
+        "triangles": 229544,
+        "textures": 6,
+        "geometries": 9,
+        "programs": 2
+      }
+    }
+  },
+  "stills": {
+    "poster": {
+      "size": "1920x1080",
+      "crf": 24,
+      "bytes": 58197,
+      "tried": {
+        "24": 58197
+      }
+    },
+    "today": {
+      "size": "1920x1080",
+      "crf": 24,
+      "bytes": 7758,
+      "tried": {
+        "24": 7758
+      }
+    },
+    "journal": {
+      "size": "1920x1080",
+      "crf": 24,
+      "bytes": 7465,
+      "tried": {
+        "24": 7465
+      }
+    },
+    "selfcare": {
+      "size": "1920x1080",
+      "crf": 24,
+      "bytes": 6802,
+      "tried": {
+        "24": 6802
+      }
+    }
+  },
+  "build": {
+    "device": "OPTIX: NVIDIA GeForce RTX 2060",
+    "triangles": {
+      "room": 229540,
+      "meshes": {
+        "room_shell": {
+          "atlas": "shell",
+          "triangles": 228
+        },
+        "anchor_selfcare": {
+          "atlas": "furniture",
+          "triangles": 9090
+        },
+        "room_furniture": {
+          "atlas": "furniture",
+          "triangles": 31450
+        },
+        "anchor_today": {
+          "atlas": "props",
+          "triangles": 25031
+        },
+        "anchor_journal": {
+          "atlas": "props",
+          "triangles": 524
+        },
+        "room_props": {
+          "atlas": "props",
+          "triangles": 115018
+        },
+        "room_foliage": {
+          "atlas": "foliage",
+          "triangles": 48199
+        }
+      },
+      "items": {
+        "a": {
+          "triangles": 18033,
+          "size": 1024,
+          "alpha": true,
+          "shadow_min": 0,
+          "glb_bytes_png": 2193836
+        },
+        "b": {
+          "triangles": 23631,
+          "size": 1024,
+          "alpha": false,
+          "shadow_min": 0,
+          "glb_bytes_png": 2070692
+        }
+      }
+    },
+    "atlases": {
+      "shell": {
+        "uv_scale": 1,
+        "size": 2048,
+        "alpha": false,
+        "samples": 256,
+        "meshes": [
+          "room_shell"
+        ],
+        "uv_coverage": 0.85
+      },
+      "furniture": {
+        "uv_scale": 1.0045,
+        "size": 2048,
+        "alpha": false,
+        "samples": 256,
+        "meshes": [
+          "anchor_selfcare",
+          "room_furniture"
+        ],
+        "uv_coverage": 0.682
+      },
+      "props": {
+        "uv_scale": 1,
+        "size": 2048,
+        "alpha": false,
+        "samples": 256,
+        "meshes": [
+          "anchor_today",
+          "anchor_journal",
+          "room_props"
+        ],
+        "uv_coverage": 0.283
+      },
+      "foliage": {
+        "uv_scale": 1.0035,
+        "size": 2048,
+        "alpha": true,
+        "samples": 256,
+        "meshes": [
+          "room_foliage"
+        ],
+        "uv_coverage": 0.334
+      }
+    },
+    "timingsSeconds": {
+      "build": 4.29,
+      "unwrap": 181.17,
+      "backdrop": 2.74,
+      "previews": 81.58,
+      "bake_shell": 76.93,
+      "finish_shell": 3.52,
+      "bake_furniture": 41.47,
+      "finish_furniture": 3.58,
+      "bake_props": 19.45,
+      "finish_props": 3.43,
+      "bake_foliage": 23.67,
+      "finish_foliage": 6.66,
+      "bake_item_a": 12.7,
+      "bake_item_b": 12.45,
+      "decals": 20.24
+    },
+    "totalSeconds": 495.9,
+    "shell4096": {
+      "atlases": {
+        "shell": {
+          "uv_scale": 1,
+          "size": 4096,
+          "alpha": false,
+          "samples": 256,
+          "meshes": [
+            "room_shell"
+          ],
+          "uv_coverage": 0.85
+        },
+        "furniture": {
+          "uv_scale": 1.0045,
+          "size": 2048,
+          "alpha": false,
+          "samples": 256,
+          "meshes": [
+            "anchor_selfcare",
+            "room_furniture"
+          ],
+          "uv_coverage": 0.682
+        },
+        "props": {
+          "uv_scale": 1,
+          "size": 2048,
+          "alpha": false,
+          "samples": 256,
+          "meshes": [
+            "anchor_today",
+            "anchor_journal",
+            "room_props"
+          ],
+          "uv_coverage": 0.283
+        },
+        "foliage": {
+          "uv_scale": 1.0035,
+          "size": 2048,
+          "alpha": true,
+          "samples": 256,
+          "meshes": [
+            "room_foliage"
+          ],
+          "uv_coverage": 0.334
+        }
+      },
+      "timingsSeconds": {
+        "build": 4.26,
+        "unwrap": 215.42,
+        "backdrop": 2.93,
+        "bake_shell": 303.35,
+        "finish_shell": 14.56,
+        "bake_furniture": 41.63,
+        "finish_furniture": 3.81,
+        "bake_props": 20.19,
+        "finish_props": 3.5,
+        "bake_foliage": 23.7,
+        "finish_foliage": 6.73,
+        "bake_item_a": 12.87,
+        "bake_item_b": 12.7,
+        "decals": 20.24
+      }
+    }
+  },
+  "anchors": {
+    "space": "glTF, Y up, metres; three.js PerspectiveCamera vertical fov in degrees",
+    "selfcare": {
+      "position": [
+        0.55,
+        1.28,
+        1.3
+      ],
+      "target": [
+        -2.1,
+        0.62,
+        0.4
+      ],
+      "fov": 50
+    },
+    "today": {
+      "position": [
+        0.25,
+        1.3,
+        2.1
+      ],
+      "target": [
+        -1.05,
+        0.42,
+        0.5
+      ],
+      "fov": 44
+    },
+    "journal": {
+      "position": [
+        -0.42,
+        0.98,
+        1.38
+      ],
+      "target": [
+        -1,
+        0.4,
+        0.66
+      ],
+      "fov": 38
+    },
+    "overview": {
+      "position": [
+        0.75,
+        1.58,
+        3.05
+      ],
+      "target": [
+        -0.15,
+        0.92,
+        -1
+      ],
+      "fov": 54
+    }
+  },
+  "pipeline": {
+    "source": {
+      "item_a": {
+        "file": ".p0/build/item_a.glb",
+        "bytes": 2193836,
+        "gzipBytes": 2112055,
+        "brotliBytes": 2048830,
+        "geometryBytes": 381986,
+        "textures": [
+          {
+            "name": "item_a",
+            "mimeType": "image/png",
+            "bytes": 1521378,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_a_shadow",
+            "mimeType": "image/png",
+            "bytes": 290472,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__a",
+          "spot_plant_sofa__a_shadow"
+        ]
+      },
+      "item_b": {
+        "file": ".p0/build/item_b.glb",
+        "bytes": 2070692,
+        "gzipBytes": 1988228,
+        "brotliBytes": 1893188,
+        "geometryBytes": 452129,
+        "textures": [
+          {
+            "name": "item_b",
+            "mimeType": "image/png",
+            "bytes": 1319710,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_b_shadow",
+            "mimeType": "image/png",
+            "bytes": 298853,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__b",
+          "spot_plant_sofa__b_shadow"
+        ]
+      },
+      "room": {
+        "file": ".p0/build/room.glb",
+        "bytes": 31513064,
+        "gzipBytes": 27836904,
+        "brotliBytes": 26760881,
+        "geometryBytes": 7987028,
+        "textures": [
+          {
+            "name": "shell",
+            "mimeType": "image/png",
+            "bytes": 3646478,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "furniture",
+            "mimeType": "image/png",
+            "bytes": 3674217,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "props",
+            "mimeType": "image/png",
+            "bytes": 3660877,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "foliage",
+            "mimeType": "image/png",
+            "bytes": 7865299,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "live_window",
+            "mimeType": "image/png",
+            "bytes": 2226714,
+            "width": 2048,
+            "height": 1152
+          },
+          {
+            "name": "live_window_left",
+            "mimeType": "image/png",
+            "bytes": 2452451,
+            "width": 2048,
+            "height": 1152
+          }
+        ],
+        "meshes": [
+          "room_shell",
+          "anchor_selfcare",
+          "anchor_today",
+          "room_furniture",
+          "anchor_journal",
+          "room_props",
+          "room_foliage",
+          "live_window",
+          "live_window_left"
+        ]
+      }
+    },
+    "png": {
+      "item_a": {
+        "file": ".p0/out/png/item_a.glb",
+        "bytes": 1940224,
+        "gzipBytes": 1909654,
+        "brotliBytes": 1904826,
+        "geometryBytes": 128374,
+        "textures": [
+          {
+            "name": "item_a",
+            "mimeType": "image/png",
+            "bytes": 1521378,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_a_shadow",
+            "mimeType": "image/png",
+            "bytes": 290472,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__a",
+          "spot_plant_sofa__a_shadow"
+        ]
+      },
+      "item_b": {
+        "file": ".p0/out/png/item_b.glb",
+        "bytes": 1761052,
+        "gzipBytes": 1718818,
+        "brotliBytes": 1711953,
+        "geometryBytes": 142489,
+        "textures": [
+          {
+            "name": "item_b",
+            "mimeType": "image/png",
+            "bytes": 1319710,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_b_shadow",
+            "mimeType": "image/png",
+            "bytes": 298853,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__b",
+          "spot_plant_sofa__b_shadow"
+        ]
+      },
+      "room": {
+        "file": ".p0/out/png/room.glb",
+        "bytes": 25562200,
+        "gzipBytes": 24869790,
+        "brotliBytes": 24733848,
+        "geometryBytes": 2036164,
+        "textures": [
+          {
+            "name": "shell",
+            "mimeType": "image/png",
+            "bytes": 3646478,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "furniture",
+            "mimeType": "image/png",
+            "bytes": 3674217,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "props",
+            "mimeType": "image/png",
+            "bytes": 3660877,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "foliage",
+            "mimeType": "image/png",
+            "bytes": 7865299,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "live_window",
+            "mimeType": "image/png",
+            "bytes": 2226714,
+            "width": 2048,
+            "height": 1152
+          },
+          {
+            "name": "live_window_left",
+            "mimeType": "image/png",
+            "bytes": 2452451,
+            "width": 2048,
+            "height": 1152
+          }
+        ],
+        "meshes": [
+          "room_shell",
+          "anchor_selfcare",
+          "anchor_today",
+          "room_furniture",
+          "anchor_journal",
+          "room_props",
+          "room_foliage",
+          "live_window",
+          "live_window_left"
+        ]
+      }
+    },
+    "webp": {
+      "item_a": {
+        "file": ".p0/out/webp/item_a.glb",
+        "bytes": 309516,
+        "gzipBytes": 278432,
+        "brotliBytes": 272114,
+        "geometryBytes": 128474,
+        "textures": [
+          {
+            "name": "item_a",
+            "mimeType": "image/webp",
+            "bytes": 164264,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_a_shadow",
+            "mimeType": "image/webp",
+            "bytes": 16778,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__a",
+          "spot_plant_sofa__a_shadow"
+        ]
+      },
+      "item_b": {
+        "file": ".p0/out/webp/item_b.glb",
+        "bytes": 269808,
+        "gzipBytes": 227280,
+        "brotliBytes": 218567,
+        "geometryBytes": 142594,
+        "textures": [
+          {
+            "name": "item_b",
+            "mimeType": "image/webp",
+            "bytes": 110596,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_b_shadow",
+            "mimeType": "image/webp",
+            "bytes": 16618,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__b",
+          "spot_plant_sofa__b_shadow"
+        ]
+      },
+      "room": {
+        "file": ".p0/out/webp/room.glb",
+        "bytes": 3509176,
+        "gzipBytes": 2808164,
+        "brotliBytes": 2671381,
+        "geometryBytes": 2036374,
+        "textures": [
+          {
+            "name": "shell",
+            "mimeType": "image/webp",
+            "bytes": 83276,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "furniture",
+            "mimeType": "image/webp",
+            "bytes": 145920,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "props",
+            "mimeType": "image/webp",
+            "bytes": 307520,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "foliage",
+            "mimeType": "image/webp",
+            "bytes": 833944,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "live_window",
+            "mimeType": "image/webp",
+            "bytes": 36994,
+            "width": 2048,
+            "height": 1152
+          },
+          {
+            "name": "live_window_left",
+            "mimeType": "image/webp",
+            "bytes": 65148,
+            "width": 2048,
+            "height": 1152
+          }
+        ],
+        "meshes": [
+          "room_shell",
+          "anchor_selfcare",
+          "anchor_today",
+          "room_furniture",
+          "anchor_journal",
+          "room_props",
+          "room_foliage",
+          "live_window",
+          "live_window_left"
+        ]
+      }
+    },
+    "jpeg": {
+      "item_a": {
+        "file": ".p0/out/jpeg/item_a.glb",
+        "bytes": 319888,
+        "gzipBytes": 288388,
+        "brotliBytes": 281412,
+        "geometryBytes": 128438,
+        "textures": [
+          {
+            "name": "item_a",
+            "mimeType": "image/webp",
+            "bytes": 164264,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_a_shadow",
+            "mimeType": "image/jpeg",
+            "bytes": 27186,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__a",
+          "spot_plant_sofa__a_shadow"
+        ]
+      },
+      "item_b": {
+        "file": ".p0/out/jpeg/item_b.glb",
+        "bytes": 340748,
+        "gzipBytes": 295777,
+        "brotliBytes": 285964,
+        "geometryBytes": 142483,
+        "textures": [
+          {
+            "name": "item_b",
+            "mimeType": "image/jpeg",
+            "bytes": 171191,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "name": "item_b_shadow",
+            "mimeType": "image/jpeg",
+            "bytes": 27074,
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "meshes": [
+          "spot_plant_sofa__b",
+          "spot_plant_sofa__b_shadow"
+        ]
+      },
+      "room": {
+        "file": ".p0/out/jpeg/room.glb",
+        "bytes": 4179496,
+        "gzipBytes": 3443430,
+        "brotliBytes": 3294104,
+        "geometryBytes": 2036207,
+        "textures": [
+          {
+            "name": "shell",
+            "mimeType": "image/jpeg",
+            "bytes": 252217,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "furniture",
+            "mimeType": "image/jpeg",
+            "bytes": 310878,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "props",
+            "mimeType": "image/jpeg",
+            "bytes": 520674,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "foliage",
+            "mimeType": "image/webp",
+            "bytes": 833944,
+            "width": 2048,
+            "height": 2048
+          },
+          {
+            "name": "live_window",
+            "mimeType": "image/jpeg",
+            "bytes": 84859,
+            "width": 2048,
+            "height": 1152
+          },
+          {
+            "name": "live_window_left",
+            "mimeType": "image/jpeg",
+            "bytes": 140717,
+            "width": 2048,
+            "height": 1152
+          }
+        ],
+        "meshes": [
+          "room_shell",
+          "anchor_selfcare",
+          "anchor_today",
+          "room_furniture",
+          "anchor_journal",
+          "room_props",
+          "room_foliage",
+          "live_window",
+          "live_window_left"
+        ]
+      }
+    },
+    "room4k": {
+      "png": {
+        "room4k": {
+          "file": ".p0/out/png/room4k.glb",
+          "bytes": 36087664,
+          "gzipBytes": 35398667,
+          "brotliBytes": 35246351,
+          "geometryBytes": 2036160,
+          "textures": [
+            {
+              "name": "shell",
+              "mimeType": "image/png",
+              "bytes": 14172072,
+              "width": 4096,
+              "height": 4096
+            },
+            {
+              "name": "furniture",
+              "mimeType": "image/png",
+              "bytes": 3674092,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "props",
+              "mimeType": "image/png",
+              "bytes": 3660818,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "foliage",
+              "mimeType": "image/png",
+              "bytes": 7865357,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "live_window",
+              "mimeType": "image/png",
+              "bytes": 2226714,
+              "width": 2048,
+              "height": 1152
+            },
+            {
+              "name": "live_window_left",
+              "mimeType": "image/png",
+              "bytes": 2452451,
+              "width": 2048,
+              "height": 1152
+            }
+          ],
+          "meshes": [
+            "room_shell",
+            "anchor_selfcare",
+            "anchor_today",
+            "room_furniture",
+            "anchor_journal",
+            "room_props",
+            "room_foliage",
+            "live_window",
+            "live_window_left"
+          ]
+        }
+      },
+      "webp": {
+        "room4k": {
+          "file": ".p0/out/webp/room4k.glb",
+          "bytes": 3676976,
+          "gzipBytes": 2973492,
+          "brotliBytes": 2836338,
+          "geometryBytes": 2036378,
+          "textures": [
+            {
+              "name": "shell",
+              "mimeType": "image/webp",
+              "bytes": 251230,
+              "width": 4096,
+              "height": 4096
+            },
+            {
+              "name": "furniture",
+              "mimeType": "image/webp",
+              "bytes": 145824,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "props",
+              "mimeType": "image/webp",
+              "bytes": 307628,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "foliage",
+              "mimeType": "image/webp",
+              "bytes": 833774,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "live_window",
+              "mimeType": "image/webp",
+              "bytes": 36994,
+              "width": 2048,
+              "height": 1152
+            },
+            {
+              "name": "live_window_left",
+              "mimeType": "image/webp",
+              "bytes": 65148,
+              "width": 2048,
+              "height": 1152
+            }
+          ],
+          "meshes": [
+            "room_shell",
+            "anchor_selfcare",
+            "anchor_today",
+            "room_furniture",
+            "anchor_journal",
+            "room_props",
+            "room_foliage",
+            "live_window",
+            "live_window_left"
+          ]
+        }
+      },
+      "jpeg": {
+        "room4k": {
+          "file": ".p0/out/jpeg/room4k.glb",
+          "bytes": 4665736,
+          "gzipBytes": 3891309,
+          "brotliBytes": 3720523,
+          "geometryBytes": 2036194,
+          "textures": [
+            {
+              "name": "shell",
+              "mimeType": "image/jpeg",
+              "bytes": 738640,
+              "width": 4096,
+              "height": 4096
+            },
+            {
+              "name": "furniture",
+              "mimeType": "image/jpeg",
+              "bytes": 310864,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "props",
+              "mimeType": "image/jpeg",
+              "bytes": 520688,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "foliage",
+              "mimeType": "image/webp",
+              "bytes": 833774,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "live_window",
+              "mimeType": "image/jpeg",
+              "bytes": 84859,
+              "width": 2048,
+              "height": 1152
+            },
+            {
+              "name": "live_window_left",
+              "mimeType": "image/jpeg",
+              "bytes": 140717,
+              "width": 2048,
+              "height": 1152
+            }
+          ],
+          "meshes": [
+            "room_shell",
+            "anchor_selfcare",
+            "anchor_today",
+            "room_furniture",
+            "anchor_journal",
+            "room_props",
+            "room_foliage",
+            "live_window",
+            "live_window_left"
+          ]
+        }
+      },
+      "source": {
+        "room4k": {
+          "file": ".p0/build4k/room.glb",
+          "bytes": 42038536,
+          "gzipBytes": 38368043,
+          "brotliBytes": 37286833,
+          "geometryBytes": 7987032,
+          "textures": [
+            {
+              "name": "shell",
+              "mimeType": "image/png",
+              "bytes": 14172072,
+              "width": 4096,
+              "height": 4096
+            },
+            {
+              "name": "furniture",
+              "mimeType": "image/png",
+              "bytes": 3674092,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "props",
+              "mimeType": "image/png",
+              "bytes": 3660818,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "foliage",
+              "mimeType": "image/png",
+              "bytes": 7865357,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "name": "live_window",
+              "mimeType": "image/png",
+              "bytes": 2226714,
+              "width": 2048,
+              "height": 1152
+            },
+            {
+              "name": "live_window_left",
+              "mimeType": "image/png",
+              "bytes": 2452451,
+              "width": 2048,
+              "height": 1152
+            }
+          ],
+          "meshes": [
+            "room_shell",
+            "anchor_selfcare",
+            "anchor_today",
+            "room_furniture",
+            "anchor_journal",
+            "room_props",
+            "room_foliage",
+            "live_window",
+            "live_window_left"
+          ]
+        }
+      }
+    }
+  },
+  "renderInfo": {
+    "overviewWithItemA": {
+      "calls": 12,
+      "triangles": 247581,
+      "textures": 8,
+      "geometries": 11,
+      "programs": 4
+    },
+    "note": "renderer.info.render after one frame at the overview"
+  },
+  "frameRate": {
+    "desktopCappedOverview10s": {
+      "frames": 600,
+      "ms": 9999,
+      "fps": 60,
+      "p50": 16.7,
+      "p95": 17.8,
+      "p99": 18.4,
+      "max": 22.5,
+      "renderCallMsP50": 0.5
+    },
+    "desktopCappedTravel": {
+      "frames": 576,
+      "ms": 9613,
+      "fps": 59.9,
+      "p50": 16.7,
+      "p95": 17.7,
+      "p99": 18.3,
+      "max": 40.2,
+      "renderCallMsP50": 0
+    },
+    "desktopUncappedOverview10s": {
+      "frames": 17263,
+      "ms": 10000,
+      "fps": 1726.3,
+      "p50": 0.2,
+      "p95": 5,
+      "p99": 5.8,
+      "max": 10.6,
+      "renderCallMsP50": 0.1
+    },
+    "desktopUncappedTravel": {
+      "frames": 15857,
+      "ms": 9535,
+      "fps": 1663.1,
+      "p50": 0.4,
+      "p95": 2.7,
+      "p99": 3.5,
+      "max": 14.3,
+      "renderCallMsP50": 0
+    },
+    "desktopUncappedOverview10sShell4096": {
+      "frames": 16465,
+      "ms": 10004,
+      "fps": 1645.8,
+      "p50": 0.2,
+      "p95": 5.4,
+      "p99": 6,
+      "max": 533.8,
+      "renderCallMsP50": 0.1
+    },
+    "cpuThrottled4xOverview10s": {
+      "frames": 601,
+      "ms": 10001,
+      "fps": 60.1,
+      "p50": 16.5,
+      "p95": 17.9,
+      "p99": 18.4,
+      "max": 36.9,
+      "renderCallMsP50": 1
+    },
+    "cpuThrottled4xTravel": {
+      "frames": 289,
+      "ms": 4815,
+      "fps": 60,
+      "p50": 16.7,
+      "p95": 17.9,
+      "p99": 18.2,
+      "max": 18.4,
+      "renderCallMsP50": 0
+    },
+    "viewport": "1920x1080, DPR 1",
+    "note": "Capped = Chromium default frame pacing (60 Hz). Uncapped = --disable-gpu-vsync --disable-frame-rate-limit: headroom, not what a user sees. Throttled = CDP Emulation.setCPUThrottlingRate 4 on the capped browser: CPU only, the GPU is still the RTX 2060, so it is a rough proxy and not a mid-range Android."
+  },
+  "timeToFirstFrame": {
+    "webpMedianMs": 310,
+    "jpegMedianMs": 347,
+    "cpuThrottled4xMs": [
+      868,
+      881,
+      879
+    ],
+    "note": "From navigation start to the first rendered frame of the room (GLB fetched from localhost, meshopt decoded, textures decoded and uploaded). Localhost: no network time."
+  },
+  "gpuTextureMemory": {
+    "room2048": {
+      "uncompressedRgba8WithMipsBytes": 114644309,
+      "ktx2Etc1sEstimateBytes": 17126741,
+      "ktx2UastcEstimateBytes": 28661077
+    },
+    "room4096Shell": {
+      "uncompressedRgba8WithMipsBytes": 181753173,
+      "ktx2Etc1sEstimateBytes": 25515349,
+      "ktx2UastcEstimateBytes": 45438293
+    },
+    "itemsBoth": {
+      "uncompressedRgba8WithMipsBytes": 13981013,
+      "ktx2Etc1sEstimateBytes": 2446677,
+      "ktx2UastcEstimateBytes": 3495253
+    },
+    "note": "WebP/JPEG/PNG decode to RGBA8 on the GPU: about 22.4 MB per 2048 texture with mips, 89.5 MB per 4096. KTX2 figures are estimates from block sizes (ETC1S -> BC1/ETC2 at 0.5 B/px opaque, 1 B/px with alpha; UASTC -> BC7/ASTC 4x4 at 1 B/px); not measured, KTX-Software was not approved."
+  },
+  "swap": {
+    "itemBLoadMs": 60,
+    "itemLoadsFromFirstRun": {
+      "a": {
+        "bytes": 309516,
+        "ms": 69
+      },
+      "b": {
+        "bytes": 269808,
+        "ms": 33
+      }
+    }
+  },
+  "reducedMotion": {
+    "journal": {
+      "travelFrames": 0,
+      "usedStill": true,
+      "reducedMotion": true
+    },
+    "selfcare": {
+      "travelFrames": 0,
+      "usedStill": true,
+      "reducedMotion": true
+    },
+    "today": {
+      "travelFrames": 0,
+      "usedStill": true,
+      "reducedMotion": true
+    },
+    "cardRect": {
+      "x": 89.59375,
+      "y": 115.1875,
+      "width": 420,
+      "height": 174.59375
+    }
+  },
+  "acceptance": {
+    "tokens": {
+      "inkMatchesBrief": true,
+      "inkOnSurface": 11.73
+    },
+    "2_clippedHighlights": {
+      "threshold": "< 0.5% of pixels at full white (255,255,255)",
+      "images": {
+        "overview": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "today_sharp": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "journal_sharp": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "selfcare_sharp": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "today_blurred": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "journal_blurred": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        },
+        "selfcare_blurred": {
+          "fullWhitePct": 0,
+          "at250PlusPct": 0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "4_boardTextContrast": {
+      "rule": "--ink on --surface at 92% over the blurred anchor view, every pixel under the card",
+      "anchors": {
+        "today": {
+          "min": 9.82,
+          "p1": 9.82,
+          "mean": 10.39,
+          "pass": true
+        },
+        "journal": {
+          "min": 9.9,
+          "p1": 9.9,
+          "mean": 10.16,
+          "pass": true
+        },
+        "selfcare": {
+          "min": 10.22,
+          "p1": 10.22,
+          "mean": 10.32,
+          "pass": true
+        }
+      },
+      "todayCardAsRendered": {
+        "min": 10.61,
+        "mean": 11.04,
+        "pass": true
+      },
+      "pass": true
+    },
+    "5_reducedMotion": {
+      "cardOverStill": {
+        "min": 10.59,
+        "mean": 11.09,
+        "pass": true
+      },
+      "clipping": {
+        "fullWhitePct": 0,
+        "at250PlusPct": 0,
+        "pass": true
+      }
+    },
+    "3_itemsMatchBake_partial": {
+      "itemBoxPx": [
+        830,
+        223,
+        1040,
+        489
+      ],
+      "floorAroundBase": {
+        "luminanceWithA": 0.0976,
+        "luminanceEmpty": 0.1239,
+        "darkerWithItem": true
+      },
+      "itemVsCycles": {
+        "luminanceWebGL": 0.2233,
+        "luminanceCycles": 0.2124,
+        "relativeDiff": 0.051
+      }
+    },
+    "bakeFidelityVsCycles": {
+      "note": "Cycles reference includes glossy reflections and full-res geometry; the bake is diffuse only, so some difference is expected",
+      "views": {
+        "overview": {
+          "meanAbsDiff8bit": 18.54,
+          "luminanceWebGL": 0.124,
+          "luminanceCycles": 0.1777
+        },
+        "selfcare": {
+          "meanAbsDiff8bit": 14.77,
+          "luminanceWebGL": 0.1696,
+          "luminanceCycles": 0.2047
+        },
+        "today": {
+          "meanAbsDiff8bit": 17.93,
+          "luminanceWebGL": 0.1634,
+          "luminanceCycles": 0.1991
+        }
+      }
+    }
+  },
+  "budgets": [
+    {
+      "budget": "Room assets, first view",
+      "limit": "<= 5 MB",
+      "value": 3509176,
+      "unit": "bytes",
+      "variant": "webp",
+      "status": "pass"
+    },
+    {
+      "budget": "Room assets, first view",
+      "limit": "<= 5 MB",
+      "value": 4179496,
+      "unit": "bytes",
+      "variant": "jpeg (alpha atlas stays webp)",
+      "status": "pass"
+    },
+    {
+      "budget": "One catalogue item (A)",
+      "limit": "<= 300 KB",
+      "value": 309516,
+      "unit": "bytes",
+      "variant": "webp",
+      "status": "fail"
+    },
+    {
+      "budget": "One catalogue item (B)",
+      "limit": "<= 300 KB",
+      "value": 269808,
+      "unit": "bytes",
+      "variant": "webp",
+      "status": "pass"
+    },
+    {
+      "budget": "Overview poster",
+      "limit": "<= 150 KB AVIF",
+      "value": 58197,
+      "unit": "bytes",
+      "status": "pass"
+    },
+    {
+      "budget": "Anchor still (today)",
+      "limit": "<= 80 KB AVIF",
+      "value": 7758,
+      "unit": "bytes",
+      "status": "pass"
+    },
+    {
+      "budget": "Anchor still (journal)",
+      "limit": "<= 80 KB AVIF",
+      "value": 7465,
+      "unit": "bytes",
+      "status": "pass"
+    },
+    {
+      "budget": "Anchor still (selfcare)",
+      "limit": "<= 80 KB AVIF",
+      "value": 6802,
+      "unit": "bytes",
+      "status": "pass"
+    },
+    {
+      "budget": "Frame rate, desktop overview",
+      "limit": "60 fps",
+      "value": 60,
+      "unit": "fps (capped)",
+      "status": "pass"
+    },
+    {
+      "budget": "Frame rate, desktop travel",
+      "limit": "60 fps",
+      "value": 59.9,
+      "unit": "fps (capped)",
+      "status": "pass"
+    },
+    {
+      "budget": "Frame rate, mid-range Android",
+      "limit": "45 fps",
+      "value": null,
+      "unit": "fps",
+      "status": "n/a",
+      "note": "no device; 4x CPU-throttled desktop proxy: 60.1 fps overview, 60 fps travel"
+    },
+    {
+      "budget": "Scene JS chunk / route shell JS",
+      "limit": "<= 320 KB gz / <= 200 KB gz",
+      "value": null,
+      "unit": "bytes",
+      "status": "n/a",
+      "note": "not measured: the harness is plain three.js outside the app, not the R3F bundle"
+    }
+  ],
+  "assets": {
+    "source": "Poly Haven, all CC0 (full list with download URLs and authors in captures/p0/room/assets.json)",
+    "list": [
+      {
+        "id": "sofa_02",
+        "name": "Sofa 02",
+        "url": "https://polyhaven.com/a/sofa_02",
+        "licence": "CC0",
+        "role": "sofa (Self Care anchor)"
+      },
+      {
+        "id": "modern_arm_chair_01",
+        "name": "Modern Arm Chair 01",
+        "url": "https://polyhaven.com/a/modern_arm_chair_01",
+        "licence": "CC0",
+        "role": "armchair by the window"
+      },
+      {
+        "id": "modern_coffee_table_01",
+        "name": "Modern Coffee Table 01",
+        "url": "https://polyhaven.com/a/modern_coffee_table_01",
+        "licence": "CC0",
+        "role": "coffee table (Today and Journal anchors)"
+      },
+      {
+        "id": "small_wooden_table_01",
+        "name": "Small Wooden Table 01",
+        "url": "https://polyhaven.com/a/small_wooden_table_01",
+        "licence": "CC0",
+        "role": "desk on the right wall (scaled to desk height)"
+      },
+      {
+        "id": "gallinera_chair",
+        "name": "Gallinera Chair",
+        "url": "https://polyhaven.com/a/gallinera_chair",
+        "licence": "CC0",
+        "role": "desk chair"
+      },
+      {
+        "id": "side_table_01",
+        "name": "Side Table 01",
+        "url": "https://polyhaven.com/a/side_table_01",
+        "licence": "CC0",
+        "role": "side table by the armchair"
+      },
+      {
+        "id": "Shelf_01",
+        "name": "Shelf 01",
+        "url": "https://polyhaven.com/a/Shelf_01",
+        "licence": "CC0",
+        "role": "bookcase on the right wall"
+      },
+      {
+        "id": "potted_plant_01",
+        "name": "Potted Plant 01",
+        "url": "https://polyhaven.com/a/potted_plant_01",
+        "licence": "CC0",
+        "role": "large plant by the window"
+      },
+      {
+        "id": "potted_plant_02",
+        "name": "Potted Plant 02",
+        "url": "https://polyhaven.com/a/potted_plant_02",
+        "licence": "CC0",
+        "role": "furniture spot, item A"
+      },
+      {
+        "id": "pachira_aquatica_01",
+        "name": "Pachira Aquatica 01",
+        "url": "https://polyhaven.com/a/pachira_aquatica_01",
+        "licence": "CC0",
+        "role": "furniture spot, item B (one variant)"
+      },
+      {
+        "id": "planter_pot_clay",
+        "name": "Planter Pot Clay",
+        "url": "https://polyhaven.com/a/planter_pot_clay",
+        "licence": "CC0",
+        "role": "pot for item B"
+      },
+      {
+        "id": "potted_plant_04",
+        "name": "Potted Plant 04",
+        "url": "https://polyhaven.com/a/potted_plant_04",
+        "licence": "CC0",
+        "role": "small succulent on the coffee table"
+      },
+      {
+        "id": "calathea_orbifolia_01",
+        "name": "Calathea Orbifolia 01",
+        "url": "https://polyhaven.com/a/calathea_orbifolia_01",
+        "licence": "CC0",
+        "role": "plant on the desk (one variant)"
+      },
+      {
+        "id": "book_encyclopedia_set_01",
+        "name": "Book Encyclopedia Set 01",
+        "url": "https://polyhaven.com/a/book_encyclopedia_set_01",
+        "licence": "CC0",
+        "role": "books on the desk, bookcase and coffee table"
+      },
+      {
+        "id": "Camera_01",
+        "name": "Camera 01",
+        "url": "https://polyhaven.com/a/Camera_01",
+        "licence": "CC0",
+        "role": "camera on the coffee table"
+      },
+      {
+        "id": "throw_pillows_01",
+        "name": "Throw Pillows 01",
+        "url": "https://polyhaven.com/a/throw_pillows_01",
+        "licence": "CC0",
+        "role": "cushions on the sofa"
+      },
+      {
+        "id": "ceramic_vase_01",
+        "name": "Ceramic Vase 01",
+        "url": "https://polyhaven.com/a/ceramic_vase_01",
+        "licence": "CC0",
+        "role": "vase on the window sill"
+      },
+      {
+        "id": "hanging_picture_frame_02",
+        "name": "Hanging Picture Frame 02",
+        "url": "https://polyhaven.com/a/hanging_picture_frame_02",
+        "licence": "CC0",
+        "role": "wall art, right wall"
+      },
+      {
+        "id": "fancy_picture_frame_01",
+        "name": "Fancy Picture Frame 01",
+        "url": "https://polyhaven.com/a/fancy_picture_frame_01",
+        "licence": "CC0",
+        "role": "wall art, right wall"
+      },
+      {
+        "id": "desk_lamp_arm_01",
+        "name": "Desk Lamp Arm 01",
+        "url": "https://polyhaven.com/a/desk_lamp_arm_01",
+        "licence": "CC0",
+        "role": "desk lamp (unlit prop)"
+      },
+      {
+        "id": "laminate_floor_02",
+        "name": "Laminate Floor 02",
+        "url": "https://polyhaven.com/a/laminate_floor_02",
+        "licence": "CC0",
+        "role": "room surface"
+      },
+      {
+        "id": "beige_wall_001",
+        "name": "Beige Wall 001",
+        "url": "https://polyhaven.com/a/beige_wall_001",
+        "licence": "CC0",
+        "role": "room surface"
+      },
+      {
+        "id": "shanghai_riverside",
+        "name": "Shanghai Riverside",
+        "url": "https://polyhaven.com/a/shanghai_riverside",
+        "licence": "CC0",
+        "role": "golden-hour sky fill and the window's city view"
+      }
+    ],
+    "procedural": "walls, floor plane, ceiling, window frames, window bench, rug, mug and the open notebook are modelled by build_room.py"
+  },
+  "itemSizeProbe": {
+    "note": "item A over budget: the same GLB with a lower WebP quality or a 768 texture",
+    "webp_q75": 256060,
+    "resize768_webp_q85": 343796
+  },
+  "unproven": [
+    "A mid-range Android: not measured. The 4x CPU throttle leaves the RTX 2060 in place; mobile GPU fill rate, thermal throttling, and texture upload on a phone are untested.",
+    "KTX2 / Basis: KTX-Software was not approved, so no KTX2 files, transcoder cost (245 KB wasm) or ETC1S banding were measured; the GPU-memory gain is an estimate from block sizes.",
+    "Real art: a stand-in from CC0 assets. The design team's room will differ in triangle count, texel density and how many atlases it needs.",
+    "React Three Fiber and the app bundle: the harness is plain three.js outside Next.js, so the scene JS budgets (D-10) are untouched.",
+    "Network: assets came from localhost. First-view bytes are real; time to first frame excludes download time (5 MB at 20 Mbit/s adds about 2 s).",
+    "Acceptance criteria 1 (hotspot names and menu at 4.5:1, no hidden anchor objects) and the boards themselves: no hotspots, menu or real boards exist yet."
+  ],
+  "commands": [
+    "C:/Users/Admin/tools/blender/blender-4.5.15-windows-x64/4.5/python/bin/python.exe -I scripts/p0/room/fetch_assets.py",
+    "C:/Users/Admin/tools/blender/blender-4.5.15-windows-x64/blender.exe --background --factory-startup --python scripts/p0/room/build_room.py -- --samples 256 --previews --out .p0/build",
+    "C:/Users/Admin/tools/blender/blender-4.5.15-windows-x64/blender.exe --background --factory-startup --python scripts/p0/room/build_room.py -- --samples 256 --shell-size 4096 --out .p0/build4k",
+    "node scripts/p0/room/pipeline.ts --in .p0/build",
+    "node scripts/p0/room/pipeline.ts --in .p0/build4k --suffix 4k",
+    "node scripts/p0/room/measure.ts"
+  ],
+  "screenshots": [
+    {
+      "file": "captures/p0/room/overview.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 477944
+    },
+    {
+      "file": "captures/p0/room/today-blurred-card.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 293042
+    },
+    {
+      "file": "captures/p0/room/swap-a.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 438455
+    },
+    {
+      "file": "captures/p0/room/swap-b.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 448522
+    },
+    {
+      "file": "captures/p0/room/reduced-motion.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 345282
+    }
+  ]
+}
