@@ -1,0 +1,140 @@
+{
+  "desktop": {
+    "viewport": "1440x900",
+    "axe": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          ".board_home__h0gBL",
+          "h1",
+          ".board_date__iv7mi",
+          ".board_muted__MUQoY",
+          ".board_inlineLink__ZAllB"
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          ".AccountControl_corner__WkML8"
+        ]
+      }
+    ],
+    "tabStops": [
+      {
+        "text": "Room",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "Today",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "text page",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "sign in",
+        "ring": false,
+        "inBoard": false
+      }
+    ],
+    "onRoom": {
+      "room link": 8.35,
+      "greeting": 4.61,
+      "date": 4.63
+    },
+    "card": {
+      "darkest": [
+        248,
+        241,
+        229
+      ],
+      "lightest": [
+        254,
+        247,
+        236
+      ]
+    },
+    "contrast": {
+      "ink": 10.95,
+      "inkMuted": 4.91,
+      "interactiveInk": 4.75,
+      "focusRing": 4.48,
+      "inputBorder": 3.19
+    }
+  },
+  "phone": {
+    "viewport": "390x844",
+    "axe": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          ".board_home__h0gBL",
+          "h1",
+          ".board_date__iv7mi",
+          ".board_muted__MUQoY",
+          ".board_inlineLink__ZAllB"
+        ]
+      },
+      {
+        "id": "region",
+        "impact": "moderate",
+        "nodes": [
+          ".AccountControl_corner__WkML8"
+        ]
+      }
+    ],
+    "tabStops": [
+      {
+        "text": "Room",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "Today",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "text page",
+        "ring": true,
+        "inBoard": true
+      },
+      {
+        "text": "sign in",
+        "ring": false,
+        "inBoard": false
+      }
+    ],
+    "onRoom": {
+      "room link": 8.87,
+      "greeting": 4.92,
+      "date": 5.21
+    },
+    "card": {
+      "darkest": [
+        248,
+        238,
+        225
+      ],
+      "lightest": [
+        255,
+        247,
+        236
+      ]
+    },
+    "contrast": {
+      "ink": 10.71,
+      "inkMuted": 4.8,
+      "interactiveInk": 4.65,
+      "focusRing": 4.39,
+      "inputBorder": 3.12
+    }
+  }
+}
