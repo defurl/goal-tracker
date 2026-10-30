@@ -40,11 +40,16 @@ const CLI = ['dlx', '@gltf-transform/cli@4.5.1'];
 const OPAQUE = '{shell,furniture,props,live_window,item_b,item_a_shadow,item_b_shadow}';
 const ALPHA = '{foliage,item_a}';
 
+const KTX_BIN = process.env.KTX_BIN ?? 'C:/Users/Admin/tools/ktx/bin';
+const VARIANTS = ['png', 'webp', 'jpeg', 'etc1s', 'uastc'];
+
 function gt(args: string[]): void {
   execFileSync('pnpm', [...CLI, ...args], {
     stdio: ['ignore', 'ignore', 'inherit'],
     shell: process.platform === 'win32',
     cwd: TMP,
+    // KTX-Software (ktx / toktx) for the etc1s and uastc commands, on PATH for this process only
+    env: { ...process.env, PATH: `${KTX_BIN}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH ?? ''}` },
   });
 }
 
@@ -76,6 +81,7 @@ interface GltfJson {
 /** Width and height from a PNG, JPEG or WebP header. */
 function imageSize(b: Buffer, mime: string): { width: number; height: number } {
   if (mime === 'image/png') return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+  if (mime === 'image/ktx2') return { width: b.readUInt32LE(20), height: b.readUInt32LE(24) };
   if (mime === 'image/webp') {
     const kind = b.toString('ascii', 12, 16);
     if (kind === 'VP8X') return { width: 1 + b.readUIntLE(24, 3), height: 1 + b.readUIntLE(27, 3) };
@@ -131,7 +137,7 @@ function record(file: string, pngImages?: Map<string, string>): GlbRecord {
   const textures: TextureRecord[] = images.map((img) => {
     const rec: TextureRecord = { name: img.name, mimeType: img.mime, bytes: img.data.length, ...imageSize(img.data, img.mime) };
     const src = pngImages?.get(img.name);
-    if (src && img.mime !== 'image/png') {
+    if (src && (img.mime === 'image/webp' || img.mime === 'image/jpeg')) {
       const ext = img.mime === 'image/webp' ? 'webp' : 'jpg';
       const tmp = join(TMP, `psnr_${img.name}.${ext}`);
       writeFileSync(tmp, img.data);
@@ -151,10 +157,10 @@ function record(file: string, pngImages?: Map<string, string>): GlbRecord {
 }
 
 function main(): void {
-  for (const d of ['png', 'webp', 'jpeg']) mkdirSync(join(OUT, d), { recursive: true });
+  for (const d of VARIANTS) mkdirSync(join(OUT, d), { recursive: true });
   rmSync(TMP, { recursive: true, force: true });
   mkdirSync(TMP, { recursive: true });
-  const results: Record<string, Record<string, GlbRecord>> = { png: {}, webp: {}, jpeg: {}, source: {} };
+  const results: Record<string, Record<string, GlbRecord>> = { png: {}, webp: {}, jpeg: {}, etc1s: {}, uastc: {}, source: {} };
   const names = readdirSync(IN).filter((f) => f.endsWith('.glb')).map((f) => f.replace(/\.glb$/, ''));
   for (const name of names) {
     const src = join(IN, `${name}.glb`);
@@ -172,7 +178,8 @@ function main(): void {
     gt(['meshopt', src, join(OUT, 'png', `${outName}.glb`), ...mo]);
     console.log('webp', name);
     const w = join(TMP, `${outName}_w.glb`);
-    gt(['webp', src, w, '--formats', 'png', '--quality', QUALITY]);
+    // item A needs q75 to fit the 300 KB item budget; everything else stays at QUALITY
+    gt(['webp', src, w, '--formats', 'png', '--quality', name === 'item_a' ? '75' : QUALITY]);
     gt(['meshopt', w, join(OUT, 'webp', `${outName}.glb`), ...mo]);
     console.log('jpeg', name);
     const j1 = join(TMP, `${outName}_j1.glb`);
@@ -180,8 +187,23 @@ function main(): void {
     gt(['jpeg', src, j1, '--formats', 'png', '--pattern', OPAQUE, '--quality', QUALITY]);
     gt(['webp', j1, j2, '--formats', 'png', '--pattern', ALPHA, '--quality', QUALITY]);
     gt(['meshopt', j2, join(OUT, 'jpeg', `${outName}.glb`), ...mo]);
+    // KTX2: ETC1S everywhere; and a comparison with the shell atlas in UASTC, the rest ETC1S
+    console.log('etc1s', name);
+    const k1 = join(TMP, `${outName}_k1.glb`);
+    gt(['etc1s', src, k1]);
+    gt(['meshopt', k1, join(OUT, 'etc1s', `${outName}.glb`), ...mo]);
+    console.log('uastc', name);
+    const u1 = join(TMP, `${outName}_u1.glb`);
+    const u2 = join(TMP, `${outName}_u2.glb`);
+    if (name === 'room') {
+      gt(['uastc', src, u1, '--pattern', 'shell', '--level', '2', '--rdo', '--zstd', '18']);
+      gt(['etc1s', u1, u2, '--pattern', '{furniture,props,foliage,live_window,live_window_left}']);
+    } else {
+      gt(['etc1s', src, u2]);
+    }
+    gt(['meshopt', u2, join(OUT, 'uastc', `${outName}.glb`), ...mo]);
     results.source![outName] = record(src);
-    for (const v of ['png', 'webp', 'jpeg']) results[v]![outName] = record(join(OUT, v, `${outName}.glb`), pngMap);
+    for (const v of VARIANTS) results[v]![outName] = record(join(OUT, v, `${outName}.glb`), pngMap);
   }
   // what it would take for a catalogue item to fit 300 KB: lower WebP quality, or a 768 texture
   const itemProbe: Record<string, number> = {};

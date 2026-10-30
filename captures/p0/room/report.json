@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T19:30:47.401Z",
+  "generatedAt": "2026-10-30T10:11:37.252Z",
   "browser": "Chromium 153.0.8010.12 (Playwright, headless)",
   "machine": {
     "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
@@ -14,14 +14,14 @@
   "firstView": {
     "room.webp": {
       "glbBytes": 3509176,
-      "ttffMsMedian": 310,
+      "ttffMsMedian": 402,
       "ttffMsRuns": [
-        796,
-        310,
-        304
+        1431,
+        402,
+        358
       ],
-      "fetchParseMsMedian": 152,
-      "firstRenderMsMedian": 102,
+      "fetchParseMsMedian": 165,
+      "firstRenderMsMedian": 152,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -31,25 +31,25 @@
       },
       "itemLoads": {
         "a": {
-          "bytes": 309516,
-          "ms": 69
+          "bytes": 256060,
+          "ms": 68
         },
         "b": {
           "bytes": 269808,
-          "ms": 33
+          "ms": 46
         }
       }
     },
     "room.jpeg": {
       "glbBytes": 4179496,
-      "ttffMsMedian": 347,
+      "ttffMsMedian": 403,
       "ttffMsRuns": [
-        350,
-        320,
-        347
+        403,
+        394,
+        455
       ],
-      "fetchParseMsMedian": 158,
-      "firstRenderMsMedian": 114,
+      "fetchParseMsMedian": 164,
+      "firstRenderMsMedian": 150,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -60,24 +60,24 @@
       "itemLoads": {
         "a": {
           "bytes": 319888,
-          "ms": 51
+          "ms": 69
         },
         "b": {
           "bytes": 340748,
-          "ms": 25
+          "ms": 39
         }
       }
     },
     "room.png": {
       "glbBytes": 25562200,
-      "ttffMsMedian": 504,
+      "ttffMsMedian": 459,
       "ttffMsRuns": [
-        545,
-        471,
-        504
+        560,
+        459,
+        441
       ],
-      "fetchParseMsMedian": 245,
-      "firstRenderMsMedian": 191,
+      "fetchParseMsMedian": 272,
+      "firstRenderMsMedian": 127,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -88,24 +88,24 @@
       "itemLoads": {
         "a": {
           "bytes": 1940224,
-          "ms": 121
+          "ms": 62
         },
         "b": {
           "bytes": 1761052,
-          "ms": 116
+          "ms": 54
         }
       }
     },
     "room4k.webp": {
       "glbBytes": 3676976,
-      "ttffMsMedian": 431,
+      "ttffMsMedian": 476,
       "ttffMsRuns": [
-        431,
-        439,
-        426
+        478,
+        426,
+        476
       ],
-      "fetchParseMsMedian": 176,
-      "firstRenderMsMedian": 195,
+      "fetchParseMsMedian": 186,
+      "firstRenderMsMedian": 183,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -116,14 +116,14 @@
     },
     "room4k.jpeg": {
       "glbBytes": 4665736,
-      "ttffMsMedian": 412,
+      "ttffMsMedian": 363,
       "ttffMsRuns": [
-        412,
-        491,
-        367
+        391,
+        362,
+        363
       ],
       "fetchParseMsMedian": 153,
-      "firstRenderMsMedian": 192,
+      "firstRenderMsMedian": 149,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -134,14 +134,14 @@
     },
     "room4k.png": {
       "glbBytes": 36087664,
-      "ttffMsMedian": 607,
+      "ttffMsMedian": 736,
       "ttffMsRuns": [
-        606,
-        607,
-        727
+        750,
+        663,
+        736
       ],
-      "fetchParseMsMedian": 394,
-      "firstRenderMsMedian": 153,
+      "fetchParseMsMedian": 460,
+      "firstRenderMsMedian": 208,
       "info": {
         "calls": 9,
         "triangles": 229544,
@@ -151,37 +151,326 @@
       }
     }
   },
+  "ktx2": {
+    "note": "KTX-Software 4.4.2 via gltf-transform 4.5.1 (etc1s defaults; uastc --level 2 --rdo --zstd 18 on the shell only). KTX2Loader transcodes to the best format the GPU offers; gpuBytes are the uploaded mip chains (RGBA8 with mips for WebP). diffVsWebp is the mean absolute 8-bit difference against the WebP render of the same view.",
+    "variants": {
+      "webp": {
+        "firstViewGlbBytes": 3509176,
+        "transcoderBytes": 0,
+        "firstViewTotalBytes": 3509176,
+        "itemBytes": {
+          "a": 256060,
+          "b": 269808
+        },
+        "ttffMsMedian": 385,
+        "ttffMsRuns": [
+          427,
+          385,
+          334
+        ],
+        "gpuTextureBytesRoom": 114644308,
+        "textures": [
+          {
+            "name": "shell",
+            "width": 2048,
+            "height": 2048,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 22369621
+          },
+          {
+            "name": "furniture",
+            "width": 2048,
+            "height": 2048,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 22369621
+          },
+          {
+            "name": "props",
+            "width": 2048,
+            "height": 2048,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 22369621
+          },
+          {
+            "name": "foliage",
+            "width": 2048,
+            "height": 2048,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 22369621
+          },
+          {
+            "name": "live_window",
+            "width": 2048,
+            "height": 1152,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 12582912
+          },
+          {
+            "name": "live_window_left",
+            "width": 2048,
+            "height": 1152,
+            "format": "1023",
+            "compressed": false,
+            "gpuBytes": 12582912
+          }
+        ],
+        "fpsCappedOverview10s": {
+          "frames": 600,
+          "ms": 9999,
+          "fps": 60,
+          "p50": 16.6,
+          "p95": 18.1,
+          "p99": 18.4,
+          "max": 18.7,
+          "renderCallMsP50": 0.3
+        }
+      },
+      "etc1s": {
+        "firstViewGlbBytes": 4422700,
+        "transcoderBytes": 584862,
+        "firstViewTotalBytes": 5007562,
+        "itemBytes": {
+          "a": 362556,
+          "b": 335608
+        },
+        "ttffMsMedian": 619,
+        "ttffMsRuns": [
+          750,
+          619,
+          504
+        ],
+        "gpuTextureBytesRoom": 28661472,
+        "textures": [
+          {
+            "name": "shell",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "furniture",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "props",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "foliage",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "live_window",
+            "width": 2048,
+            "height": 1152,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 3145872
+          },
+          {
+            "name": "live_window_left",
+            "width": 2048,
+            "height": 1152,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 3145872
+          }
+        ],
+        "fpsCappedOverview10s": {
+          "frames": 595,
+          "ms": 10000,
+          "fps": 59.5,
+          "p50": 16.7,
+          "p95": 18,
+          "p99": 18.5,
+          "max": 114.8,
+          "renderCallMsP50": 0.4
+        },
+        "diffVsWebp": {
+          "overview": {
+            "meanAbsDiff8bit": 1.79,
+            "p99AbsDiff8bit": 13,
+            "maxAbsDiff8bit": 84
+          },
+          "selfcare": {
+            "meanAbsDiff8bit": 2.06,
+            "p99AbsDiff8bit": 16,
+            "maxAbsDiff8bit": 66
+          }
+        }
+      },
+      "uastc": {
+        "firstViewGlbBytes": 6173808,
+        "transcoderBytes": 584862,
+        "firstViewTotalBytes": 6758670,
+        "itemBytes": {
+          "a": 362556,
+          "b": 335608
+        },
+        "ttffMsMedian": 765,
+        "ttffMsRuns": [
+          765,
+          838,
+          765
+        ],
+        "gpuTextureBytesRoom": 28661472,
+        "textures": [
+          {
+            "name": "shell",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "furniture",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "props",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "foliage",
+            "width": 2048,
+            "height": 2048,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 5592432
+          },
+          {
+            "name": "live_window",
+            "width": 2048,
+            "height": 1152,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 3145872
+          },
+          {
+            "name": "live_window_left",
+            "width": 2048,
+            "height": 1152,
+            "format": "RGBA_BPTC_Format",
+            "compressed": true,
+            "gpuBytes": 3145872
+          }
+        ],
+        "fpsCappedOverview10s": {
+          "frames": 600,
+          "ms": 9999,
+          "fps": 60,
+          "p50": 16.6,
+          "p95": 18.1,
+          "p99": 18.5,
+          "max": 18.6,
+          "renderCallMsP50": 0.3
+        },
+        "diffVsWebp": {
+          "overview": {
+            "meanAbsDiff8bit": 1.47,
+            "p99AbsDiff8bit": 13,
+            "maxAbsDiff8bit": 84
+          },
+          "selfcare": {
+            "meanAbsDiff8bit": 1.67,
+            "p99AbsDiff8bit": 16,
+            "maxAbsDiff8bit": 66
+          }
+        }
+      }
+    },
+    "fpsUncappedOverview5s": {
+      "webp": {
+        "frames": 7176,
+        "ms": 5001,
+        "fps": 1434.9,
+        "p50": 0.3,
+        "p95": 1.6,
+        "p99": 7.9,
+        "max": 451.9,
+        "renderCallMsP50": 0.1
+      },
+      "etc1s": {
+        "frames": 8055,
+        "ms": 5004,
+        "fps": 1609.9,
+        "p50": 0.3,
+        "p95": 2.7,
+        "p99": 7.4,
+        "max": 77.6,
+        "renderCallMsP50": 0.1
+      },
+      "uastc": {
+        "frames": 7280,
+        "ms": 5001,
+        "fps": 1455.8,
+        "p50": 0.5,
+        "p95": 1.8,
+        "p99": 4.8,
+        "max": 43.3,
+        "renderCallMsP50": 0.1
+      }
+    }
+  },
   "stills": {
     "poster": {
       "size": "1920x1080",
       "crf": 24,
-      "bytes": 58197,
+      "bytes": 58123,
       "tried": {
-        "24": 58197
+        "24": 58123
       }
     },
     "today": {
       "size": "1920x1080",
       "crf": 24,
-      "bytes": 7758,
+      "bytes": 7766,
       "tried": {
-        "24": 7758
+        "24": 7766
       }
     },
     "journal": {
       "size": "1920x1080",
       "crf": 24,
-      "bytes": 7465,
+      "bytes": 7455,
       "tried": {
-        "24": 7465
+        "24": 7455
       }
     },
     "selfcare": {
       "size": "1920x1080",
       "crf": 24,
-      "bytes": 6802,
+      "bytes": 6808,
       "tried": {
-        "24": 6802
+        "24": 6808
       }
     }
   },
@@ -658,22 +947,22 @@
     "webp": {
       "item_a": {
         "file": ".p0/out/webp/item_a.glb",
-        "bytes": 309516,
-        "gzipBytes": 278432,
-        "brotliBytes": 272114,
+        "bytes": 256060,
+        "gzipBytes": 225076,
+        "brotliBytes": 218251,
         "geometryBytes": 128474,
         "textures": [
           {
             "name": "item_a",
             "mimeType": "image/webp",
-            "bytes": 164264,
+            "bytes": 118418,
             "width": 1024,
             "height": 1024
           },
           {
             "name": "item_a_shadow",
             "mimeType": "image/webp",
-            "bytes": 16778,
+            "bytes": 9168,
             "width": 512,
             "height": 512
           }
@@ -1163,84 +1452,84 @@
   "frameRate": {
     "desktopCappedOverview10s": {
       "frames": 600,
-      "ms": 9999,
+      "ms": 10000,
       "fps": 60,
-      "p50": 16.7,
+      "p50": 16.6,
       "p95": 17.8,
-      "p99": 18.4,
-      "max": 22.5,
-      "renderCallMsP50": 0.5
+      "p99": 18.2,
+      "max": 18.9,
+      "renderCallMsP50": 0.3
     },
     "desktopCappedTravel": {
-      "frames": 576,
-      "ms": 9613,
+      "frames": 575,
+      "ms": 9606,
       "fps": 59.9,
-      "p50": 16.7,
-      "p95": 17.7,
-      "p99": 18.3,
-      "max": 40.2,
+      "p50": 16.6,
+      "p95": 17.9,
+      "p99": 18.4,
+      "max": 51.5,
       "renderCallMsP50": 0
     },
     "desktopUncappedOverview10s": {
-      "frames": 17263,
+      "frames": 16651,
       "ms": 10000,
-      "fps": 1726.3,
-      "p50": 0.2,
+      "fps": 1665.1,
+      "p50": 0.3,
       "p95": 5,
-      "p99": 5.8,
-      "max": 10.6,
+      "p99": 6.1,
+      "max": 9.6,
       "renderCallMsP50": 0.1
     },
     "desktopUncappedTravel": {
-      "frames": 15857,
-      "ms": 9535,
-      "fps": 1663.1,
-      "p50": 0.4,
-      "p95": 2.7,
-      "p99": 3.5,
-      "max": 14.3,
+      "frames": 15054,
+      "ms": 9583,
+      "fps": 1570.9,
+      "p50": 0.5,
+      "p95": 1.9,
+      "p99": 4,
+      "max": 40.8,
       "renderCallMsP50": 0
     },
     "desktopUncappedOverview10sShell4096": {
-      "frames": 16465,
-      "ms": 10004,
-      "fps": 1645.8,
-      "p50": 0.2,
-      "p95": 5.4,
-      "p99": 6,
-      "max": 533.8,
+      "frames": 15375,
+      "ms": 10003,
+      "fps": 1537,
+      "p50": 0.3,
+      "p95": 4.1,
+      "p99": 6.4,
+      "max": 274.1,
       "renderCallMsP50": 0.1
     },
     "cpuThrottled4xOverview10s": {
       "frames": 601,
-      "ms": 10001,
-      "fps": 60.1,
-      "p50": 16.5,
-      "p95": 17.9,
+      "ms": 10013,
+      "fps": 60,
+      "p50": 16.6,
+      "p95": 18.1,
       "p99": 18.4,
-      "max": 36.9,
-      "renderCallMsP50": 1
+      "max": 19.5,
+      "renderCallMsP50": 1.2
     },
     "cpuThrottled4xTravel": {
-      "frames": 289,
-      "ms": 4815,
+      "frames": 288,
+      "ms": 4800,
       "fps": 60,
-      "p50": 16.7,
-      "p95": 17.9,
-      "p99": 18.2,
-      "max": 18.4,
+      "p50": 16.6,
+      "p95": 18,
+      "p99": 18.7,
+      "max": 19,
       "renderCallMsP50": 0
     },
     "viewport": "1920x1080, DPR 1",
     "note": "Capped = Chromium default frame pacing (60 Hz). Uncapped = --disable-gpu-vsync --disable-frame-rate-limit: headroom, not what a user sees. Throttled = CDP Emulation.setCPUThrottlingRate 4 on the capped browser: CPU only, the GPU is still the RTX 2060, so it is a rough proxy and not a mid-range Android."
   },
   "timeToFirstFrame": {
-    "webpMedianMs": 310,
-    "jpegMedianMs": 347,
+    "webpMedianMs": 402,
+    "jpegMedianMs": 403,
     "cpuThrottled4xMs": [
-      868,
-      881,
-      879
+      1141,
+      1069,
+      1092
     ],
     "note": "From navigation start to the first rendered frame of the room (GLB fetched from localhost, meshopt decoded, textures decoded and uploaded). Localhost: no network time."
   },
@@ -1263,15 +1552,15 @@
     "note": "WebP/JPEG/PNG decode to RGBA8 on the GPU: about 22.4 MB per 2048 texture with mips, 89.5 MB per 4096. KTX2 figures are estimates from block sizes (ETC1S -> BC1/ETC2 at 0.5 B/px opaque, 1 B/px with alpha; UASTC -> BC7/ASTC 4x4 at 1 B/px); not measured, KTX-Software was not approved."
   },
   "swap": {
-    "itemBLoadMs": 60,
+    "itemBLoadMs": 39,
     "itemLoadsFromFirstRun": {
       "a": {
-        "bytes": 309516,
-        "ms": 69
+        "bytes": 256060,
+        "ms": 68
       },
       "b": {
         "bytes": 269808,
-        "ms": 33
+        "ms": 46
       }
     }
   },
@@ -1398,7 +1687,7 @@
         "darkerWithItem": true
       },
       "itemVsCycles": {
-        "luminanceWebGL": 0.2233,
+        "luminanceWebGL": 0.2232,
         "luminanceCycles": 0.2124,
         "relativeDiff": 0.051
       }
@@ -1412,7 +1701,7 @@
           "luminanceCycles": 0.1777
         },
         "selfcare": {
-          "meanAbsDiff8bit": 14.77,
+          "meanAbsDiff8bit": 14.78,
           "luminanceWebGL": 0.1696,
           "luminanceCycles": 0.2047
         },
@@ -1444,10 +1733,10 @@
     {
       "budget": "One catalogue item (A)",
       "limit": "<= 300 KB",
-      "value": 309516,
+      "value": 256060,
       "unit": "bytes",
       "variant": "webp",
-      "status": "fail"
+      "status": "pass"
     },
     {
       "budget": "One catalogue item (B)",
@@ -1458,30 +1747,62 @@
       "status": "pass"
     },
     {
+      "budget": "Room assets, first view",
+      "limit": "<= 5 MB",
+      "value": 5007562,
+      "unit": "bytes (GLB + transcoder)",
+      "variant": "KTX2 ETC1S",
+      "status": "fail"
+    },
+    {
+      "budget": "One catalogue item (A)",
+      "limit": "<= 300 KB",
+      "value": 362556,
+      "unit": "bytes",
+      "variant": "KTX2 ETC1S",
+      "status": "fail"
+    },
+    {
+      "budget": "One catalogue item (B)",
+      "limit": "<= 300 KB",
+      "value": 335608,
+      "unit": "bytes",
+      "variant": "KTX2 ETC1S",
+      "status": "fail"
+    },
+    {
+      "budget": "Room assets, first view",
+      "limit": "<= 5 MB",
+      "value": 6758670,
+      "unit": "bytes (GLB + transcoder)",
+      "variant": "KTX2, UASTC shell + ETC1S",
+      "status": "fail"
+    },
+    {
       "budget": "Overview poster",
       "limit": "<= 150 KB AVIF",
-      "value": 58197,
+      "value": 58123,
       "unit": "bytes",
       "status": "pass"
     },
     {
       "budget": "Anchor still (today)",
       "limit": "<= 80 KB AVIF",
-      "value": 7758,
+      "value": 7766,
       "unit": "bytes",
       "status": "pass"
     },
     {
       "budget": "Anchor still (journal)",
       "limit": "<= 80 KB AVIF",
-      "value": 7465,
+      "value": 7455,
       "unit": "bytes",
       "status": "pass"
     },
     {
       "budget": "Anchor still (selfcare)",
       "limit": "<= 80 KB AVIF",
-      "value": 6802,
+      "value": 6808,
       "unit": "bytes",
       "status": "pass"
     },
@@ -1505,7 +1826,7 @@
       "value": null,
       "unit": "fps",
       "status": "n/a",
-      "note": "no device; 4x CPU-throttled desktop proxy: 60.1 fps overview, 60 fps travel"
+      "note": "no device; 4x CPU-throttled desktop proxy: 60 fps overview, 60 fps travel"
     },
     {
       "budget": "Scene JS chunk / route shell JS",
@@ -1708,17 +2029,17 @@
     {
       "file": "captures/p0/room/overview.png",
       "size": "960x540 (measured at 1280x720)",
-      "bytes": 477944
+      "bytes": 477883
     },
     {
       "file": "captures/p0/room/today-blurred-card.png",
       "size": "960x540 (measured at 1280x720)",
-      "bytes": 293042
+      "bytes": 293004
     },
     {
       "file": "captures/p0/room/swap-a.png",
       "size": "960x540 (measured at 1280x720)",
-      "bytes": 438455
+      "bytes": 438025
     },
     {
       "file": "captures/p0/room/swap-b.png",
@@ -1728,7 +2049,37 @@
     {
       "file": "captures/p0/room/reduced-motion.png",
       "size": "960x540 (measured at 1280x720)",
-      "bytes": 345282
+      "bytes": 345452
+    },
+    {
+      "file": "captures/p0/room/ktx2-webp-overview.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 477883
+    },
+    {
+      "file": "captures/p0/room/ktx2-webp-selfcare.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 438025
+    },
+    {
+      "file": "captures/p0/room/ktx2-etc1s-overview.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 472667
+    },
+    {
+      "file": "captures/p0/room/ktx2-etc1s-selfcare.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 439672
+    },
+    {
+      "file": "captures/p0/room/ktx2-uastc-overview.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 521502
+    },
+    {
+      "file": "captures/p0/room/ktx2-uastc-selfcare.png",
+      "size": "960x540 (measured at 1280x720)",
+      "bytes": 505029
     }
   ]
 }

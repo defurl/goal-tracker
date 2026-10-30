@@ -19,6 +19,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 
 export interface AnchorCamera {
   position: [number, number, number];
@@ -67,6 +68,16 @@ export interface P0Api {
   setCard: (visible: boolean) => void;
   setBlur: (on: boolean) => void;
   cardRect: () => { x: number; y: number; width: number; height: number };
+  textures: () => TextureReport[];
+}
+
+export interface TextureReport {
+  name: string;
+  width: number;
+  height: number;
+  format: string;
+  compressed: boolean;
+  gpuBytes: number;
 }
 
 declare global {
@@ -104,6 +115,34 @@ const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
+// KTX2 / Basis: the transcoder (JS + wasm) is served from three's own examples, never a CDN
+const ktx2 = new KTX2Loader().setTranscoderPath('/three/examples/jsm/libs/basis/').detectSupport(renderer);
+loader.setKTX2Loader(ktx2);
+
+const FORMAT_NAMES: Record<number, string> = {};
+for (const [k, v] of Object.entries(THREE)) {
+  if (typeof v === 'number' && /_Format$/.test(k) && !(v in FORMAT_NAMES)) FORMAT_NAMES[v] = k;
+}
+
+/** Every texture in the scene with the GPU format three uploaded and its bytes (mips included). */
+function textureReport(): TextureReport[] {
+  const seen = new Set<THREE.Texture>();
+  const out: TextureReport[] = [];
+  scene.traverse((o) => {
+    const m = (o as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined;
+    const t = m?.map;
+    if (!t || seen.has(t)) return;
+    seen.add(t);
+    const ct = t as THREE.CompressedTexture;
+    const compressed = (t as THREE.CompressedTexture).isCompressedTexture === true;
+    const img = t.image as { width: number; height: number };
+    const gpuBytes = compressed
+      ? (ct.mipmaps ?? []).reduce((s, mm) => s + (mm as { data: ArrayBufferView }).data.byteLength, 0)
+      : Math.round(img.width * img.height * 4 * (4 / 3));
+    out.push({ name: t.name || o.name, width: img.width, height: img.height, format: FORMAT_NAMES[t.format] ?? String(t.format), compressed, gpuBytes });
+  });
+  return out;
+}
 
 function asset(name: string): string {
   return `/assets/${VARIANT}/${name}.glb`;
@@ -449,6 +488,7 @@ window.P0 = {
   info,
   setCard,
   setBlur,
+  textures: textureReport,
   cardRect: () => {
     const r = card.getBoundingClientRect();
     return { x: r.x, y: r.y, width: r.width, height: r.height };

@@ -27,7 +27,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import { cpus, totalmem } from 'node:os';
 import { extname, join, normalize, sep } from 'node:path';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
-import type { AnchorCamera, FrameStats, LoadReport, P0Api, RenderInfo } from './harness.ts';
+import type { AnchorCamera, FrameStats, LoadReport, P0Api, RenderInfo, TextureReport } from './harness.ts';
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, '.p0', 'out');
@@ -301,6 +301,65 @@ async function main(): Promise<void> {
   }
   report.firstView = firstView;
 
+  // 1b. KTX2: WebP against ETC1S everywhere and against a UASTC shell (rest ETC1S)
+  const KTX = ['webp', 'etc1s', 'uastc'];
+  const ktx2: Record<string, unknown> = {};
+  for (const variant of KTX) {
+    const ttff: number[] = [];
+    let glb = 0;
+    let transcoder = 0;
+    let textures: TextureReport[] = [];
+    const items: Record<string, number> = {};
+    let fps: FrameStats | undefined;
+    for (let i = 0; i < 3; i++) {
+      const o = await open(capped, base, `variant=${variant}&room=room&item=none`);
+      ttff.push(o.load.ttffMs);
+      glb = o.bytes;
+      transcoder = served.filter((f) => f.path.includes('libs/basis/')).reduce((x, f) => x + f.bytes, 0);
+      if (i === 0) {
+        textures = await o.page.evaluate(() => (window as unknown as { P0: Api }).P0.textures());
+        for (const k of ['a', 'b'] as const) {
+          served = [];
+          await api(o.page).swap(k);
+          items[k] = served.filter((f) => f.path.endsWith('.glb')).reduce((x, f) => x + f.bytes, 0);
+        }
+        fps = await api(o.page).fps(10_000);
+      }
+      await o.ctx.close();
+    }
+    const shot = await open(capped, base, `variant=${variant}&room=room&item=a`, { size: CAPTURE });
+    await shot.page.waitForTimeout(300);
+    await shot.page.screenshot({ path: join(SHOTS, `ktx2-${variant}-overview.png`) });
+    await api(shot.page).view('selfcare');
+    await shot.page.waitForTimeout(150);
+    await shot.page.screenshot({ path: join(SHOTS, `ktx2-${variant}-selfcare.png`) });
+    await shot.ctx.close();
+    ktx2[variant] = {
+      firstViewGlbBytes: glb,
+      transcoderBytes: transcoder,
+      firstViewTotalBytes: glb + transcoder,
+      itemBytes: items,
+      ttffMsMedian: median(ttff),
+      ttffMsRuns: ttff,
+      gpuTextureBytesRoom: textures.reduce((x, t) => x + t.gpuBytes, 0),
+      textures,
+      fpsCappedOverview10s: fps,
+    };
+    console.log('ktx2', variant, glb, transcoder, median(ttff), textures.map((t) => t.format).join(','));
+  }
+  for (const variant of ['etc1s', 'uastc']) {
+    const diff: Record<string, unknown> = {};
+    for (const view of ['overview', 'selfcare']) {
+      diff[view] = JSON.parse(execFileSync(BLENDER_PY, ['-I', join(ROOT, 'scripts', 'p0', 'room', 'acceptance.py'), '--diff',
+        join(SHOTS, `ktx2-webp-${view}.png`), join(SHOTS, `ktx2-${variant}-${view}.png`)]).toString()) as unknown;
+    }
+    (ktx2[variant] as Record<string, unknown>).diffVsWebp = diff;
+  }
+  report.ktx2 = {
+    note: 'KTX-Software 4.4.2 via gltf-transform 4.5.1 (etc1s defaults; uastc --level 2 --rdo --zstd 18 on the shell only). KTX2Loader transcodes to the best format the GPU offers; gpuBytes are the uploaded mip chains (RGBA8 with mips for WebP). diffVsWebp is the mean absolute 8-bit difference against the WebP render of the same view.',
+    variants: ktx2,
+  };
+
   // 2. desktop frame rate and travel (vsync-capped, as a user sees it) + poster and stills
   const main = await open(capped, base, 'variant=webp&room=room&item=a');
   const a = api(main.page);
@@ -389,6 +448,13 @@ async function main(): Promise<void> {
     fpsUncapped4k = await api(u4.page).fps(10_000);
     await u4.ctx.close();
   }
+  const ktxUncapped: Record<string, FrameStats> = {};
+  for (const variant of KTX) {
+    const k = await open(uncapped, base, `variant=${variant}&room=room&item=a`);
+    ktxUncapped[variant] = await api(k.page).fps(5_000);
+    await k.ctx.close();
+  }
+  (report.ktx2 as Record<string, unknown>).fpsUncappedOverview5s = ktxUncapped;
   await uncapped.close();
   console.log('fps uncapped', fpsUncapped.fps, 'travel', travelUncapped.fps);
 
@@ -498,6 +564,13 @@ async function main(): Promise<void> {
     { budget: 'Room assets, first view', limit: '<= 5 MB', value: fvJpeg.glbBytes, unit: 'bytes', variant: 'jpeg (alpha atlas stays webp)', status: pass(fvJpeg.glbBytes <= 5_000_000) },
     { budget: 'One catalogue item (A)', limit: '<= 300 KB', value: itemA, unit: 'bytes', variant: 'webp', status: pass(itemA <= 300_000) },
     { budget: 'One catalogue item (B)', limit: '<= 300 KB', value: itemB, unit: 'bytes', variant: 'webp', status: pass(itemB <= 300_000) },
+    ...['etc1s', 'uastc'].flatMap((v) => {
+      const k = ktx2[v] as { firstViewTotalBytes: number; itemBytes: Record<string, number> };
+      return [
+        { budget: 'Room assets, first view', limit: '<= 5 MB', value: k.firstViewTotalBytes, unit: 'bytes (GLB + transcoder)', variant: v === 'uastc' ? 'KTX2, UASTC shell + ETC1S' : 'KTX2 ETC1S', status: pass(k.firstViewTotalBytes <= 5_000_000) },
+        ...(v === 'etc1s' ? (['a', 'b'] as const).map((i) => ({ budget: `One catalogue item (${i.toUpperCase()})`, limit: '<= 300 KB', value: k.itemBytes[i] ?? 0, unit: 'bytes', variant: 'KTX2 ETC1S', status: pass((k.itemBytes[i] ?? 1e9) <= 300_000) })) : []),
+      ];
+    }),
     { budget: 'Overview poster', limit: '<= 150 KB AVIF', value: posterBytes, unit: 'bytes', status: pass(posterBytes <= 150_000) },
     ...['today', 'journal', 'selfcare'].map((k, i) => ({
       budget: `Anchor still (${k})`, limit: '<= 80 KB AVIF', value: stillBytes[i], unit: 'bytes', status: pass((stillBytes[i] ?? 1e9) <= 80_000),
@@ -531,7 +604,8 @@ async function main(): Promise<void> {
     'node scripts/p0/room/measure.ts',
   ];
   // the committed screenshots: the five views, downscaled to 960x540 (full-size copies stay in .p0/out/shots)
-  const shots = ['overview', 'today-blurred-card', 'swap-a', 'swap-b', 'reduced-motion'];
+  const shots = ['overview', 'today-blurred-card', 'swap-a', 'swap-b', 'reduced-motion',
+    ...KTX.flatMap((v) => [`ktx2-${v}-overview`, `ktx2-${v}-selfcare`])];
   for (const n of shots) {
     execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', join(SHOTS, `${n}.png`), '-vf', 'scale=960:-1', join(CAP, `${n}.png`)]);
   }

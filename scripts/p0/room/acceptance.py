@@ -174,5 +174,12 @@ def main():
     print(json.dumps(out))
 
 
+def diff():
+    a, b = load(sys.argv[2]), load(sys.argv[3])
+    d = np.abs(a.astype(np.int16) - b.astype(np.int16))
+    print(json.dumps({"meanAbsDiff8bit": round(float(d.mean()), 2), "p99AbsDiff8bit": float(np.percentile(d.max(axis=2), 99)),
+                      "maxAbsDiff8bit": int(d.max())}))
+
+
 if __name__ == "__main__":
-    main()
+    diff() if sys.argv[1] == "--diff" else main()
