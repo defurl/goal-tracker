@@ -53,8 +53,10 @@ export function TextSurface() {
               </>
             )}
           </Pending>
-          {/* A plain link: /?room=1 also tells a phone to stop sending it here (middleware). */}
-          <Link className={styles.label} href="/?room=1">
+          {/* A plain link: /?room=1 also tells a phone to stop sending it here (middleware).
+              Not prefetched: the fast path should not pull the room's chunks on load,
+              which also kept Lighthouse's script budget for /text at the mercy of timing. */}
+          <Link className={styles.label} href="/?room=1" prefetch={false}>
             enter the room
           </Link>
         </div>
