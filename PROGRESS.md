@@ -78,6 +78,9 @@ https://claude.ai/artifact/WHn5ePb4cPC9SqmhuhGhoA (both v2; keep them in step).
     GPU textures ~115 MB uncompressed — KTX2 (not approved, unmeasured) is the
     main lever (~17–29 MB est.). Unproven: Android 45 fps (no device), KTX2,
     R3F bundle, real art. `captures/p0/room/report.json`.
+  - **Prep for the UI revamp, 2026-10-30:** `spec/08-ui-revamp-prep.md`. No new
+    UI until the design team's Figma or HTML arrives; an early board draft is
+    parked in git stash "boards draft 2026-10-30".
   - **Owner, 2026-10-30:** desktop first. Phones get boards over stills
     (v2/03, v2/04), so the 45 fps Android budget and the Safari eviction
     check wait until later; the owner has no Safari device. The 40% tint is

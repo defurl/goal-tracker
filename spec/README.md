@@ -30,6 +30,7 @@ won and why — **read that before installing a single dependency.**
 | 05 | `05-scene-state-contract.md` | **the integration seam.** The typed contract between application state and the 3D room. Both the data work and the scene work depend on this file, and neither owns it. |
 | 06 | `06-build-plan.md` | planning or picking up work. Repo structure, phases, task breakdown, verification gates. |
 | 07 | `07-first-session.md` | **picking this project up for the first time.** Repo state, outstanding setup steps, how the project is tooled (and why there is no spec-driven-development framework), and a session-one checklist. |
+| 08 | `08-ui-revamp-prep.md` | **before building the new UI.** Materials on hand, what the design team hands over, how a design becomes code, the data each board needs, and what retires. |
 
 And from the design system, in parallel:
 
