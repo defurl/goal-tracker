@@ -1,0 +1,363 @@
+/* The v2 kit (design-system/v2/03): cards, controls, fields, chips, meters.
+   Every colour is a --v2- token; no gradients; radii 4 / 8 / 12. */
+
+/* ── card ────────────────────────────────────────────────────────────────── */
+
+.card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+  padding: 20px;
+  background: color-mix(in srgb, var(--v2-surface) 92%, transparent);
+  border: 1px solid var(--v2-line);
+  border-radius: 12px;
+  box-shadow: var(--board-shadow);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+
+.cardIcon {
+  display: inline-flex;
+  color: var(--v2-interactive-ink);
+}
+
+.cardTitle {
+  flex: 1;
+  margin: 0;
+  font-family: var(--board-font);
+  font-style: normal;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* ── buttons ─────────────────────────────────────────────────────────────── */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.primary {
+  background: var(--v2-interactive);
+  border: 1px solid var(--v2-interactive);
+  color: var(--v2-surface);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--v2-interactive-ink);
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid var(--v2-ink-faint);
+  color: var(--v2-ink);
+}
+
+.secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--v2-line) 50%, transparent);
+}
+
+.tertiary {
+  min-height: 32px;
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  color: var(--v2-interactive-ink);
+  font-size: 0.875rem;
+}
+
+.tertiary:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.small {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Armed: the first press of a destructive action (D-22 §5). */
+.armed {
+  background: var(--v2-ink);
+  border-color: var(--v2-ink);
+  color: var(--v2-surface);
+}
+
+/* ── fields ──────────────────────────────────────────────────────────────── */
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.hint {
+  margin: 0;
+  color: var(--v2-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  background: var(--v2-surface);
+  border: 1px solid var(--v2-ink-faint);
+  border-radius: 8px;
+  color: var(--v2-ink);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--v2-ink-faint);
+}
+
+.error {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* ── chips ───────────────────────────────────────────────────────────────── */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chipsLegend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+  background: var(--v2-surface);
+  border: 1px solid var(--v2-line);
+  border-radius: 4px;
+  color: var(--v2-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--v2-signal) 45%, var(--v2-surface));
+  border-color: var(--v2-signal);
+  font-weight: 500;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 8px;
+  background: color-mix(in srgb, var(--v2-line) 60%, transparent);
+  border-radius: 4px;
+  color: var(--v2-ink);
+  font-size: 0.8125rem;
+}
+
+/* ── segmented tabs ──────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: color-mix(in srgb, var(--v2-line) 55%, transparent);
+  border-radius: 8px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.tab {
+  min-height: 34px;
+  padding: 0 12px;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: var(--v2-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--v2-surface);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--v2-ink) 12%, transparent);
+}
+
+/* ── meters ──────────────────────────────────────────────────────────────── */
+
+.ring {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  min-width: 0;
+}
+
+.ringTrack {
+  stroke: var(--v2-line);
+}
+
+.ringValue {
+  stroke: var(--v2-interactive);
+  transition: stroke-dashoffset var(--dur-ui, 600ms) ease;
+}
+
+.ringValueSignal {
+  stroke: var(--v2-signal);
+}
+
+.ringLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.ringSub {
+  color: var(--v2-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.meter {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.meterTrack {
+  height: 8px;
+  background: var(--v2-line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.meterFill {
+  height: 100%;
+  background: var(--v2-interactive);
+  border-radius: 4px;
+}
+
+.meterFillSignal {
+  background: var(--v2-signal);
+}
+
+/* ── states ──────────────────────────────────────────────────────────────── */
+
+.muted {
+  margin: 0;
+  color: var(--v2-ink-muted);
+  font-size: 0.875rem;
+}
+
+.empty {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 4px 0;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--v2-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.skeleton {
+  display: grid;
+  gap: 8px;
+}
+
+.skeletonLine {
+  display: block;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--v2-line);
+}
+
+.skeletonLine:nth-child(2) {
+  width: 70%;
+}
+
+.skeletonLine:nth-child(3) {
+  width: 45%;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .card {
+    padding: 16px;
+  }
+
+  .button {
+    min-height: 44px;
+  }
+}
