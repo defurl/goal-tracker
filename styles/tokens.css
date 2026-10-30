@@ -32,18 +32,21 @@
   --lamp-warm: #FFB661;
   --rain-streak: #3A4555;
 
-  /* The redesign's palette (D-26, design-system/v2/01-color.md), beside the
+  /* The redesign's palette (D-26, D-27, design-system/v2/01-color.md), beside the
      night room's until P1 replaces it and drops the v2- prefix. Contrast of
      each is listed there; --v2-signal is never text. */
   --v2-canvas: #F7F0E5;
   --v2-surface: #FFF9EF;
-  --v2-ink: #26392F;
-  --v2-ink-muted: #5F6C63;
-  --v2-ink-faint: #7F8A82;
+  --v2-ink: #44392D;
+  --v2-ink-muted: #6B5D4D;
+  --v2-ink-faint: #8A7B68;
   --v2-line: #E4D9C6;
   --v2-interactive: #587660;
   --v2-interactive-ink: #557259;
   --v2-signal: #D6AA75;
+  /* D-27: fills only — 1.6 and 1.9 : 1 on cream, never text or a border. */
+  --v2-sand: #D7C4A5;
+  --v2-sage: #AEBFA8;
 
   /* Type scale */
   --step-1: 0.75rem;
