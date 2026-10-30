@@ -175,7 +175,7 @@ function TopBar({ view }: { view: ViewKey }) {
 export function SpaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const target = viewForPath(pathname);
+  const target = viewForPath(pathname ?? HOME_ROUTE);
 
   const [shown, setShown] = useState<{ view: ViewKey; phase: Phase }>(() => ({
     view: target,
