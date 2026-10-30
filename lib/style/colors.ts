@@ -61,6 +61,19 @@ export const GLOW_COOL_SOFT = '#3F6B77';
 export const LAMP_WARM = '#FFB661';
 export const RAIN_STREAK = '#3A4555';
 
+// The redesign's palette (D-26, design-system/v2/01-color.md), beside the night
+// room's until P1 replaces it and drops the V2_ prefix. Contrast of each is
+// listed there. V2_SIGNAL is never text.
+export const V2_CANVAS = '#F7F0E5';
+export const V2_SURFACE = '#FFF9EF';
+export const V2_INK = '#26392F';
+export const V2_INK_MUTED = '#5F6C63';
+export const V2_INK_FAINT = '#7F8A82';
+export const V2_LINE = '#E4D9C6';
+export const V2_INTERACTIVE = '#587660';
+export const V2_INTERACTIVE_INK = '#557259';
+export const V2_SIGNAL = '#D6AA75';
+
 export const colors = {
   bgVoid: BG_VOID,
   bgNight: BG_NIGHT,

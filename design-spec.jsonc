@@ -49,7 +49,19 @@
       "--glow-cool-soft":   "#3F6B77",   // ambient sky bounce; window rim; monitor 2 emissive
 
       "--lamp-warm":        "#FFB661",   // the desk lamp, the only truly warm light source
-      "--rain-streak":      "#3A4555"    // the rain on the window
+      "--rain-streak":      "#3A4555",   // the rain on the window
+
+      // The redesign's palette (D-26, design-system/v2/01-color.md), beside the
+      // night room's until P1 replaces it and drops the v2- prefix.
+      "--v2-canvas":          "#F7F0E5",   // warm ivory; page background
+      "--v2-surface":         "#FFF9EF",   // parchment; cards, menu, inputs
+      "--v2-ink":             "#26392F",   // dark botanical; headings and body
+      "--v2-ink-muted":       "#5F6C63",   // secondary text that says something
+      "--v2-ink-faint":       "#7F8A82",   // input borders, disabled; never informative text
+      "--v2-line":            "#E4D9C6",   // decorative borders and dividers
+      "--v2-interactive":     "#587660",   // sage; buttons, icons, focus ring, large text
+      "--v2-interactive-ink": "#557259",   // sage for small text: links, text buttons
+      "--v2-signal":          "#D6AA75"    // honey; fills and markers, never text
     },
 
     "rules": [
