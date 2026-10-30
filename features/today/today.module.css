@@ -1,0 +1,419 @@
+/* Today cards (Figma frame 02) and shared card layout. Colours are --v2- tokens only. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.s3 { grid-column: span 3; }
+.s4 { grid-column: span 4; }
+.s5 { grid-column: span 5; }
+.s6 { grid-column: span 6; }
+.s7 { grid-column: span 7; }
+.s8 { grid-column: span 8; }
+.s12 { grid-column: 1 / -1; }
+
+.stack {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.between {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* ── lists ───────────────────────────────────────────────────────────────── */
+
+.list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--v2-line) 70%, transparent);
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+.itemMain {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.itemTitle {
+  margin: 0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.itemMeta {
+  margin: 0;
+  color: var(--v2-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.done {
+  color: var(--v2-ink-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--v2-ink-faint);
+}
+
+/* A round check, 24 px, inside a 44 px target. */
+.check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -6px -8px -6px -10px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.check > span {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--v2-ink-faint);
+  border-radius: 50%;
+  color: var(--v2-surface);
+}
+
+.check[aria-checked='true'] > span,
+.check[aria-pressed='true'] > span {
+  background: var(--v2-interactive);
+  border-color: var(--v2-interactive);
+}
+
+.check:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ── today ───────────────────────────────────────────────────────────────── */
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.weekDay {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+}
+
+.weekMark {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--v2-line);
+  border-radius: 50%;
+  color: var(--v2-surface);
+}
+
+.weekMarkOn {
+  background: var(--v2-interactive);
+  border-color: var(--v2-interactive);
+}
+
+.weekToday {
+  font-weight: 600;
+}
+
+.weekTodayMark {
+  border-color: var(--v2-ink-faint);
+}
+
+.rings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 16px;
+}
+
+.ringButton {
+  display: grid;
+  padding: 4px;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ringButton:disabled {
+  cursor: default;
+}
+
+.ringCheck {
+  color: var(--v2-interactive-ink);
+}
+
+.prompts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.promptButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--v2-signal) 18%, var(--v2-surface));
+  border: 1px solid var(--v2-line);
+  border-radius: 8px;
+  color: var(--v2-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.promptButton:nth-child(2) {
+  background: color-mix(in srgb, var(--v2-interactive) 12%, var(--v2-surface));
+}
+
+.promptButton:nth-child(3) {
+  background: color-mix(in srgb, var(--v2-line) 55%, var(--v2-surface));
+}
+
+.quote {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+
+.bigAction {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.source {
+  margin: 0;
+  color: var(--v2-ink-muted);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+/* ── entries, catalogues ─────────────────────────────────────────────────── */
+
+.entry {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--v2-line) 70%, transparent);
+}
+
+.entry:first-child {
+  padding-top: 0;
+}
+
+.entry:last-child {
+  border-bottom: 0;
+}
+
+.entryBody {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.tile {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 16px;
+  background: var(--v2-surface);
+  border: 1px solid var(--v2-line);
+  border-radius: 8px;
+}
+
+.tileTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tileSelected {
+  border-color: var(--v2-interactive);
+  box-shadow: 0 0 0 1px var(--v2-interactive);
+}
+
+.steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.timer {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--v2-line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--v2-interactive);
+}
+
+.details > summary {
+  cursor: pointer;
+  font-weight: 500;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 1199px) {
+  .s3,
+  .s4,
+  .s5 {
+    grid-column: span 6;
+  }
+
+  .s7,
+  .s8 {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .grid > * {
+    grid-column: 1 / -1;
+  }
+
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A pressed toggle button: honey fill, ink text. */
+.toggle[aria-pressed='true'] {
+  background: var(--v2-signal);
+  border-color: var(--v2-signal);
+}
+
+/* ── the route's heading, on the softened room ───────────────────────────── */
+
+.page {
+  display: grid;
+  gap: 24px;
+}
+
+/* The heading sits on its own near-opaque plate: legibility never rests on
+   the photograph behind it (handoff 01 §6). The 40% wash alone measured
+   2.8 : 1 for the date over the Today render's darkest pixel. */
+.pageHead {
+  display: grid;
+  gap: 2px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 14px 20px;
+  background: color-mix(in srgb, var(--v2-surface) 90%, transparent);
+  border: 1px solid var(--v2-line);
+  border-radius: 12px;
+  box-shadow: var(--board-shadow);
+}
+
+.greeting {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.greeting:focus {
+  outline: none;
+}
+
+.date {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tagline {
+  margin: 0;
+  font-size: 1rem;
+}
+
+@media (max-width: 767px) {
+  .greeting {
+    font-size: 1.75rem;
+  }
+}
