@@ -39,6 +39,11 @@ from the overview's top-right corner, not from the menu.
 Rendering stops while a board is open over the blurred room, and starts again
 on Back home. The blur is applied once to a still frame, not every frame.
 
+The ivory tint is `--v2-canvas` at **40%** over the blurred room, not less:
+text set straight on the room (the greeting, the date) measured 3.89 : 1 at 30%
+and 4.63 : 1 at 40% over the darkest pixel behind it (P0 board test,
+`scripts/p0/board-check.ts`, 2026-10-30). Owner-approved 2026-10-30.
+
 ## One board set, two backdrops
 
 The room page mounts the boards over the live canvas. `/text`, phones and any

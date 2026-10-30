@@ -44,9 +44,44 @@ https://claude.ai/artifact/WHn5ePb4cPC9SqmhuhGhoA (both v2; keep them in step).
   `spec/01`; notes on Features 1-4 in `spec/02`; Phase 7 in `spec/06`;
   `design-system/v2/` README and 01-06; pointer banners in CLAUDE.md and
   `design-system/README.md`.
-- **Next in P0:** three one-week tests. 3D with a licensed stand-in baked room,
-  since the design team has no model yet; the board shell on `/text`; the device
-  journal, including the sign-out warning, in Chrome, Safari and Firefox.
+- **P0 tests, on branch `p0/tests` (2026-10-30, uncommitted):**
+  - **Device journal: passes.** `lib/journal/deviceStore.ts` (IndexedDB, no
+    deps) driven by `pnpm journal:check` in Chromium, Firefox and WebKit: 16/16
+    checks each — save, own-account listing, search incl. Vietnamese, date range,
+    refusals, survives a browser restart, export → import into a fresh profile
+    (identical; twice adds nothing; bad files refused, nothing written), sign-out
+    delete leaves other accounts alone. **No engine granted persistent storage
+    under automation** (Chromium and WebKit false, Firefox's prompt never
+    settled), so export is load-bearing. Not testable here: Safari's 7-day
+    eviction and real persistence grants — needs the owner's Safari device.
+    WebKit writes are slow one at a time (200 in 3.2 s); fine for single saves.
+  - **Board: passes.** `/text/board` (unlinked): the v2 menu bar and the
+    challenge card on `--v2-*` tokens (added beside the night ones in all three
+    mirrors) and Inter (`@fontsource/inter`, dev dep), over a blurred still of
+    the reference room (`public/p0/board-backdrop.avif`, 3.6 KB).
+    `node scripts/p0/board-check.ts` measures from pixels: card text ≥ 4.6 : 1,
+    focus ring ≥ 4.3, input borders ≥ 3.1 on the card's darkest pixel, desktop
+    and phone; every board control has a ring. **Finding:** text set straight on
+    the room failed at a 30% ivory tint (date 3.89 : 1); 40% passes (4.63) —
+    PROPOSED for v2/04. axe's contrast flags there are false (it cannot see the
+    backdrop image); its `region` flag is the old account control. On phones the
+    menu scrolls sideways with a visible scrollbar — tidy in P1.
+  - **3D: passes on desktop, one item over budget.** Stand-in golden-hour room
+    (Blender 4.5.15, 21 Poly Haven CC0 models + HDRI, `scripts/p0/room/`,
+    outputs in gitignored `.p0/`), Cycles-baked into 2048² WebP atlases,
+    rendered unlit in plain three.js (RTX 2060, Chromium). First view 3.51 MB
+    (≤ 5); poster 58 KB AVIF (≤ 150); stills 7–8 KB (≤ 80); 60 fps overview and
+    travel, 12 draw calls, 248k tris; item swap 33–69 ms. **Item A 309.5 KB vs
+    300** (WebP q75 → 256 KB passes); item B 270 KB. Acceptance draft: no
+    clipped whites, card ink ≥ 9.8 : 1 over every blurred anchor, reduced motion
+    cuts to stills. WebGL reads ~20% darker than Cycles (no glossy in bake).
+    GPU textures ~115 MB uncompressed — KTX2 (not approved, unmeasured) is the
+    main lever (~17–29 MB est.). Unproven: Android 45 fps (no device), KTX2,
+    R3F bundle, real art. `captures/p0/room/report.json`.
+  - **Owner, 2026-10-30:** desktop first. Phones get boards over stills
+    (v2/03, v2/04), so the 45 fps Android budget and the Safari eviction
+    check wait until later; the owner has no Safari device. The 40% tint is
+    recorded in v2/04. KTX-Software approved for the KTX2 measurement.
 - **Open (D-26):** does a bought bonsai keep growing; who owns each catalogue;
   which analytics tool; the Next upgrade; boards over the old room until P4;
   closing the Phase 6 board.
@@ -56,11 +91,15 @@ controls in `spec/security-hardening-prompt.md` were worked by five agents in
 parallel; the report, in the prompt's format, is
 `spec/security-hardening-report.md`. On local `main`: 45 commits, every gate
 green (unit 322, test:db 106, bundle shell 188.4 KB), `security:headers` and
-`offline:check` pass on a production build. Migrations 026–028 are on the
-local stack only. **Before pushing:** set `ENABLE_EXPERIMENTAL_COREPACK=1` on
-Vercel (the postcss override lives in `pnpm-workspace.yaml`, which pnpm 9
-ignores). **With the push:** `supabase db push` for 026–028, then the
-dashboard checklist (report §4) — custom SMTP is a launch blocker. **Never
+`offline:check` pass on a production build. **Pushed 2026-10-30** with the
+redesign docs (`6ddf2cf`): CI green, Vercel deployed, `/`, `/text`, `/login`
+and `/privacy` answer 200. **Migrations 026–028 pushed to the hosted project
+the same day** at the owner's go; `db push --dry-run` now reports it up to
+date, an anon read and an anon insert on `habits` are refused (42501), and
+`/graphql/v1` answers "pg_graphql extension is not enabled". A signed-in walk
+of the live site after 026 is the owner's (the agent does not sign in to the
+hosted project). Still the owner's: the dashboard checklist (report §4) —
+custom SMTP is a launch blocker. **Never
 `supabase config push`.** PROPOSED, for the owner: extraction prompt V3 and
 the spec/04 §2/§6/§9 notes, the 026 grant matrix, and /privacy's deletion
 paragraph, which no longer covers the ~1 h deletion log line. Open decision:
