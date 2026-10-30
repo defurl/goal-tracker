@@ -37,8 +37,26 @@ export interface DeviceEntry {
   tags: string[];
   moods: string[];
   energy: 1 | 2 | 3 | 4 | 5 | null;
+  /** A quick check-in's four short answers (functional spec J01). */
+  fields?: CheckInFields;
   createdAt: string;
   updatedAt: string;
+}
+
+export const CHECK_IN_FIELDS = ['positive', 'difficult', 'lesson', 'tomorrow'] as const;
+export type CheckInField = (typeof CHECK_IN_FIELDS)[number];
+export type CheckInFields = Partial<Record<CheckInField, string>>;
+const FIELD_MAX = 2000;
+
+/** J01: an entry saves with one non-empty field — any text, mood or energy. */
+export function hasContent(e: Pick<DeviceEntry, 'title' | 'body' | 'moods' | 'energy' | 'fields'>): boolean {
+  return Boolean(
+    e.body.trim() ||
+      e.title?.trim() ||
+      e.moods.length ||
+      e.energy !== null ||
+      Object.values(e.fields ?? {}).some((v) => v?.trim()),
+  );
 }
 
 export interface JournalExport {
@@ -96,6 +114,17 @@ export async function listEntries(db: IDBDatabase, ownerId: string): Promise<Dev
   );
 }
 
+/** Deletes one entry, only if it belongs to `ownerId`. Returns whether it did. */
+export async function deleteEntry(db: IDBDatabase, ownerId: string, id: string): Promise<boolean> {
+  const tx = db.transaction(STORE, 'readwrite');
+  const store = tx.objectStore(STORE);
+  const entry = (await request(store.get(id))) as DeviceEntry | undefined;
+  const owned = entry?.ownerId === ownerId;
+  if (owned) store.delete(id);
+  await done(tx);
+  return owned;
+}
+
 export async function countEntries(db: IDBDatabase, ownerId: string): Promise<number> {
   const tx = db.transaction(STORE, 'readonly');
   return request(tx.objectStore(STORE).index(BY_OWNER).count(ownerId));
@@ -116,7 +145,8 @@ export async function searchEntries(
   return entries.filter((e) => {
     if (range.from && e.localDate < range.from) return false;
     if (range.to && e.localDate > range.to) return false;
-    const hay = `${e.title ?? ''}\n${e.body}\n${e.tags.join(' ')}`.toLocaleLowerCase();
+    const fields = Object.values(e.fields ?? {}).join('\n');
+    const hay = `${e.title ?? ''}\n${e.body}\n${fields}\n${e.tags.join(' ')}`.toLocaleLowerCase();
     return words.every((w) => hay.includes(w));
   });
 }
@@ -228,6 +258,13 @@ export function checkEntry(e: DeviceEntry): string | null {
   if (!Array.isArray(e.tags) || e.tags.length > LIMITS.tags || !e.tags.every((t) => typeof t === 'string')) return 'tags';
   if (!Array.isArray(e.moods) || e.moods.length > LIMITS.moods || !e.moods.every((m) => typeof m === 'string')) return 'moods';
   if (e.energy !== null && ![1, 2, 3, 4, 5].includes(e.energy as number)) return 'energy';
+  if (e.fields !== undefined) {
+    if (!e.fields || typeof e.fields !== 'object') return 'fields';
+    for (const [k, v] of Object.entries(e.fields)) {
+      if (!(CHECK_IN_FIELDS as readonly string[]).includes(k)) return 'fields';
+      if (v !== undefined && (typeof v !== 'string' || v.length > FIELD_MAX)) return 'fields';
+    }
+  }
   if (typeof e.createdAt !== 'string' || Number.isNaN(Date.parse(e.createdAt))) return 'createdAt';
   if (typeof e.updatedAt !== 'string' || Number.isNaN(Date.parse(e.updatedAt))) return 'updatedAt';
   return null;
