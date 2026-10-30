@@ -13,6 +13,10 @@ portfolio project. Each feature is a physical object on a desk.
 > user's device (FR-3.6), and points can be spent (D-08). The lighting rules
 > below govern the current room until stage P4 replaces it. This file's
 > non-negotiables are rewritten in stage P6 (`spec/06-build-plan.md`, Phase 7).
+>
+> **D-27 (2026-10-30)** follows the design team's 2.5D handoff: the room is
+> pre-rendered images, not WebGL; path routes replace `/text`; Inter only;
+> palette cream, sand, sage, brown ink. The prep plan is `spec/08-ui-revamp-prep.md`.
 
 **Two contracts govern this project and you need both:**
 

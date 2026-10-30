@@ -28,7 +28,7 @@ Figma file `5AYqsHBJBV8QSKtmIQCSJA` ("Editable UI Foundations").
   leaving. (doc 03 §2)
 - **Starting tokens** (to be confirmed): 1440 × 810 reference; spacing
   4/8/12/16/24/32/48; card radius 14-22 px; cream `#FFF9EF`, sand `#D7C4A5`,
-  sage `#AEBFA8`, ink `#44392D`. (doc 01 §2)
+  sage `#AEBFA8`, ink `#44392D`. (doc 01 §2; adopted, with 12 px corners — D-27)
 - **Inspiration Inbox adds screenshot upload with OCR**, and a source-status
   machine (submitted → partial / available / unavailable → draft → approved).
   (doc 03 §5)
@@ -41,21 +41,15 @@ five modules, nothing drawn on a monitor, approval before any AI output is
 saved, never inventing a summary of an unreadable source, journal privacy,
 reduced motion as a full alternative, desktop first.
 
-## 2. Decisions for the owner
+## 2. Decisions
 
-These conflict with decisions already recorded; the build waits on them.
-
-| # | handoff says | we have | recommendation |
-|---|---|---|---|
-| 1 | Pre-rendered 2.5D room, no WebGL | D-26 §11 and `v2/05`: a baked live 3D room | **Adopt 2.5D.** Simpler, lighter, and three.js leaves the app entirely. Our Blender pipeline still renders the six views. |
-| 2 | Card radius 14-22 px; pill-shaped menu in Figma | Owner, 2026-10-29: less rounded; `v2/03`: 12 px max, no pills | Ask the design team to hold 12 px; otherwise amend v2/03 |
-| 3 | Ink `#44392D` (warm brown), sand, sage | `--v2-ink` `#26392F` (deep green), honey signal | Take their four; ink on cream is 10.7 : 1. Sand and sage only as fills: on cream they are 1.6 and 1.9 : 1, too faint for borders or text |
-| 4 | All-caps card headings in Figma | `v2/06`: no rows of all-caps labels; owner: less letter-spacing | Sentence-case headings; ask the design team |
-| 5 | "Confirm licensed fonts"; soft serif display | Inter body (owner), Georgia fallback display | Keep Inter; pick one licensed display serif or none |
-| 6 | Path routes, URL as truth | Room at `/`, everything on `/text` (D-07, D-10) | **Adopt the routes.** With no WebGL, `/text` as a separate surface has no reason to exist; phones get the same routes over a static crop |
-| 7 | Motion for React suggested | CSS transitions only | CSS first; add the library only if the crossfade needs it |
-| 8 | Screenshot upload with OCR in the Inbox | Link or pasted text | Later item: needs storage, an OCR provider and a privacy notice |
-| 9 | "MY LITTLE WORLD" | Name "Be Better Everyday" (owner, 2026-10-29) | Product stays BBE; "My little world" becomes the default editable space title |
+The owner settled the nine conflicts on 2026-10-30: **D-27** in
+`01-decisions.md`. In short: 2.5D room, no WebGL; corners at 12 px, no pills;
+cream, sand, sage and brown ink (sand and sage as fills only); sentence-case
+headings; Inter only; path routes, `/text` retires; CSS transitions first;
+screenshot intake later; the site is "Focus on yourself" and the space is
+"Your Space", renamable. The design team is told to hold 12 px and sentence
+case.
 
 Product calls the handoff leaves to us (doc 03 §9): first room theme, initial
 number of goals, AI provider and quotas, sources supported at launch, privacy

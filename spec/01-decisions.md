@@ -21,7 +21,7 @@ D-01 to D-12 resolve direct SRS / design-system conflicts. D-13 fills a gap
 both documents left. D-14 to D-19 settle the questions the spec pass raised. D-20 corrects a value
 that was wrong in the source proposal. D-21 replaces the inherited palette. D-22 settles what
 Phase 4 raised. D-23 settles what Phase 3 left open. D-24 sets the scope of Phase 5. D-25 sets
-how Phase 6, the UI rework, runs. D-26 sets the redesign that followed it.
+how Phase 6, the UI rework, runs. D-26 sets the redesign that followed it. D-27 settles the 2.5D handoff.
 
 All twenty-six are **LOCKED**. D-26 raised six questions it did not settle; they
 are listed under Open questions below.
@@ -916,6 +916,36 @@ budgets and the room's acceptance test. They are on the plan page and in
 **Consequence.** `06-build-plan.md` Phase 7 runs the redesign in seven stages,
 P0-P6. CLAUDE.md's non-negotiables are read through this entry until P6
 rewrites them.
+
+### D-27 · The 2.5D handoff — **LOCKED** (owner-approved 2026-10-30)
+
+The design team's engineering handoff v1.1
+(`../design-system/PGS_Engineering_Handoff_v1_1/`) conflicted with D-26 in
+nine places (`08-ui-revamp-prep.md` §2). The owner settled them:
+
+1. **The room is pre-rendered 2.5D.** Six matched renders of one master scene,
+   a hotspot map and CSS transitions. No WebGL in the MVP; three.js and React
+   Three Fiber leave the app. Replaces D-26 §11's live baked room and
+   D-06/D-10's reasons to exist.
+2. **Corners stay at 12 px at most**, and no pill shapes. The design team
+   holds this (D-26 §10).
+3. **Palette: cream `#FFF9EF`, sand `#D7C4A5`, sage `#AEBFA8`, ink
+   `#44392D`.** Sand and sage are fills only (1.6 and 1.9 : 1 on cream).
+4. **Headings in sentence case.** No all-caps labels.
+5. **No display face.** Inter for everything.
+6. **Path routes, the URL as the source of truth** (`/today`, `/journal`, …).
+   `/text` retires as a separate surface; phones use the same routes over a
+   static crop. Replaces D-07's two-surface rule.
+7. **Motion: CSS transitions first**; Motion for React only if the crossfade
+   needs it.
+8. **Screenshot upload in the Inbox is a later item.**
+9. **Names.** The site is called **"Focus on yourself"** (the browser tab, the
+   app manifest). In the UI the space is **"Your Space"**, and the user can
+   rename it. "Be Better Everyday" stays the project's name in the repo.
+
+**Consequence.** `../design-system/v2/` and the colour mirrors follow 2-5;
+`v2/05-room.md` becomes the 2.5D asset contract. The first build is the
+handoff's Home → Today → Home prototype.
 
 ---
 

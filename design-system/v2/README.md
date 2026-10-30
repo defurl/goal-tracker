@@ -1,6 +1,7 @@
 # Design System v2 — Be Better Everyday
 
-**Started:** 2026-10-29, under `../../spec/01-decisions.md` D-26.
+**Started:** 2026-10-29, under `../../spec/01-decisions.md` D-26; revised
+2026-10-30 under D-27 (the 2.5D handoff).
 **Status:** a value that cites a decision is **LOCKED**. Everything else is
 **PROPOSED** until it is built, captured and approved by the owner.
 
@@ -12,10 +13,13 @@
 | `../references/Personal_Growth_Space_Functional_Specification_EN.docx` (v1.0) | the five modules, their MUST lists, data, AI boundaries, acceptance F-01 to F-10 |
 | `../references/homescreen.jpg` | the room overview: the look, the anchors |
 | `../references/dashboard.jpg` | the Today board: the benchmark for every board |
-| D-26 and its amendment notes | where the owner settled the specifications against this repo |
+| `../PGS_Engineering_Handoff_v1_1/` (v1.1) | the 2.5D room, routes, transition states, art deliverables (D-27) |
+| Figma `5AYqsHBJBV8QSKtmIQCSJA` | layout foundations for Home and the five modules |
+| D-26, D-27 and their notes | where the owner settled the specifications against this repo |
 
-The specifications call the product "Personal Growth Space". That is a working
-title; the product is Be Better Everyday (D-26 §1).
+The specifications call the product "Personal Growth Space" and the Figma file
+shows "My little world". The site is called **"Focus on yourself"**; in the UI
+the space is **"Your Space"**, renamable by the user (D-27 §9).
 
 ## What this replaces
 
@@ -39,15 +43,14 @@ Carried over from them because the decisions behind them still stand:
 | 02 | `02-type.md` | any text |
 | 03 | `03-layout-and-shape.md` | any board, card or control |
 | 04 | `04-boards-and-motion.md` | navigation, the camera, transitions, states, copy |
-| 05 | `05-room.md` | the 3D room, its assets, the shop's spots, budgets, the acceptance test |
+| 05 | `05-room.md` | the 2.5D room: views, the art contract, the manifest, transitions, budgets, the acceptance test |
 | 06 | `06-anti-patterns.md` | **before proposing any UI pattern** |
 
 ## Not decided yet
 
-- The display serif. The design team names it; Georgia is the fallback.
-- The room plan: each anchor's camera transform and the furniture spots. The
-  design team delivers them with the blockout (P0).
-- Tints for chips and tags (`dashboard.jpg` shows peach, sage and lavender).
-- Any 3D asset. None exists yet (D-26 §11).
+- Component states and named variables: the Figma file has neither yet.
+- The renders, the hotspot map and the safe areas: the art team delivers them.
+- Which views each shop spot appears in, and the catalogue.
 
-Until P1, the code's three token mirrors still hold the night palette.
+The three token mirrors hold the v2 palette as `--v2-*` beside the night
+palette, which retires with the night room.
