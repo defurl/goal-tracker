@@ -78,9 +78,22 @@ https://claude.ai/artifact/WHn5ePb4cPC9SqmhuhGhoA (both v2; keep them in step).
     GPU textures ~115 MB uncompressed — KTX2 (not approved, unmeasured) is the
     main lever (~17–29 MB est.). Unproven: Android 45 fps (no device), KTX2,
     R3F bundle, real art. `captures/p0/room/report.json`.
-  - **Prep for the UI revamp, 2026-10-30:** `spec/08-ui-revamp-prep.md`. No new
-    UI until the design team's Figma or HTML arrives; an early board draft is
-    parked in git stash "boards draft 2026-10-30".
+  - **Prep for the UI revamp, 2026-10-30:** `spec/08-ui-revamp-prep.md`. The
+    design team's handoff v1.1 and D-27 settled it: a pre-rendered 2.5D room.
+  - **Home → Today → Home prototype, 2026-10-30** (D-27, handoff P0): `/room`
+    and `/today` beside the night room, which still serves `/` and `/text`.
+    Six stand-in renders from the CC0 Blender room (`scripts/room/`,
+    `public/room/sunny/`, 26-53 KB AVIF each); hotspots on the cover-cropped
+    image; a transition controller (zoom in, zoom out, crossfade, swap under
+    reduced motion, fallback; latest click wins); persistent menu; renamable
+    "Your Space" (on the device for now); tab title "Focus on yourself".
+    Today has real data; Journal, Growth Map, Skills and Self Care show their
+    room view and point to `/text` until built; Settings has sign-out with the
+    journal warning, deletion, export and import. `pnpm space:check` passes at
+    1280, 1440, 1920 and phone: hotspots, focus on arrival, every control
+    ringed, axe clean, card text ≥ 5.1 : 1 over the darkest card pixel. The
+    route heading sits on a cream plate: the 40% wash alone gave 2.8 : 1, so
+    `--v2-interactive-ink` also darkened to `#4D6851`.
   - **Owner, 2026-10-30:** desktop first. Phones get boards over stills
     (v2/03, v2/04), so the 45 fps Android budget and the Safari eviction
     check wait until later; the owner has no Safari device. The 40% tint is

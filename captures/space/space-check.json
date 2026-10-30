@@ -1,0 +1,646 @@
+{
+  "1280": {
+    "viewport": "1280x720",
+    "hotspots": [
+      {
+        "label": "Today",
+        "x": 391.25,
+        "y": 455.1875,
+        "w": 87.875,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Journal",
+        "x": 232.578125,
+        "y": 556,
+        "w": 98.03125,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Growth Map",
+        "x": 497.3671875,
+        "y": 304,
+        "w": 131.640625,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Skills",
+        "x": 1072.84375,
+        "y": 224.796875,
+        "w": 81.5,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Self Care",
+        "x": 85.8671875,
+        "y": 412,
+        "w": 109.859375,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      }
+    ],
+    "hotspotLabel": 10.73,
+    "focusedHeading": true,
+    "tabStops": [
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Edit",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "See all",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Inbox",
+        "ring": true
+      },
+      {
+        "text": "Check in",
+        "ring": true
+      },
+      {
+        "text": "😄\nbright",
+        "ring": true
+      },
+      {
+        "text": "🙂\ncontent",
+        "ring": true
+      },
+      {
+        "text": "😌\ncalm",
+        "ring": true
+      },
+      {
+        "text": "😐\nneutral",
+        "ring": true
+      },
+      {
+        "text": "😴\ntired",
+        "ring": true
+      },
+      {
+        "text": "😟\nanxious",
+        "ring": true
+      },
+      {
+        "text": "1",
+        "ring": true
+      },
+      {
+        "text": "2",
+        "ring": true
+      },
+      {
+        "text": "3",
+        "ring": true
+      },
+      {
+        "text": "4",
+        "ring": true
+      },
+      {
+        "text": "5",
+        "ring": true
+      },
+      {
+        "text": "Open full journal",
+        "ring": true
+      },
+      {
+        "text": "INPUT",
+        "ring": true
+      },
+      {
+        "text": "What am I grateful for today?",
+        "ring": true
+      },
+      {
+        "text": "What did I learn today?",
+        "ring": true
+      },
+      {
+        "text": "What can I do tomorrow, a little better?",
+        "ring": true
+      },
+      {
+        "text": "View detail",
+        "ring": true
+      }
+    ],
+    "cardDarkest": [
+      241,
+      234,
+      225
+    ],
+    "darkestCard": ":Rmjtvptj6:",
+    "card": {
+      "ink": 9.42,
+      "inkMuted": 5.34,
+      "interactiveInk": 5.15
+    },
+    "onRoom": {
+      "heading": 9.58,
+      "date": 9.66
+    },
+    "axe": []
+  },
+  "1440": {
+    "viewport": "1440x810",
+    "hotspots": [
+      {
+        "label": "Today",
+        "x": 445.65625,
+        "y": 514.59375,
+        "w": 87.875,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Journal",
+        "x": 267.78125,
+        "y": 628,
+        "w": 98.03125,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Growth Map",
+        "x": 567.7734375,
+        "y": 344.5,
+        "w": 131.640625,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Skills",
+        "x": 1212.046875,
+        "y": 255.390625,
+        "w": 81.5,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Self Care",
+        "x": 103.4609375,
+        "y": 466,
+        "w": 109.859375,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      }
+    ],
+    "hotspotLabel": 10.73,
+    "focusedHeading": true,
+    "tabStops": [
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Edit",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "See all",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Inbox",
+        "ring": true
+      },
+      {
+        "text": "Check in",
+        "ring": true
+      },
+      {
+        "text": "😄\nbright",
+        "ring": true
+      },
+      {
+        "text": "🙂\ncontent",
+        "ring": true
+      },
+      {
+        "text": "😌\ncalm",
+        "ring": true
+      },
+      {
+        "text": "😐\nneutral",
+        "ring": true
+      },
+      {
+        "text": "😴\ntired",
+        "ring": true
+      },
+      {
+        "text": "😟\nanxious",
+        "ring": true
+      },
+      {
+        "text": "1",
+        "ring": true
+      },
+      {
+        "text": "2",
+        "ring": true
+      },
+      {
+        "text": "3",
+        "ring": true
+      },
+      {
+        "text": "4",
+        "ring": true
+      },
+      {
+        "text": "5",
+        "ring": true
+      },
+      {
+        "text": "Open full journal",
+        "ring": true
+      },
+      {
+        "text": "INPUT",
+        "ring": true
+      },
+      {
+        "text": "What am I grateful for today?",
+        "ring": true
+      },
+      {
+        "text": "What did I learn today?",
+        "ring": true
+      },
+      {
+        "text": "What can I do tomorrow, a little better?",
+        "ring": true
+      },
+      {
+        "text": "View detail",
+        "ring": true
+      }
+    ],
+    "cardDarkest": [
+      241,
+      235,
+      225
+    ],
+    "darkestCard": ":R1ajtvptj6:",
+    "card": {
+      "ink": 9.48,
+      "inkMuted": 5.37,
+      "interactiveInk": 5.19
+    },
+    "onRoom": {
+      "heading": 9.58,
+      "date": 9.58
+    },
+    "axe": []
+  },
+  "1920": {
+    "viewport": "1920x1080",
+    "hotspots": [
+      {
+        "label": "Today",
+        "x": 608.859375,
+        "y": 692.796875,
+        "w": 87.875,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Journal",
+        "x": 373.375,
+        "y": 844,
+        "w": 98.03125,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Growth Map",
+        "x": 778.9765625,
+        "y": 466,
+        "w": 131.640625,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Skills",
+        "x": 1629.640625,
+        "y": 347.1875,
+        "w": 81.5,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      },
+      {
+        "label": "Self Care",
+        "x": 156.2578125,
+        "y": 628,
+        "w": 109.859375,
+        "h": 40,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      }
+    ],
+    "hotspotLabel": 10.73,
+    "focusedHeading": true,
+    "tabStops": [
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Edit",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "See all",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Inbox",
+        "ring": true
+      },
+      {
+        "text": "Check in",
+        "ring": true
+      },
+      {
+        "text": "😄\nbright",
+        "ring": true
+      },
+      {
+        "text": "🙂\ncontent",
+        "ring": true
+      },
+      {
+        "text": "😌\ncalm",
+        "ring": true
+      },
+      {
+        "text": "😐\nneutral",
+        "ring": true
+      },
+      {
+        "text": "😴\ntired",
+        "ring": true
+      },
+      {
+        "text": "😟\nanxious",
+        "ring": true
+      },
+      {
+        "text": "1",
+        "ring": true
+      },
+      {
+        "text": "2",
+        "ring": true
+      },
+      {
+        "text": "3",
+        "ring": true
+      },
+      {
+        "text": "4",
+        "ring": true
+      },
+      {
+        "text": "5",
+        "ring": true
+      },
+      {
+        "text": "Open full journal",
+        "ring": true
+      },
+      {
+        "text": "INPUT",
+        "ring": true
+      },
+      {
+        "text": "What am I grateful for today?",
+        "ring": true
+      },
+      {
+        "text": "What did I learn today?",
+        "ring": true
+      },
+      {
+        "text": "What can I do tomorrow, a little better?",
+        "ring": true
+      },
+      {
+        "text": "View detail",
+        "ring": true
+      }
+    ],
+    "cardDarkest": [
+      241,
+      234,
+      225
+    ],
+    "darkestCard": ":Rmjtvptj6:",
+    "card": {
+      "ink": 9.42,
+      "inkMuted": 5.34,
+      "interactiveInk": 5.15
+    },
+    "onRoom": {
+      "heading": 9.84,
+      "date": 9.75
+    },
+    "axe": []
+  },
+  "phone": {
+    "viewport": "390x844",
+    "hotspots": [
+      {
+        "label": "Growth Map",
+        "x": 39.1484375,
+        "y": 357.796875,
+        "w": 131.640625,
+        "h": 44,
+        "visible": true,
+        "onScreen": true,
+        "underMenu": false
+      }
+    ],
+    "hotspotLabel": 10.73,
+    "focusedHeading": true,
+    "tabStops": [
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Edit",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "See all",
+        "ring": true
+      },
+      {
+        "text": "Sign in",
+        "ring": true
+      },
+      {
+        "text": "Inbox",
+        "ring": true
+      },
+      {
+        "text": "Check in",
+        "ring": true
+      },
+      {
+        "text": "😄\nbright",
+        "ring": true
+      },
+      {
+        "text": "🙂\ncontent",
+        "ring": true
+      },
+      {
+        "text": "😌\ncalm",
+        "ring": true
+      },
+      {
+        "text": "😐\nneutral",
+        "ring": true
+      },
+      {
+        "text": "😴\ntired",
+        "ring": true
+      },
+      {
+        "text": "😟\nanxious",
+        "ring": true
+      },
+      {
+        "text": "1",
+        "ring": true
+      },
+      {
+        "text": "2",
+        "ring": true
+      },
+      {
+        "text": "3",
+        "ring": true
+      },
+      {
+        "text": "4",
+        "ring": true
+      },
+      {
+        "text": "5",
+        "ring": true
+      },
+      {
+        "text": "Open full journal",
+        "ring": true
+      },
+      {
+        "text": "INPUT",
+        "ring": true
+      },
+      {
+        "text": "What am I grateful for today?",
+        "ring": true
+      },
+      {
+        "text": "What did I learn today?",
+        "ring": true
+      },
+      {
+        "text": "What can I do tomorrow, a little better?",
+        "ring": true
+      },
+      {
+        "text": "View detail",
+        "ring": true
+      }
+    ],
+    "cardDarkest": [
+      241,
+      235,
+      225
+    ],
+    "darkestCard": ":R1ujtvptj6:",
+    "card": {
+      "ink": 9.48,
+      "inkMuted": 5.37,
+      "interactiveInk": 5.19
+    },
+    "onRoom": {
+      "heading": 9.48,
+      "date": 9.31
+    },
+    "axe": []
+  }
+}
