@@ -22,6 +22,7 @@
     "a11y:check": "node scripts/a11y-check.ts",
     "motion:check": "node scripts/motion-check.ts",
     "offline:check": "node scripts/offline-check.ts",
+    "journal:check": "node scripts/journal-device-check.ts",
     "review:capture": "node scripts/review-capture.ts",
     "security:headers": "node scripts/security-headers-check.ts",
     "test": "node --test tests/unit/*.test.ts",

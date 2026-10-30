@@ -1,0 +1,284 @@
+{
+  "chromium": {
+    "checks": [
+      {
+        "name": "saves every entry",
+        "ok": true,
+        "detail": "A 200, B 5"
+      },
+      {
+        "name": "lists only its own account",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "lists newest first",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "search, case-insensitive, all words",
+        "ok": true,
+        "detail": "20 of 20"
+      },
+      {
+        "name": "search finds Vietnamese text",
+        "ok": true,
+        "detail": "200"
+      },
+      {
+        "name": "search with a date range",
+        "ok": true,
+        "detail": "4 of 4 in January"
+      },
+      {
+        "name": "refuses a body over the cap",
+        "ok": true,
+        "detail": "journal entry refused: body"
+      },
+      {
+        "name": "refuses a malformed date",
+        "ok": true,
+        "detail": "journal entry refused: localDate"
+      },
+      {
+        "name": "survives closing the browser",
+        "ok": true,
+        "detail": "200 after reopening"
+      },
+      {
+        "name": "sign-out deletes that account",
+        "ok": true,
+        "detail": "deleted 200"
+      },
+      {
+        "name": "sign-out leaves another account's entries",
+        "ok": true,
+        "detail": "B 5"
+      },
+      {
+        "name": "import restores every entry",
+        "ok": true,
+        "detail": "added 200"
+      },
+      {
+        "name": "imported entries match the export",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "importing twice adds nothing",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "refuses bad files",
+        "ok": true,
+        "detail": "import refused: the file is not JSON | import refused: not a journal export | import refused: version 2 is not supported | import refused: entry 4: energy"
+      },
+      {
+        "name": "a refused file writes nothing",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "storage": {
+      "persisted": false,
+      "granted": false,
+      "usage": 417767,
+      "quota": 10737836007
+    },
+    "timingsMs": {
+      "write200": 126
+    },
+    "exportBytes": 163392
+  },
+  "firefox": {
+    "checks": [
+      {
+        "name": "saves every entry",
+        "ok": true,
+        "detail": "A 200, B 5"
+      },
+      {
+        "name": "lists only its own account",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "lists newest first",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "search, case-insensitive, all words",
+        "ok": true,
+        "detail": "20 of 20"
+      },
+      {
+        "name": "search finds Vietnamese text",
+        "ok": true,
+        "detail": "200"
+      },
+      {
+        "name": "search with a date range",
+        "ok": true,
+        "detail": "4 of 4 in January"
+      },
+      {
+        "name": "refuses a body over the cap",
+        "ok": true,
+        "detail": "journal entry refused: body"
+      },
+      {
+        "name": "refuses a malformed date",
+        "ok": true,
+        "detail": "journal entry refused: localDate"
+      },
+      {
+        "name": "survives closing the browser",
+        "ok": true,
+        "detail": "200 after reopening"
+      },
+      {
+        "name": "sign-out deletes that account",
+        "ok": true,
+        "detail": "deleted 200"
+      },
+      {
+        "name": "sign-out leaves another account's entries",
+        "ok": true,
+        "detail": "B 5"
+      },
+      {
+        "name": "import restores every entry",
+        "ok": true,
+        "detail": "added 200"
+      },
+      {
+        "name": "imported entries match the export",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "importing twice adds nothing",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "refuses bad files",
+        "ok": true,
+        "detail": "import refused: the file is not JSON | import refused: not a journal export | import refused: version 2 is not supported | import refused: entry 4: energy"
+      },
+      {
+        "name": "a refused file writes nothing",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "storage": {
+      "persisted": false,
+      "granted": null,
+      "usage": 212992,
+      "quota": 10737418240
+    },
+    "timingsMs": {
+      "write200": 297
+    },
+    "exportBytes": 163392
+  },
+  "webkit": {
+    "checks": [
+      {
+        "name": "saves every entry",
+        "ok": true,
+        "detail": "A 200, B 5"
+      },
+      {
+        "name": "lists only its own account",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "lists newest first",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "search, case-insensitive, all words",
+        "ok": true,
+        "detail": "20 of 20"
+      },
+      {
+        "name": "search finds Vietnamese text",
+        "ok": true,
+        "detail": "200"
+      },
+      {
+        "name": "search with a date range",
+        "ok": true,
+        "detail": "4 of 4 in January"
+      },
+      {
+        "name": "refuses a body over the cap",
+        "ok": true,
+        "detail": "journal entry refused: body"
+      },
+      {
+        "name": "refuses a malformed date",
+        "ok": true,
+        "detail": "journal entry refused: localDate"
+      },
+      {
+        "name": "survives closing the browser",
+        "ok": true,
+        "detail": "200 after reopening"
+      },
+      {
+        "name": "sign-out deletes that account",
+        "ok": true,
+        "detail": "deleted 200"
+      },
+      {
+        "name": "sign-out leaves another account's entries",
+        "ok": true,
+        "detail": "B 5"
+      },
+      {
+        "name": "import restores every entry",
+        "ok": true,
+        "detail": "added 200"
+      },
+      {
+        "name": "imported entries match the export",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "importing twice adds nothing",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "refuses bad files",
+        "ok": true,
+        "detail": "import refused: the file is not JSON | import refused: not a journal export | import refused: version 2 is not supported | import refused: entry 4: energy"
+      },
+      {
+        "name": "a refused file writes nothing",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "storage": {
+      "persisted": false,
+      "granted": false,
+      "usage": 226676,
+      "quota": 1048576000
+    },
+    "timingsMs": {
+      "write200": 3243
+    },
+    "exportBytes": 163392
+  }
+}
