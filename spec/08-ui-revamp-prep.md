@@ -1,118 +1,147 @@
 # 08 — Preparing the UI revamp
 
-Written 2026-10-30. The design team is producing the detailed design, in Figma
-or as HTML. Until it arrives we prepare: gather what the build needs, agree how
-we turn a design into code quickly, line up the data each screen needs, and
-clear out what is in the way. **No new UI is built before the design lands.**
+Written 2026-10-30, revised the same day when the design team's engineering
+handoff v1.1 and its Figma foundation arrived. We prepare; we do not build the
+UI ahead of the design. The handoff's priority prototype is
+**Home → Today → Home**, and it is the first thing built once the owner settles
+the decisions in §2.
 
-## 1. Materials we have
+## 1. What the handoff changes
+
+Source: `design-system/PGS_Engineering_Handoff_v1_1/` (read 01, 02, 03 in
+that order; the two `00` files are the v1.0 specs we already had) and the
+Figma file `5AYqsHBJBV8QSKtmIQCSJA` ("Editable UI Foundations").
+
+- **No live 3D for the MVP.** The room is pre-rendered: one master Blender
+  scene, rendered from a Home camera and five focus cameras (Today: coffee
+  table; Journal: notebook corner; Growth Map: pinboard; Skills: study desk
+  and books; Self Care: sofa and plant). The site ships images, transparent
+  layers, a hotspot JSON and a transitions JSON — not geometry. Transitions are
+  CSS: pan or zoom the overview, crossfade to the focus image, blur, reveal the
+  panel. (doc 01 §1, §5; doc 02 §1-3; doc 03 §1)
+- **The URL is the source of truth**: `/room`, `/today`, `/journal`,
+  `/journal/:id`, `/growth`, `/growth/inbox`, `/self-care`, `/skills`,
+  `/skills/:id`, `/settings/privacy`. Every route works directly, without the
+  zoom. (doc 03 §2)
+- **A transition state machine**: home → preloading → focusing → focused →
+  exiting, plus fallback; latest click wins; a dirty draft is saved before
+  leaving. (doc 03 §2)
+- **Starting tokens** (to be confirmed): 1440 × 810 reference; spacing
+  4/8/12/16/24/32/48; card radius 14-22 px; cream `#FFF9EF`, sand `#D7C4A5`,
+  sage `#AEBFA8`, ink `#44392D`. (doc 01 §2)
+- **Inspiration Inbox adds screenshot upload with OCR**, and a source-status
+  machine (submitted → partial / available / unavailable → draft → approved).
+  (doc 03 §5)
+- **Figma is a layout foundation**, not final design: seven frames (Home,
+  Today, Journal, Growth Map, Self Care, Skills, one card component), no
+  component states, no named variables. Space title shown: "MY LITTLE WORLD".
+
+What it confirms from D-26: boards of readable cards over a softened room, the
+five modules, nothing drawn on a monitor, approval before any AI output is
+saved, never inventing a summary of an unreadable source, journal privacy,
+reduced motion as a full alternative, desktop first.
+
+## 2. Decisions for the owner
+
+These conflict with decisions already recorded; the build waits on them.
+
+| # | handoff says | we have | recommendation |
+|---|---|---|---|
+| 1 | Pre-rendered 2.5D room, no WebGL | D-26 §11 and `v2/05`: a baked live 3D room | **Adopt 2.5D.** Simpler, lighter, and three.js leaves the app entirely. Our Blender pipeline still renders the six views. |
+| 2 | Card radius 14-22 px; pill-shaped menu in Figma | Owner, 2026-10-29: less rounded; `v2/03`: 12 px max, no pills | Ask the design team to hold 12 px; otherwise amend v2/03 |
+| 3 | Ink `#44392D` (warm brown), sand, sage | `--v2-ink` `#26392F` (deep green), honey signal | Take their four; ink on cream is 10.7 : 1. Sand and sage only as fills: on cream they are 1.6 and 1.9 : 1, too faint for borders or text |
+| 4 | All-caps card headings in Figma | `v2/06`: no rows of all-caps labels; owner: less letter-spacing | Sentence-case headings; ask the design team |
+| 5 | "Confirm licensed fonts"; soft serif display | Inter body (owner), Georgia fallback display | Keep Inter; pick one licensed display serif or none |
+| 6 | Path routes, URL as truth | Room at `/`, everything on `/text` (D-07, D-10) | **Adopt the routes.** With no WebGL, `/text` as a separate surface has no reason to exist; phones get the same routes over a static crop |
+| 7 | Motion for React suggested | CSS transitions only | CSS first; add the library only if the crossfade needs it |
+| 8 | Screenshot upload with OCR in the Inbox | Link or pasted text | Later item: needs storage, an OCR provider and a privacy notice |
+| 9 | "MY LITTLE WORLD" | Name "Be Better Everyday" (owner, 2026-10-29) | Product stays BBE; "My little world" becomes the default editable space title |
+
+Product calls the handoff leaves to us (doc 03 §9): first room theme, initial
+number of goals, AI provider and quotas, sources supported at launch, privacy
+and retention policy, mobile support level.
+
+## 3. Materials
 
 | what | where | state |
 |---|---|---|
-| Room and board references | `design-system/references/homescreen.jpg`, `dashboard.jpg` | concept art; the menu in `homescreen.jpg` is painted into the image |
-| Functional and UI/UX specifications (v1.0) | `design-system/references/*.docx` | read; reflected in D-26 |
-| Visual contract | `design-system/v2/` (colour, type, layout, boards and motion, room, anti-patterns) | tokens and rules agreed; exact sizes wait for the design |
-| Colour tokens | `styles/tokens.css`, `lib/style/colors.ts`, `design-spec.jsonc` (`--v2-*`) | nine role tokens, contrast-checked; `lint:colors` enforces |
-| Body font | `@fontsource/inter` (dev dependency) | installed |
-| Stand-in 3D room | `scripts/p0/room/` builds it from CC0 Poly Haven assets (licences in `captures/p0/room/assets.json`); outputs in ignored `.p0/` | proves the pipeline; not the design team's art |
-| Room measurements | `captures/p0/room/report.json` | budgets pass with WebP; KTX2 numbers in |
-| Board readability test | `scripts/p0/board-check.ts`, `captures/p0/board-*.png` | the 40% tint is the rule |
-| Device journal | `lib/journal/deviceStore.ts`, `pnpm journal:check` | passes in three engines |
+| Engineering handoff v1.1 | `design-system/PGS_Engineering_Handoff_v1_1/` | read; summarised in §1 |
+| Figma foundation | figma.com file `5AYqsHBJBV8QSKtmIQCSJA` | viewed read-only; our Figma connector has no access until the file is shared with an editor seat |
+| Earlier references and specs | `design-system/references/` | superseded where §1 says so |
+| Visual contract | `design-system/v2/` | holds until §2 is decided; 05-room becomes the 2.5D asset contract |
+| Colour tokens | `styles/tokens.css`, `lib/style/colors.ts`, `design-spec.jsonc` | `--v2-*`; change with §2 #3, `lint:colors` keeps the three in step |
+| Inter | `@fontsource/inter` | installed |
+| Blender stand-in room | `scripts/p0/room/`, CC0 assets with licences in `captures/p0/room/assets.json` | can render the six matched views as **placeholders** so the prototype is not blocked on art; real art replaces them |
+| Board readability test | `scripts/p0/board-check.ts` | reusable for every board; the 40% wash rule stands |
+| Device journal | `lib/journal/deviceStore.ts` | passes in three engines |
 
-## 2. What we need from the design team
+## 4. What we need from design and art
 
-One handoff, either form. Each item is what lets us build without guessing.
+**Design (Figma):** the four colours as named variables; text styles; the
+component set with states (nav item, hotspot, card, buttons, mood selector,
+checklist row, editor, AI suggestion card — doc 01 §4); every screen in its
+loading, empty, error and saving states; the 390 px layouts; copy for empty and
+error states. **Share the file with an account our connector can use**, or turn
+on Dev Mode for it.
 
-**If Figma**
-- Colours, radii and spacing as Figma **variables named by role** (`canvas`,
-  `surface`, `ink`, `ink-muted`, `line`, `interactive`, `signal`), matching
-  the nine `--v2-*` tokens, or a note of each change so the three mirrors move together.
-- Components (button, input, chip, card, menu item, ring, meter, tag) with their
-  states: default, hover, focus, disabled, pressed, error.
-- Every board at 1440 px and at 390 px, with its states: loading, empty, filled,
-  saving, saved, failed (functional specification §2).
-- Icons as SVG, one stroke weight.
-- Dev Mode access, or an export, for us. Our Figma connector needs one sign-in
-  by the owner (`/mcp` in a terminal) before it can read the file.
+**Art:** six matched renders (2560 × 1440 AVIF/WebP, archive PNG), mobile
+crops, alpha foreground layers if any, the hotspot and transitions JSON, the
+text-safe area per scene, and the rights record (doc 02 §3, §6).
 
-**If HTML**
-- One page per board, plain HTML and CSS, no build step. Colours as CSS custom
-  properties named by role. We port the CSS into CSS Modules (D-01) and the
-  markup into components; their JavaScript, if any, is reference only.
+## 5. How we build it
 
-**Either way**
-- Copy for every state, especially empty and error states (no red, no shaming).
-- The room: a blockout GLB with the five anchors and the furniture spots named,
-  then the baked art (`design-system/v2/05-room.md`, "deliverables").
-- Furniture and decorations for the shop: name, spot, price, one image each.
+1. **Room renderer and transition controller first** — the P0 prototype
+   (doc 03 §8): Home and Today renders, hotspot layer in normalised
+   coordinates on the object-fit rectangle, the state machine, reduced-motion
+   swap, persistent nav. Stand-in renders until the art lands.
+2. **Kit next, once** (doc 03 §8 P1): tokens, controls, cards, layouts and
+   screen states, matched to the Figma components.
+3. **Then one route at a time**, end to end: layout → existing data (§6) →
+   states → checks → push. Today, Journal, Growth Map, Self Care, Skills,
+   Settings.
+4. **Checks per route**, scripted: `lint:colors`, `board-check` (contrast from
+   pixels, focus rings), `a11y:check`, typecheck, unit tests; plus doc 03 §7's
+   room tests: 1280/1440/1920, hotspot mapping after crop, rapid clicks,
+   back/forward, refresh mid-transition.
+5. Push to `main` when the checks pass (CLAUDE.md, "How we work").
 
-## 3. How we build it fast
+Proposed layout, from doc 03 §4 on our conventions: `app/(app)/[route]/` for
+routes; `features/room/` (ThemeRenderer, HotspotLayer, TransitionController);
+`features/<module>/`; `components/ui/`; `content/catalogs/`;
+`public/room/<theme>/`. CSS Modules and tokens (D-01) stay.
 
-1. **Kit first, once.** Port the design's components into one kit
-   (`app/(app)/ui/`), styled only with tokens. Every board uses it; no board
-   styles its own button.
-2. **One board at a time, end to end.** For each board: layout from the
-   design → wire to existing data (§4) → empty, loading and error states →
-   both surfaces (room page and `/text`, D-07) → checks → push. Today first,
-   then Journal, Growth Map, Self Care, Skills, Settings.
-3. **Checks per board**, scripted so they cost nothing: `lint:colors`,
-   `board-check` (contrast from pixels, focus rings), `a11y:check`,
-   typecheck and unit tests. One screenshot beside the design frame for the
-   owner.
-4. **Room last, in parallel.** The baked room drops in behind the same boards;
-   the boards do not wait for it. Until it lands, boards sit over a still.
-5. **Push to `main` when the checks pass** (CLAUDE.md, "How we work").
+A first wiring draft of the boards from before the handoff is parked (git stash
+"boards draft 2026-10-30"); it is reference for data wiring only.
 
-A first draft of the kit and the six boards was written on 2026-10-30, ahead of
-the design, and parked (git stash "boards draft 2026-10-30"). It is a
-reference for wiring, not a design; the design team's files replace its look.
+## 6. Data each screen needs
 
-## 4. Data each board needs
-
-| board | exists today | missing before or during the build |
+| screen | exists today | missing |
 |---|---|---|
-| Today | challenge, habits due today, points, week from `dayGrid`, greeting | today's mood and energy (from the device journal) |
-| Journal | device store: save, list, search, delete-all, export, import | J01's four check-in answers, single-entry delete, guided prompts with versions, the week's counts (J04) — drafted in the stash |
-| Growth Map | goals with milestones, habits (repeating actions), the year's history | goal paused and archived states (G02), before/after snapshots (G04) |
-| Inspiration Inbox | import of link or text into an action | **save only after approval, and say plainly when a page cannot be read** (D-26 §8): the import saves straight away and falls back to a stock action today. A draft mode is in the stash |
-| Self Care | nothing | the activity catalogue, sessions, feedback, routines. A seed catalogue (15 activities, 6 checked links) is in the stash |
-| Skills | nothing | the resource catalogue (14 checked links in the stash), saves, progress, private takeaways |
-| Settings | sign-out, delete account (in the old corner control) | sign-out deleting the device journal after a warning, AI consent per module, export |
-| Shop | points total | spent points and balance, catalogue, purchases — new tables and a server function (D-08); **needs the owner's go for the hosted database** |
+| Today | challenge, habits due, points, the week, greeting | today's mood and energy (device journal); "focus" self-report (Figma shows Energy and Focus out of 10) |
+| Journal | device store: save, list, search, delete-all, export, import | check-in answers, single delete, guided prompts with versions, weekly counts, autosave and recovery |
+| Growth Map | goals, milestones, habits as repeating actions, the year | journey pause and archive, before/now snapshots, evidence timeline, the step-by-step goal setup |
+| Inspiration Inbox | link or text into an action | approval before saving, plain "could not be read", source status labels; screenshots later (§2 #8) |
+| Self Care | nothing | catalogue, sessions, feedback, routines |
+| Skills | nothing | catalogue (topics in Figma: Languages, Communication, Creativity, Digital skills, Thinking and life skills), saves, progress, takeaways |
+| Settings / privacy | sign-out, account deletion | journal warning on sign-out, AI consent per feature, export |
+| Shop | points total | balance, catalogue, purchases — new tables; the owner's go for the hosted database |
 
-Device-only data (journal text, Self Care notes, Skills takeaways) stays in the
-browser; the server never receives it (FR-3.6 as amended).
+## 7. Cleaning up
 
-## 5. Room pipeline decisions
+**Done 2026-10-30:** five merged agent branches; 560 MB of scratch bake output.
 
-- Bake in Blender (Cycles), render unlit; meshopt geometry.
-- **Textures: WebP now.** It holds every budget (first view 3.51 MB). KTX2
-  ETC1S cuts GPU memory to a quarter but misses the 5 MB budget by 8 KB at
-  default settings and adds a 585 KB transcoder. Revisit with the real art,
-  tuned, when phone performance matters.
-- The bake reads about 20% darker in the browser than in Cycles (no glossy in
-  the bake). The design team should judge colour in the browser harness, not
-  in Blender's render.
+**If §2 #1 is adopted**, the whole WebGL stack retires with the night room:
+`scene/` (40 files), `three`, `@react-three/fiber`, `@react-three/drei`, the
+postprocessing packages, `lib/stores/scene.ts`, `lib/scene/`, `lib/perf/`,
+`ShaderWarmup`, the bundle check's three.js rule, the P0 3D harness, and the
+KTX2 tooling. **If #6 is adopted**, `/text` and its sections retire too.
 
-## 6. Cleaning up
+Retires when the new routes replace the room page in either case:
+`app/(app)/panels/`, `DetailPanel`, `SceneNav`, `SceneFade`, `AccountControl`,
+`AudioControl`, `lib/stores/interaction.ts`, `lib/sky.ts`,
+`lib/leafSchedule.ts`; `scripts/lighting-test.ts`, `capture-states.ts`,
+`zone-for-hour.ts`; the night captures; Fraunces, Geist and Departure Mono;
+the night tokens; `design-system/00`-`13` to an `archive/` folder; `public/p0/`.
 
-**Done 2026-10-30:** five merged agent branches deleted; 560 MB of scratch
-bake output deleted from `.p0/`.
-
-**Retires when the new UI replaces the room page** (it serves the live site until then):
-- `scene/` (40 files: the night desk, the hall, the screens)
-- `app/(app)/panels/`, `DetailPanel`, `SceneNav`, `SceneFade`, `AccountControl`, `AudioControl`
-- `lib/stores/scene.ts`, `lib/stores/interaction.ts`, `lib/scene/`, `lib/sky.ts`, `lib/leafSchedule.ts`
-- `/text`'s night-styled sections (rebuilt as boards)
-- `scripts/lighting-test.ts`, `capture-states.ts`, `zone-for-hour.ts` and the night captures in `captures/local/`
-- Fraunces, Geist and Departure Mono; the night tokens; `design-system/00`–`13` move to an `archive/` folder
-- `public/p0/` (the P0 backdrop)
-
-**For the owner:** keep or delete `backup-pre-rewrite` (6 commits from before a
-history rewrite, 2026-09-18); `spec/security-hardening-prompt.md` is untracked.
-
-## 7. Open questions
-
-From D-26, still open: does a bought bonsai keep growing; who owns each
-catalogue; which analytics tool; the Next.js upgrade; closing the Phase 6
-board. New: Figma or HTML for the handoff, and when the first board arrives.
+**For the owner:** keep or delete `backup-pre-rewrite` (6 commits from
+2026-09-18); commit or remove the untracked `spec/security-hardening-prompt.md`.
