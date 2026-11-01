@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 
-import { ModulePending } from '@/features/room/ModulePending';
+import { ModuleRoute } from '@/features/room/PageHeader';
+import { SelfCareScreen } from '@/features/selfcare/SelfCarePage';
 
 export const metadata: Metadata = { title: 'Self Care' };
 
 export default function Page() {
   return (
-    <ModulePending
-      title="What do you need right now?"
-      intro="A different kind of break, chosen at your own pace."
-      existing={{ href: '/text#focus-heading', label: 'Start a two-minute focus' }}
-    />
+    <ModuleRoute title="What do you need right now?" intro="A different kind of break, chosen at your own pace.">
+      <SelfCareScreen />
+    </ModuleRoute>
   );
 }
