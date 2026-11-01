@@ -7,7 +7,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-import { ExtractInput, extractAction } from '../../lib/agents/extract.ts';
+import { ExtractInput, draftFromSource, extractAction } from '../../lib/agents/extract.ts';
 import { AGENT_LIMITS, WORST_CASE_AGENT_MS } from '../../lib/agents/limits.ts';
 import { consumeRateLimit, dailyLimit, retryAfterSeconds } from '../../lib/agents/ops.ts';
 import { MAX_SOURCE_CHARS, capSource, readableText } from '../../lib/agents/readable.ts';
@@ -379,5 +379,27 @@ describe('AI usage caps — per request', () => {
       [row.user_id, row.agent_id, row.input_tokens, row.output_tokens, row.success, row.error_code],
       ['user-1', 'content_extraction_agent', 100, 20, true, null],
     );
+  });
+});
+
+describe('the Inspiration Inbox draft (D-26 §8)', () => {
+  it('returns a draft and saves nothing until the user approves it', async () => {
+    const ops: Op[] = [];
+    const result = await draftFromSource(deps(recording(), ops), { text: 'An article.', draft: true });
+    assert.equal(result.status, 200);
+    assert.ok(result.status === 200 && result.body.draft?.actionText);
+    assert.ok(!ops.some((o) => o.table === 'user_actions' && o.method === 'insert'), 'nothing inserted');
+  });
+
+  it('says plainly that a page could not be read, and invents nothing', async () => {
+    const ops: Op[] = [];
+    const provider = recording();
+    const fetchPage = async () => {
+      throw new Error('blocked');
+    };
+    const result = await draftFromSource({ ...deps(provider, ops), fetchPage }, { url: 'https://example.com/a', draft: true });
+    assert.deepEqual(result, { status: 200, body: { draft: null, sourceUnreadable: true } });
+    assert.equal(provider.requests.length, 0, 'no model call without a source');
+    assert.ok(!ops.some((o) => o.table === 'user_actions' && o.method === 'insert'), 'no fallback action saved');
   });
 });

@@ -3,7 +3,7 @@
 // are the shared guard for cookie-authenticated writes: origin, content type,
 // and the body's byte cap (lib/security/requestGuard.ts).
 
-import { extractAction } from '../../../../lib/agents/extract.ts';
+import { draftFromSource, extractAction } from '../../../../lib/agents/extract.ts';
 import { GUARDED, readJson, screen } from '../../../../lib/security/requestGuard.ts';
 import { logSecurityEvent } from '../../../../lib/security/securityLog.ts';
 import { json, provider, serviceClient, signedInUser } from '../../_lib/server.ts';
@@ -25,10 +25,10 @@ export async function POST(request: Request) {
   const input = await readJson(request, ROUTE, caller.userId);
   if (!input.ok) return input.response;
 
-  const result = await extractAction(
-    { provider: provider(), db: caller.db, service: serviceClient(), userId: caller.userId },
-    input.value,
-  );
+  // `draft: true` asks for a draft to approve, saved nowhere (D-26 §8).
+  const deps = { provider: provider(), db: caller.db, service: serviceClient(), userId: caller.userId };
+  const wantsDraft = (input.value as { draft?: unknown } | null)?.draft === true;
+  const result = wantsDraft ? await draftFromSource(deps, input.value) : await extractAction(deps, input.value);
 
   if (result.status === 429) {
     logSecurityEvent(request, {

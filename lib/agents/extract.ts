@@ -74,6 +74,8 @@ export const ExtractInput = z
   .strictObject({
     url: ArticleUrl.optional(),
     text: z.string().trim().min(1).max(AGENT_LIMITS.pastedTextMaxChars).optional(),
+    /** D-26 §8: return a draft for the user to approve; save nothing. */
+    draft: z.literal(true).optional(),
   })
   .refine((v) => Boolean(v.url) !== Boolean(v.text), 'exactly one of url or text');
 
@@ -98,6 +100,20 @@ export type ExtractResult =
   | { status: 400; body: { error: 'invalid_input' } }
   | { status: 503; body: { error: 'unavailable' } };
 
+/** The Inspiration Inbox's draft (D-26 §8): nothing is saved until the user approves it. */
+export type DraftResult =
+  | {
+      status: 200;
+      body: {
+        /** null when there is nothing honest to draft from. */
+        draft: { actionText: string; sourceSummary: string; sourceUrl: string | null; promptVersion: string } | null;
+        /** The URL could not be read: ask the user to paste the text. */
+        sourceUnreadable: boolean;
+      };
+    }
+  | { status: 429; retryAfter: number; body: { limited: true } }
+  | { status: 400; body: { error: 'invalid_input' } };
+
 async function timeZoneOf(db: Db, userId: string): Promise<string> {
   const { data } = await db.from('profiles').select('timezone').eq('id', userId).maybeSingle();
   return data?.timezone ?? 'UTC';
@@ -113,6 +129,15 @@ async function usedFallbacks(db: Db, userId: string): Promise<string[]> {
 }
 
 export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promise<ExtractResult> {
+  return (await run(deps, rawInput, 'save')) as ExtractResult;
+}
+
+/** Drafts an action from a source without saving it (functional spec G06). */
+export async function draftFromSource(deps: ExtractDeps, rawInput: unknown): Promise<DraftResult> {
+  return (await run(deps, rawInput, 'draft')) as DraftResult;
+}
+
+async function run(deps: ExtractDeps, rawInput: unknown, mode: 'save' | 'draft'): Promise<ExtractResult | DraftResult> {
   const { db, service, userId, provider } = deps;
   const started = Date.now();
   const timeZone = await timeZoneOf(db, userId);
@@ -146,6 +171,35 @@ export async function extractAction(deps: ExtractDeps, rawInput: unknown): Promi
   const run: AgentRun<{ action: string; source_summary: string }> | null = source
     ? await runAgent(provider, prompt, source, withinWordLimit)
     : null;
+
+  if (mode === 'draft') {
+    // A draft is never a fallback: an unreadable page is said plainly, and the
+    // user pastes the text or writes their own action (functional spec G06).
+    await logAgentCall(service, {
+      agentId: AGENT_ID,
+      userId,
+      model: prompt.model,
+      inputTokens: run?.usage.inputTokens ?? null,
+      outputTokens: run?.usage.outputTokens ?? null,
+      latencyMs: Date.now() - started,
+      success: run?.ok === true,
+      errorCode: limiterDown ? 'LIMITER_UNAVAILABLE' : run === null ? 'SOURCE_UNREADABLE' : run.ok ? null : run.code,
+    });
+    return {
+      status: 200,
+      body: {
+        draft: run?.ok
+          ? {
+              actionText: run.output.action,
+              sourceSummary: run.output.source_summary,
+              sourceUrl: url ?? null,
+              promptVersion: prompt.version,
+            }
+          : null,
+        sourceUnreadable: run === null && Boolean(url) && !limiterDown,
+      },
+    };
+  }
 
   const extracted = run?.ok
     ? { action: run.output.action, summary: run.output.source_summary }

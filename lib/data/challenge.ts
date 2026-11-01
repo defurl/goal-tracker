@@ -98,6 +98,72 @@ export async function importAction(input: { url: string } | { text: string }): P
   }
 }
 
+export interface ActionDraft {
+  actionText: string;
+  sourceSummary: string;
+  sourceUrl: string | null;
+  /** Null when the user wrote the action themselves. */
+  promptVersion: string | null;
+}
+
+export type DraftOutcome =
+  | { kind: 'draft'; draft: ActionDraft }
+  /** The page could not be read: ask for the text (D-26 §8). */
+  | { kind: 'unreadable' }
+  /** Read, but nothing usable came back: the user writes their own. */
+  | { kind: 'no_draft' }
+  | { kind: 'limited' }
+  | { kind: 'invalid' }
+  | { kind: 'unavailable' }
+  | { kind: 'signed_out' };
+
+/** The Inspiration Inbox's first step: a draft, saved nowhere until approved. */
+export async function draftAction(input: { url: string } | { text: string }): Promise<DraftOutcome> {
+  const session = getSession();
+  if (!session) return { kind: 'signed_out' };
+  write({ importing: true });
+  try {
+    const response = await fetch('/api/agent/extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...input, draft: true }),
+    });
+    if (response.status === 429) return { kind: 'limited' };
+    if (response.status === 400) return { kind: 'invalid' };
+    if (response.status === 401) return { kind: 'signed_out' };
+    if (!response.ok) return { kind: 'unavailable' };
+    const body = (await response.json()) as {
+      draft: ActionDraft | null;
+      sourceUnreadable: boolean;
+    };
+    if (body.draft) return { kind: 'draft', draft: body.draft };
+    return { kind: body.sourceUnreadable ? 'unreadable' : 'no_draft' };
+  } catch {
+    return { kind: 'unavailable' };
+  } finally {
+    write({ importing: false });
+  }
+}
+
+/** Saves an action the user approved — as drafted, edited, or their own. */
+export async function approveAction(draft: ActionDraft): Promise<boolean> {
+  const session = getSession();
+  if (!session) return false;
+  const actionText = draft.actionText.trim().slice(0, 300);
+  if (!actionText) return false;
+  const { error } = await session.supabase.from('user_actions').insert({
+    user_id: session.userId,
+    action_text: actionText,
+    source_url: draft.sourceUrl,
+    source_summary: draft.sourceSummary.trim().slice(0, 600) || 'Saved by you',
+    prompt_version: draft.promptVersion,
+  });
+  if (error) return false;
+  await session.supabase.rpc('ensure_daily_challenge');
+  await refresh(session);
+  return true;
+}
+
 export async function completeChallenge(id: string): Promise<void> {
   const session = getSession();
   if (!session) return;
