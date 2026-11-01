@@ -100,6 +100,18 @@ async function view(name: string, width: number, height: number) {
   }));
   const homeAxe = await new AxeBuilder({ page }).analyze();
 
+  // ── the other routes: axe over each, and the heading takes focus ──
+  const routeAxe: { id: string; impact?: string | null; nodes: unknown[] }[] = [];
+  for (const route of ['/journal', '/growth', '/self-care', '/skills', '/settings']) {
+    await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle' });
+    await settled(page, 'focused');
+    if (width === 1440) await page.screenshot({ path: join(OUT, `${route.slice(1)}-${name}.png`) });
+    if (!(await page.evaluate(() => document.activeElement?.tagName === 'H1'))) {
+      routeAxe.push({ id: `${route}: heading not focused`, impact: 'serious', nodes: [] });
+    }
+    for (const v of (await new AxeBuilder({ page }).analyze()).violations) routeAxe.push({ ...v, id: `${route}: ${v.id}` });
+  }
+
   // ── Today, deep-linked ──
   await page.goto(`${BASE}/today`, { waitUntil: 'networkidle' });
   await settled(page, 'focused');
@@ -163,7 +175,7 @@ async function view(name: string, width: number, height: number) {
       interactiveInk: contrast(rgb(V2_INTERACTIVE_INK), cardDarkest),
     },
     onRoom,
-    axe: [...homeAxe.violations, ...todayAxe.violations].map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length })),
+    axe: [...homeAxe.violations, ...todayAxe.violations, ...routeAxe].map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length })),
   };
 }
 
@@ -185,7 +197,7 @@ for (const [name, r] of Object.entries(report)) {
   const card = r.card.ink >= 4.5 && r.card.inkMuted >= 4.5 && r.card.interactiveInk >= 4.5;
   const room = (r.onRoom.heading ?? 0) >= 3 && (r.onRoom.date ?? 0) >= 4.5;
   const rings = r.tabStops.length > 0 && r.tabStops.every((t) => t.ring);
-  const ok = spots && card && room && rings && r.focusedHeading;
+  const ok = spots && card && room && rings && r.focusedHeading && r.axe.length === 0;
   console.log(`\n${name} ${r.viewport}: ${ok ? 'passes' : 'FAILS'}`);
   console.log(`  hotspots on screen, clear of the menu: ${spots ? 'yes' : 'NO'}${desktop ? '' : ' (not required on phones)'}`);
   console.log(`  card text ≥ 4.5 over its darkest pixel: ${JSON.stringify(r.card)}`);
