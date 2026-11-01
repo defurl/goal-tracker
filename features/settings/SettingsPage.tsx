@@ -9,11 +9,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { useSurfaceState } from '@/app/(app)/useSurfaceState';
-import { Button, Card, ErrorText, Muted, buttonClass, useArm } from '@/components/ui/kit';
+import { Button, Card, Chips, ErrorText, Muted, buttonClass, useArm } from '@/components/ui/kit';
 import { clearSnapshot } from '@/lib/data/snapshot';
-import { clearDeviceState } from '@/lib/device/deviceState';
+import { clearDeviceState, useDeviceState } from '@/lib/device/deviceState';
 import { clearDeviceJournal, downloadExport, useJournalStore } from '@/lib/journal/device';
 
+import { CONSENT_INITIAL, type Consent } from './consent';
 import { DeviceJournalCard } from './DeviceJournalCard';
 
 import styles from '@/features/today/today.module.css';
@@ -91,6 +92,27 @@ function DeleteAccount() {
   );
 }
 
+function AiConsent() {
+  const [consent, setConsent] = useDeviceState<Consent>('consent', CONSENT_INITIAL);
+  return (
+    <Card title="AI, feature by feature" icon="sparkle">
+      <Chips
+        legend="Inspiration Inbox drafts"
+        options={[
+          { value: 'off', label: 'Off' },
+          { value: 'on', label: 'Draft with AI' },
+        ]}
+        value={[consent.inboxAi ? 'on' : 'off']}
+        onChange={(v) => setConsent((c) => ({ ...c, inboxAi: v[0] === 'on' }))}
+      />
+      <Muted>
+        When on, a link or text you save to the Inbox is sent to an AI model to draft one small action, which you review
+        before anything is saved. Your journal is never sent anywhere.
+      </Muted>
+    </Card>
+  );
+}
+
 export function SettingsPage() {
   const { ready, signedIn } = useSurfaceState();
   return (
@@ -122,10 +144,11 @@ export function SettingsPage() {
               </div>
             )}
           </Card>
+          <AiConsent />
           <Card title="Privacy" icon="info">
             <Muted>
               Your journal never leaves this device. Motion follows your system’s reduce-motion setting.{' '}
-              <Link href="/privacy">How your data is handled</Link>.
+              <Link href="/privacy" className={styles.inlineLink}>How your data is handled</Link>.
             </Muted>
           </Card>
         </div>

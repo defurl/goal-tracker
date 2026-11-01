@@ -417,3 +417,10 @@
     font-size: 1.75rem;
   }
 }
+
+/* A link inside running text: sage ink, underlined so colour is not the only cue. */
+.inlineLink {
+  color: var(--v2-interactive-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
