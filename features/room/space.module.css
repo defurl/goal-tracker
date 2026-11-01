@@ -30,6 +30,11 @@
   letter-spacing: 0;
 }
 
+.space a:not([class]) {
+  /* globals.css colours links with the night room's rose; plain links here are sage ink. */
+  color: var(--v2-interactive-ink);
+}
+
 .space :focus-visible {
   outline: 2px solid var(--v2-interactive);
   outline-offset: 2px;
