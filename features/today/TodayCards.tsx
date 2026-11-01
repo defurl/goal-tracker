@@ -131,7 +131,7 @@ function ChallengeCard({ signedIn, ready }: BoardProps) {
       ) : !signedIn ? (
         <SignInHint />
       ) : !challenge ? (
-        <Empty action={<Link className={buttonClass('secondary', true)} href="/growth">Open the Inspiration Inbox</Link>}>
+        <Empty action={<Link className={buttonClass('secondary', true)} href="/growth#inbox">Open the Inspiration Inbox</Link>}>
           Save something that inspired you and it becomes a two-minute action, waiting here each morning.
         </Empty>
       ) : (
@@ -201,7 +201,7 @@ function MoodCard() {
   }
 
   return (
-    <Card title="Today’s mood" icon="smile" action={<Link className={buttonClass('tertiary')} href="/journal">Check in</Link>}>
+    <Card title="Today’s mood" icon="smile" action={<Link className={buttonClass('tertiary')} href="/journal#check-in">Check in</Link>}>
       <div className={styles.row} role="group" aria-label="How are you feeling?">
         {MOODS.slice(0, 6).map((m) => (
           <button
@@ -358,7 +358,7 @@ function QuickJournalCard() {
       {state === 'failed' && <ErrorText>Not saved. Your text is still here; try again.</ErrorText>}
       <div className={styles.prompts}>
         {QUICK_PROMPTS.map((p) => (
-          <Link key={p.id} className={styles.promptButton} href="/journal">
+          <Link key={p.id} className={styles.promptButton} href={`/journal#prompt/${p.id}`}>
             <Icon name={p.icon} />
             {p.label}
           </Link>
@@ -374,7 +374,7 @@ function InspirationCard({ signedIn }: { signedIn: boolean }) {
   const challenge = useAppStore((s) => s.challenge);
   const summary = signedIn ? challenge?.sourceSummary : null;
   return (
-    <Card title="Today’s inspiration" icon="sparkle" action={<Link className={buttonClass('tertiary')} href="/growth">Inbox</Link>}>
+    <Card title="Today’s inspiration" icon="sparkle" action={<Link className={buttonClass('tertiary')} href="/growth#inbox">Inbox</Link>}>
       {summary ? (
         <>
           <p className={styles.quote}>{summary}</p>
