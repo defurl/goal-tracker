@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
 
-import { ModulePending } from '@/features/room/ModulePending';
+import { ModuleRoute } from '@/features/room/PageHeader';
+import { SkillsScreen } from '@/features/skills/SkillsPage';
 
 export const metadata: Metadata = { title: 'Skills' };
 
 export default function Page() {
-  return <ModulePending title="Learn something meaningful" intro="Less scrolling, more practising." existing={null} />;
+  return (
+    <ModuleRoute title="Learn something meaningful" intro="Less scrolling, more practising.">
+      <SkillsScreen />
+    </ModuleRoute>
+  );
 }
